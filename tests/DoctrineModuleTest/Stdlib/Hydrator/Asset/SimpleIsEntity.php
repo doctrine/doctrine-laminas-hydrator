@@ -2,9 +2,7 @@
 
 namespace DoctrineModuleTest\Stdlib\Hydrator\Asset;
 
-use DateTime;
-
-class SimpleEntityWithDateTime
+class SimpleIsEntity
 {
     /**
      * @var int
@@ -12,9 +10,9 @@ class SimpleEntityWithDateTime
     protected $id;
 
     /**
-     * @var DateTime
+     * @var bool
      */
-    protected $date;
+    protected $done;
 
     public function setId($id)
     {
@@ -26,13 +24,13 @@ class SimpleEntityWithDateTime
         return $this->id;
     }
 
-    public function setDate(DateTime $date = null)
+    public function setDone($done)
     {
-        $this->date = $date;
+        $this->done = (bool) $done;
     }
 
-    public function getDate()
+    public function isDone()
     {
-        return $this->date;
+        return $this->done;
     }
 }

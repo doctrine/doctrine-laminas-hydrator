@@ -2,9 +2,8 @@
 
 namespace DoctrineModuleTest\Stdlib\Hydrator\Asset;
 
-use DateTime;
 
-class SimpleEntityWithDateTime
+class ContextEntity
 {
     /**
      * @var int
@@ -12,9 +11,9 @@ class SimpleEntityWithDateTime
     protected $id;
 
     /**
-     * @var DateTime
+     * @var string
      */
-    protected $date;
+    protected $field;
 
     public function setId($id)
     {
@@ -26,13 +25,13 @@ class SimpleEntityWithDateTime
         return $this->id;
     }
 
-    public function setDate(DateTime $date = null)
+    public function setField($field)
     {
-        $this->date = $date;
+        $this->field = $field;
     }
 
-    public function getDate()
+    public function getField()
     {
-        return $this->date;
+        return $this->field;
     }
 }

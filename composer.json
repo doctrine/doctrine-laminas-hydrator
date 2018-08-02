@@ -1,0 +1,57 @@
+{
+    "name": "webimpress/zend-doctrine-hydrator",
+    "description": "Doctrine hydrators for Zend Framework applications",
+    "license": "BSD-2-Clause",
+    "keywords": [
+        "zf",
+        "zendframework",
+        "doctrine",
+        "hydrator"
+    ],
+    "support": {
+        "issues": "https://github.com/webimpress/zend-doctrine-hydrator/issues",
+        "source": "https://github.com/webimpress/zend-doctrine-hydrator",
+        "rss": "https://github.com/webimpress/zend-doctrine-hydrator/releases.atom"
+    },
+    "require": {
+        "php": "^7.1",
+        "ext-ctype": "*",
+        "doctrine/common": "^2.8",
+        "zendframework/zend-hydrator": "^2.3",
+        "zendframework/zend-stdlib": "^3.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.2",
+        "zendframework/zend-coding-standard": "~1.0.0",
+        "zendframework/zend-filter": "^2.8",
+        "zendframework/zend-servicemanager": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zend\\Doctrine\\Hydrator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ZendTest\\Doctrine\\Hydrator\\": "test/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+    }
+}

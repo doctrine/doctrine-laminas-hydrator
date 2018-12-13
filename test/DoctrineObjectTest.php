@@ -16,6 +16,7 @@ use Zend\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Collections\Collection;
+use Zend\Hydrator\Strategy\StrategyInterface;
 
 class DoctrineObjectTest extends TestCase
 {
@@ -54,15 +55,15 @@ class DoctrineObjectTest extends TestCase
             ->will($this->returnValue($this->metadata));
     }
 
-    public function configureObjectManagerForSimpleEntity()
+    public function configureObjectManagerForSimpleEntity(string $className = Assets\SimpleEntity::class)
     {
-        $refl = new ReflectionClass(Assets\SimpleEntity::class);
+        $refl = new ReflectionClass($className);
 
         $this
             ->metadata
             ->expects($this->any())
             ->method('getName')
-            ->will($this->returnValue(Assets\SimpleEntity::class));
+            ->will($this->returnValue($className));
         $this
             ->metadata
             ->expects($this->any())
@@ -120,6 +121,11 @@ class DoctrineObjectTest extends TestCase
             $this->objectManager,
             false
         );
+    }
+
+    public function configureObjectManagerForByValueDifferentiatorEntity()
+    {
+        $this->configureObjectManagerForSimpleEntity(Assets\ByValueDifferentiatorEntity::class);
     }
 
     public function configureObjectManagerForNamingStrategyEntity()
@@ -314,15 +320,15 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForSimpleEntityWithStringId()
+    public function configureObjectManagerForSimpleEntityWithStringId(string $className = Assets\SimpleEntity::class)
     {
-        $refl = new ReflectionClass(Assets\SimpleEntity::class);
+        $refl = new ReflectionClass($className);
 
         $this
             ->metadata
             ->expects($this->any())
             ->method('getName')
-            ->will($this->returnValue(Assets\SimpleEntity::class));
+            ->will($this->returnValue($className));
         $this
             ->metadata
             ->expects($this->any())
@@ -368,6 +374,11 @@ class DoctrineObjectTest extends TestCase
             $this->objectManager,
             false
         );
+    }
+
+    public function configureObjectManagerForByValueDifferentiatorEntityWithStringId()
+    {
+        $this->configureObjectManagerForSimpleEntityWithStringId(Assets\ByValueDifferentiatorEntity::class);
     }
 
     public function configureObjectManagerForSimpleEntityWithDateTime()
@@ -460,7 +471,7 @@ class DoctrineObjectTest extends TestCase
                         if ($arg === 'id') {
                             return 'integer';
                         } elseif ($arg === 'toOne') {
-                            return Assets\SimpleEntity::class;
+                            return Assets\ByValueDifferentiatorEntity::class;
                         }
 
                         throw new InvalidArgumentException();
@@ -499,7 +510,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->any())
             ->method('getAssociationTargetClass')
             ->with('toOne')
-            ->will($this->returnValue(Assets\SimpleEntity::class));
+            ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
 
         $this
             ->metadata
@@ -556,7 +567,7 @@ class DoctrineObjectTest extends TestCase
                         if ($arg === 'id') {
                             return 'integer';
                         } elseif ($arg === 'toOne') {
-                            return Assets\SimpleEntity::class;
+                            return Assets\ByValueDifferentiatorEntity::class;
                         } elseif ($arg === 'field') {
                             return 'string';
                         }
@@ -603,7 +614,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->any())
             ->method('getAssociationTargetClass')
             ->with('toOne')
-            ->will($this->returnValue(Assets\SimpleEntity::class));
+            ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
 
         $this
             ->metadata
@@ -710,7 +721,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->any())
             ->method('getAssociationTargetClass')
             ->with('entities')
-            ->will($this->returnValue(Assets\SimpleEntity::class));
+            ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
 
         $this
             ->metadata
@@ -816,7 +827,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->any())
             ->method('getAssociationTargetClass')
             ->with('entities')
-            ->will($this->returnValue(Assets\SimpleEntity::class));
+            ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
 
         $this
             ->metadata
@@ -841,29 +852,30 @@ class DoctrineObjectTest extends TestCase
 
     public function testObjectIsPassedForContextToStrategies()
     {
-        $entity = new Assets\ContextEntity();
+        $entity = new Assets\SimpleEntity();
         $entity->setId(2);
-        $entity->setField('foo', false);
+        $entity->setField('foo');
 
-        $this->configureObjectManagerForSimpleEntity();
+        $this->configureObjectManagerForSimpleEntityWithStringId();
 
         $hydrator = $this->hydratorByValue;
         $entity = $hydrator->hydrate(['id' => 3, 'field' => 'bar'], $entity);
         $this->assertEquals(['id' => 3, 'field' => 'bar'], $hydrator->extract($entity));
 
         $hydrator->addStrategy('id', new Assets\ContextStrategy());
-        $entity = $hydrator->hydrate(['id' => 3, 'field' => 'bar'], $entity);
+        $entity = $hydrator->hydrate(['id' => '3', 'field' => 'bar'], $entity);
+        $this->assertEquals('3bar', $entity->getId());
         $this->assertEquals(['id' => '3barbar', 'field' => 'bar'], $hydrator->extract($entity));
     }
 
     public function testCanExtractSimpleEntityByValue()
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
-        $entity = new Assets\SimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
         $entity->setId(2);
         $entity->setField('foo', false);
 
-        $this->configureObjectManagerForSimpleEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
 
         $data = $this->hydratorByValue->extract($entity);
         $this->assertEquals(['id' => 2, 'field' => 'From getter: foo'], $data);
@@ -872,11 +884,11 @@ class DoctrineObjectTest extends TestCase
     public function testCanExtractSimpleEntityByReference()
     {
         // When using extraction by reference, it won't use the public API of entity (getters won't be called)
-        $entity = new Assets\SimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
         $entity->setId(2);
         $entity->setField('foo', false);
 
-        $this->configureObjectManagerForSimpleEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
 
         $data = $this->hydratorByReference->extract($entity);
         $this->assertEquals(['id' => 2, 'field' => 'foo'], $data);
@@ -885,13 +897,13 @@ class DoctrineObjectTest extends TestCase
     public function testCanHydrateSimpleEntityByValue()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $entity = new Assets\SimpleEntity();
-        $this->configureObjectManagerForSimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
         $data = ['field' => 'foo'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertEquals('From setter: foo', $entity->getField(false));
     }
 
@@ -902,27 +914,27 @@ class DoctrineObjectTest extends TestCase
      */
     public function testCanHydrateSimpleEntityWithStringIdByValue()
     {
-        $entity = new Assets\SimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
         $data = ['id' => 'bar', 'field' => 'foo'];
 
-        $this->configureObjectManagerForSimpleEntityWithStringId();
+        $this->configureObjectManagerForByValueDifferentiatorEntityWithStringId();
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertEquals('From setter: foo', $entity->getField(false));
     }
 
     public function testCanHydrateSimpleEntityByReference()
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
-        $entity = new Assets\SimpleEntity();
-        $this->configureObjectManagerForSimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
         $data = ['field' => 'foo'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertEquals('foo', $entity->getField(false));
     }
 
@@ -933,26 +945,26 @@ class DoctrineObjectTest extends TestCase
      */
     public function testCanHydrateSimpleEntityWithStringIdByReference()
     {
-        $entity = new Assets\SimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
         $data = ['id' => 'bar', 'field' => 'foo'];
 
-        $this->configureObjectManagerForSimpleEntityWithStringId();
+        $this->configureObjectManagerForByValueDifferentiatorEntityWithStringId();
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertEquals('foo', $entity->getField(false));
     }
 
     public function testReuseExistingEntityIfDataArrayContainsIdentifier()
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
-        $entity = new Assets\SimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
 
-        $this->configureObjectManagerForSimpleEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
         $data = ['id' => 1];
 
-        $entityInDatabaseWithIdOfOne = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfOne = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfOne->setId(1);
         $entityInDatabaseWithIdOfOne->setField('bar', false);
 
@@ -960,12 +972,12 @@ class DoctrineObjectTest extends TestCase
             ->objectManager
             ->expects($this->once())
             ->method('find')
-            ->with(Assets\SimpleEntity::class, ['id' => 1])
+            ->with(Assets\ByValueDifferentiatorEntity::class, ['id' => 1])
             ->will($this->returnValue($entityInDatabaseWithIdOfOne));
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertEquals('bar', $entity->getField(false));
     }
 
@@ -975,12 +987,12 @@ class DoctrineObjectTest extends TestCase
     public function testReuseExistingEntityIfDataArrayContainsIdentifierWithZeroIdentifier()
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
-        $entity = new Assets\SimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
 
-        $this->configureObjectManagerForSimpleEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
         $data = ['id' => 0];
 
-        $entityInDatabaseWithIdOfOne = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfOne = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfOne->setId(0);
         $entityInDatabaseWithIdOfOne->setField('bar', false);
 
@@ -988,19 +1000,19 @@ class DoctrineObjectTest extends TestCase
             ->objectManager
             ->expects($this->once())
             ->method('find')
-            ->with(Assets\SimpleEntity::class, ['id' => 0])
+            ->with(Assets\ByValueDifferentiatorEntity::class, ['id' => 0])
             ->will($this->returnValue($entityInDatabaseWithIdOfOne));
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertEquals('bar', $entity->getField(false));
     }
 
     public function testExtractOneToOneAssociationByValue()
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
-        $toOne = new Assets\SimpleEntity();
+        $toOne = new Assets\ByValueDifferentiatorEntity();
         $toOne->setId(2);
         $toOne->setField('foo', false);
 
@@ -1013,7 +1025,7 @@ class DoctrineObjectTest extends TestCase
         $data = $this->hydratorByValue->extract($entity);
 
         $this->assertEquals(2, $data['id']);
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $data['toOne']);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $data['toOne']);
         $this->assertEquals('Modified from getToOne getter', $data['toOne']->getField(false));
         $this->assertSame($toOne, $data['toOne']);
     }
@@ -1021,7 +1033,7 @@ class DoctrineObjectTest extends TestCase
     public function testExtractOneToOneAssociationByReference()
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
-        $toOne = new Assets\SimpleEntity();
+        $toOne = new Assets\ByValueDifferentiatorEntity();
         $toOne->setId(2);
         $toOne->setField('foo', false);
 
@@ -1034,7 +1046,7 @@ class DoctrineObjectTest extends TestCase
         $data = $this->hydratorByReference->extract($entity);
 
         $this->assertEquals(2, $data['id']);
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $data['toOne']);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $data['toOne']);
         $this->assertEquals('foo', $data['toOne']->getField(false));
         $this->assertSame($toOne, $data['toOne']);
     }
@@ -1042,7 +1054,7 @@ class DoctrineObjectTest extends TestCase
     public function testHydrateOneToOneAssociationByValue()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $toOne = new Assets\SimpleEntity();
+        $toOne = new Assets\ByValueDifferentiatorEntity();
         $toOne->setId(2);
         $toOne->setField('foo', false);
 
@@ -1054,14 +1066,14 @@ class DoctrineObjectTest extends TestCase
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToOneEntity::class, $entity);
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity->getToOne(false));
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity->getToOne(false));
         $this->assertEquals('Modified from setToOne setter', $entity->getToOne(false)->getField(false));
     }
 
     public function testHydrateOneToOneAssociationByReference()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $toOne = new Assets\SimpleEntity();
+        $toOne = new Assets\ByValueDifferentiatorEntity();
         $toOne->setId(2);
         $toOne->setField('foo', false);
 
@@ -1073,7 +1085,7 @@ class DoctrineObjectTest extends TestCase
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToOneEntity::class, $entity);
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity->getToOne(false));
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity->getToOne(false));
         $this->assertEquals('foo', $entity->getToOne(false)->getField(false));
     }
 
@@ -1086,7 +1098,7 @@ class DoctrineObjectTest extends TestCase
         // Use entity of id 1 as relation
         $data = ['toOne' => 1];
 
-        $entityInDatabaseWithIdOfOne = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfOne = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfOne->setId(1);
         $entityInDatabaseWithIdOfOne->setField('bar', false);
 
@@ -1094,13 +1106,13 @@ class DoctrineObjectTest extends TestCase
             ->objectManager
             ->expects($this->once())
             ->method('find')
-            ->with(Assets\SimpleEntity::class, 1)
+            ->with(Assets\ByValueDifferentiatorEntity::class, 1)
             ->will($this->returnValue($entityInDatabaseWithIdOfOne));
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToOneEntity::class, $entity);
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity->getToOne(false));
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity->getToOne(false));
         $this->assertSame($entityInDatabaseWithIdOfOne, $entity->getToOne(false));
     }
 
@@ -1113,7 +1125,7 @@ class DoctrineObjectTest extends TestCase
         // Use entity of id 1 as relation
         $data = ['toOne' => 1];
 
-        $entityInDatabaseWithIdOfOne = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfOne = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfOne->setId(1);
         $entityInDatabaseWithIdOfOne->setField('bar', false);
 
@@ -1121,13 +1133,13 @@ class DoctrineObjectTest extends TestCase
             ->objectManager
             ->expects($this->once())
             ->method('find')
-            ->with(Assets\SimpleEntity::class, 1)
+            ->with(Assets\ByValueDifferentiatorEntity::class, 1)
             ->will($this->returnValue($entityInDatabaseWithIdOfOne));
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToOneEntity::class, $entity);
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity->getToOne(false));
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity->getToOne(false));
         $this->assertSame($entityInDatabaseWithIdOfOne, $entity->getToOne(false));
     }
 
@@ -1140,7 +1152,7 @@ class DoctrineObjectTest extends TestCase
         // Use entity of id 1 as relation
         $data = ['toOne' => ['id' => 1]];
 
-        $entityInDatabaseWithIdOfOne = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfOne = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfOne->setId(1);
         $entityInDatabaseWithIdOfOne->setField('bar', false);
 
@@ -1148,13 +1160,13 @@ class DoctrineObjectTest extends TestCase
             ->objectManager
             ->expects($this->once())
             ->method('find')
-            ->with(Assets\SimpleEntity::class, ['id' => 1])
+            ->with(Assets\ByValueDifferentiatorEntity::class, ['id' => 1])
             ->will($this->returnValue($entityInDatabaseWithIdOfOne));
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToOneEntity::class, $entity);
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity->getToOne(false));
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity->getToOne(false));
         $this->assertSame($entityInDatabaseWithIdOfOne, $entity->getToOne(false));
     }
 
@@ -1166,7 +1178,7 @@ class DoctrineObjectTest extends TestCase
         // Use entity of id 1 as relation
         $data = ['toOne' => ['id' => 1, 'field' => 'foo']];
 
-        $entityInDatabaseWithIdOfOne = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfOne = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfOne->setId(1);
         $entityInDatabaseWithIdOfOne->setField('bar', false);
 
@@ -1175,7 +1187,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->once())
             ->method('find')
             ->with(
-                Assets\SimpleEntity::class,
+                Assets\ByValueDifferentiatorEntity::class,
                 ['id' => 1]
             )
             ->will($this->returnValue($entityInDatabaseWithIdOfOne));
@@ -1187,7 +1199,7 @@ class DoctrineObjectTest extends TestCase
             $entity
         );
         $this->assertInstanceOf(
-            Assets\SimpleEntity::class,
+            Assets\ByValueDifferentiatorEntity::class,
             $entity->getToOne(false)
         );
         $this->assertSame($entityInDatabaseWithIdOfOne, $entity->getToOne(false));
@@ -1206,7 +1218,7 @@ class DoctrineObjectTest extends TestCase
         // Use entity of id 1 as relation
         $data = ['toOne' => ['id' => 1]];
 
-        $entityInDatabaseWithIdOfOne = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfOne = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfOne->setId(1);
         $entityInDatabaseWithIdOfOne->setField('bar', false);
 
@@ -1214,13 +1226,13 @@ class DoctrineObjectTest extends TestCase
             ->objectManager
             ->expects($this->once())
             ->method('find')
-            ->with(Assets\SimpleEntity::class, ['id' => 1])
+            ->with(Assets\ByValueDifferentiatorEntity::class, ['id' => 1])
             ->will($this->returnValue($entityInDatabaseWithIdOfOne));
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToOneEntity::class, $entity);
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity->getToOne(false));
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity->getToOne(false));
         $this->assertSame($entityInDatabaseWithIdOfOne, $entity->getToOne(false));
     }
 
@@ -1232,7 +1244,7 @@ class DoctrineObjectTest extends TestCase
 
         $data = ['toOne' => null];
 
-        $this->metadata->expects($this->once())
+        $this->metadata->expects($this->atLeastOnce())
             ->method('hasAssociation');
 
         $object = $this->hydratorByValue->hydrate($data, $entity);
@@ -1246,7 +1258,7 @@ class DoctrineObjectTest extends TestCase
 
         $this->configureObjectManagerForOneToOneEntity();
         $this->objectManager->expects($this->never())->method('find');
-        $this->metadata->expects($this->once())->method('hasAssociation');
+        $this->metadata->expects($this->atLeastOnce())->method('hasAssociation');
 
         $data = ['toOne' => null];
 
@@ -1257,11 +1269,11 @@ class DoctrineObjectTest extends TestCase
     public function testExtractOneToManyAssociationByValue()
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
-        $toMany1 = new Assets\SimpleEntity();
+        $toMany1 = new Assets\ByValueDifferentiatorEntity();
         $toMany1->setId(2);
         $toMany1->setField('foo', false);
 
-        $toMany2 = new Assets\SimpleEntity();
+        $toMany2 = new Assets\ByValueDifferentiatorEntity();
         $toMany2->setId(3);
         $toMany2->setField('bar', false);
 
@@ -1290,11 +1302,11 @@ class DoctrineObjectTest extends TestCase
     public function testExtractOneToManyByValueWithArray()
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
-        $toMany1 = new Assets\SimpleEntity();
+        $toMany1 = new Assets\ByValueDifferentiatorEntity();
         $toMany1->setId(2);
         $toMany1->setField('foo', false);
 
-        $toMany2 = new Assets\SimpleEntity();
+        $toMany2 = new Assets\ByValueDifferentiatorEntity();
         $toMany2->setId(3);
         $toMany2->setField('bar', false);
 
@@ -1320,11 +1332,11 @@ class DoctrineObjectTest extends TestCase
     public function testExtractOneToManyAssociationByReference()
     {
         // When using extraction by reference, it won't use the public API of the entity to retrieve values (getters)
-        $toMany1 = new Assets\SimpleEntity();
+        $toMany1 = new Assets\ByValueDifferentiatorEntity();
         $toMany1->setId(2);
         $toMany1->setField('foo', false);
 
-        $toMany2 = new Assets\SimpleEntity();
+        $toMany2 = new Assets\ByValueDifferentiatorEntity();
         $toMany2->setId(3);
         $toMany2->setField('bar', false);
 
@@ -1353,11 +1365,11 @@ class DoctrineObjectTest extends TestCase
     public function testExtractOneToManyArrayByReference()
     {
         // When using extraction by reference, it won't use the public API of the entity to retrieve values (getters)
-        $toMany1 = new Assets\SimpleEntity();
+        $toMany1 = new Assets\ByValueDifferentiatorEntity();
         $toMany1->setId(2);
         $toMany1->setField('foo', false);
 
-        $toMany2 = new Assets\SimpleEntity();
+        $toMany2 = new Assets\ByValueDifferentiatorEntity();
         $toMany2->setId(3);
         $toMany2->setField('bar', false);
 
@@ -1383,11 +1395,11 @@ class DoctrineObjectTest extends TestCase
     public function testHydrateOneToManyAssociationByValue()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $toMany1 = new Assets\SimpleEntity();
+        $toMany1 = new Assets\ByValueDifferentiatorEntity();
         $toMany1->setId(2);
         $toMany1->setField('foo', false);
 
-        $toMany2 = new Assets\SimpleEntity();
+        $toMany2 = new Assets\ByValueDifferentiatorEntity();
         $toMany2->setId(3);
         $toMany2->setField('bar', false);
 
@@ -1405,7 +1417,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
             $this->assertContains('Modified from addEntities adder', $en->getField(false));
         }
@@ -1423,11 +1435,11 @@ class DoctrineObjectTest extends TestCase
     public function testHydrateOneToManyArrayByValue()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $toMany1 = new Assets\SimpleEntity();
+        $toMany1 = new Assets\ByValueDifferentiatorEntity();
         $toMany1->setId(2);
         $toMany1->setField('foo', false);
 
-        $toMany2 = new Assets\SimpleEntity();
+        $toMany2 = new Assets\ByValueDifferentiatorEntity();
         $toMany2->setId(3);
         $toMany2->setField('bar', false);
 
@@ -1445,7 +1457,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
             $this->assertContains('Modified from addEntities adder', $en->getField(false));
         }
@@ -1460,11 +1472,11 @@ class DoctrineObjectTest extends TestCase
     public function testHydrateOneToManyAssociationByReference()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $toMany1 = new Assets\SimpleEntity();
+        $toMany1 = new Assets\ByValueDifferentiatorEntity();
         $toMany1->setId(2);
         $toMany1->setField('foo', false);
 
-        $toMany2 = new Assets\SimpleEntity();
+        $toMany2 = new Assets\ByValueDifferentiatorEntity();
         $toMany2->setId(3);
         $toMany2->setField('bar', false);
 
@@ -1482,7 +1494,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
             $this->assertNotContains('Modified from addEntities adder', $en->getField(false));
         }
@@ -1500,11 +1512,11 @@ class DoctrineObjectTest extends TestCase
     public function testHydrateOneToManyArrayByReference()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $toMany1 = new Assets\SimpleEntity();
+        $toMany1 = new Assets\ByValueDifferentiatorEntity();
         $toMany1->setId(2);
         $toMany1->setField('foo', false);
 
-        $toMany2 = new Assets\SimpleEntity();
+        $toMany2 = new Assets\ByValueDifferentiatorEntity();
         $toMany2->setId(3);
         $toMany2->setField('bar', false);
 
@@ -1522,7 +1534,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
             $this->assertNotContains('Modified from addEntities adder', $en->getField(false));
         }
@@ -1544,11 +1556,11 @@ class DoctrineObjectTest extends TestCase
             'entities' => [2, 3],
         ];
 
-        $entityInDatabaseWithIdOfTwo = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfTwo = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfTwo->setId(2);
         $entityInDatabaseWithIdOfTwo->setField('foo', false);
 
-        $entityInDatabaseWithIdOfThree = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfThree = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfThree->setId(3);
         $entityInDatabaseWithIdOfThree->setField('bar', false);
 
@@ -1557,7 +1569,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->exactly(2))
             ->method('find')
             ->with(
-                Assets\SimpleEntity::class,
+                Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
             ->will(
@@ -1582,7 +1594,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
             $this->assertContains('Modified from addEntities adder', $en->getField(false));
         }
@@ -1607,11 +1619,11 @@ class DoctrineObjectTest extends TestCase
             ],
         ];
 
-        $entityInDatabaseWithIdOfTwo = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfTwo = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfTwo->setId(2);
         $entityInDatabaseWithIdOfTwo->setField('foo', false);
 
-        $entityInDatabaseWithIdOfThree = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfThree = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfThree->setId(3);
         $entityInDatabaseWithIdOfThree->setField('bar', false);
 
@@ -1620,7 +1632,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->exactly(2))
             ->method('find')
             ->with(
-                Assets\SimpleEntity::class,
+                Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
             ->will(
@@ -1645,7 +1657,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
             $this->assertContains('Modified from addEntities adder', $en->getField(false));
         }
@@ -1671,11 +1683,11 @@ class DoctrineObjectTest extends TestCase
             ],
         ];
 
-        $entityInDatabaseWithIdOfTwo = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfTwo = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfTwo->setId(2);
         $entityInDatabaseWithIdOfTwo->setField('foo', false);
 
-        $entityInDatabaseWithIdOfThree = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfThree = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfThree->setId(3);
         $entityInDatabaseWithIdOfThree->setField('bar', false);
 
@@ -1684,7 +1696,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->exactly(2))
             ->method('find')
             ->with(
-                Assets\SimpleEntity::class,
+                Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
             ->will(
@@ -1708,7 +1720,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
             $this->assertNotContains('Modified from addEntities adder', $en->getField(false));
         }
@@ -1730,11 +1742,11 @@ class DoctrineObjectTest extends TestCase
             'entities' => [2, 3],
         ];
 
-        $entityInDatabaseWithIdOfTwo = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfTwo = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfTwo->setId(2);
         $entityInDatabaseWithIdOfTwo->setField('foo', false);
 
-        $entityInDatabaseWithIdOfThree = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfThree = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfThree->setId(3);
         $entityInDatabaseWithIdOfThree->setField('bar', false);
 
@@ -1743,7 +1755,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->any())
             ->method('find')
             ->with(
-                Assets\SimpleEntity::class,
+                Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
             ->will(
@@ -1767,7 +1779,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
             $this->assertNotContains('Modified from addEntities adder', $en->getField(false));
         }
@@ -1782,15 +1794,15 @@ class DoctrineObjectTest extends TestCase
     public function testHydrateOneToManyAssociationByValueUsingDisallowRemoveStrategy()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $toMany1 = new Assets\SimpleEntity();
+        $toMany1 = new Assets\ByValueDifferentiatorEntity();
         $toMany1->setId(2);
         $toMany1->setField('foo', false);
 
-        $toMany2 = new Assets\SimpleEntity();
+        $toMany2 = new Assets\ByValueDifferentiatorEntity();
         $toMany2->setId(3);
         $toMany2->setField('bar', false);
 
-        $toMany3 = new Assets\SimpleEntity();
+        $toMany3 = new Assets\ByValueDifferentiatorEntity();
         $toMany3->setId(8);
         $toMany3->setField('baz', false);
 
@@ -1816,7 +1828,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertCount(3, $entities);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
         }
 
@@ -1833,15 +1845,15 @@ class DoctrineObjectTest extends TestCase
     public function testHydrateOneToManyAssociationByReferenceUsingDisallowRemoveStrategy()
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
-        $toMany1 = new Assets\SimpleEntity();
+        $toMany1 = new Assets\ByValueDifferentiatorEntity();
         $toMany1->setId(2);
         $toMany1->setField('foo', false);
 
-        $toMany2 = new Assets\SimpleEntity();
+        $toMany2 = new Assets\ByValueDifferentiatorEntity();
         $toMany2->setId(3);
         $toMany2->setField('bar', false);
 
-        $toMany3 = new Assets\SimpleEntity();
+        $toMany3 = new Assets\ByValueDifferentiatorEntity();
         $toMany3->setId(8);
         $toMany3->setField('baz', false);
 
@@ -1867,7 +1879,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertCount(3, $entities);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
 
             // Only the third element is new so the adder has not been called on it
@@ -1896,11 +1908,11 @@ class DoctrineObjectTest extends TestCase
             ],
         ];
 
-        $entityInDatabaseWithIdOfTwo = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfTwo = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfTwo->setId(2);
         $entityInDatabaseWithIdOfTwo->setField('foo', false);
 
-        $entityInDatabaseWithIdOfThree = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfThree = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfThree->setId(3);
         $entityInDatabaseWithIdOfThree->setField('bar', false);
 
@@ -1917,7 +1929,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->exactly(2))
             ->method('find')
             ->with(
-                Assets\SimpleEntity::class,
+                Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
             ->will(
@@ -1942,7 +1954,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
             $this->assertInternalType('string', $en->getField());
             $this->assertContains('Modified By Hydrate', $en->getField(false));
@@ -1966,11 +1978,11 @@ class DoctrineObjectTest extends TestCase
             ]),
         ];
 
-        $entityInDatabaseWithIdOfTwo = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfTwo = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfTwo->setId(2);
         $entityInDatabaseWithIdOfTwo->setField('foo', false);
 
-        $entityInDatabaseWithIdOfThree = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfThree = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfThree->setId(3);
         $entityInDatabaseWithIdOfThree->setField('bar', false);
 
@@ -1987,7 +1999,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->exactly(2))
             ->method('find')
             ->with(
-                Assets\SimpleEntity::class,
+                Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
             ->will(
@@ -2012,7 +2024,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
             $this->assertInternalType('string', $en->getField());
             $this->assertContains('Modified By Hydrate', $en->getField(false));
@@ -2036,11 +2048,11 @@ class DoctrineObjectTest extends TestCase
 
         $data = ['entities' => [$stdClass1, $stdClass2]];
 
-        $entityInDatabaseWithIdOfTwo = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfTwo = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfTwo->setId(2);
         $entityInDatabaseWithIdOfTwo->setField('foo', false);
 
-        $entityInDatabaseWithIdOfThree = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfThree = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfThree->setId(3);
         $entityInDatabaseWithIdOfThree->setField('bar', false);
 
@@ -2057,7 +2069,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->exactly(2))
             ->method('find')
             ->with(
-                Assets\SimpleEntity::class,
+                Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
             ->will(
@@ -2082,7 +2094,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
         }
 
@@ -2103,11 +2115,11 @@ class DoctrineObjectTest extends TestCase
             ],
         ];
 
-        $entityInDatabaseWithIdOfTwo = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfTwo = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfTwo->setId(2);
         $entityInDatabaseWithIdOfTwo->setField('Unmodified Value', false);
 
-        $entityInDatabaseWithIdOfThree = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfThree = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfThree->setId(3);
         $entityInDatabaseWithIdOfThree->setField('Unmodified Value', false);
 
@@ -2120,8 +2132,8 @@ class DoctrineObjectTest extends TestCase
 
         $reflSteps = [
             new ReflectionClass(Assets\OneToManyEntityWithEntities::class),
-            new ReflectionClass(Assets\SimpleEntity::class),
-            new ReflectionClass(Assets\SimpleEntity::class),
+            new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
+            new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
             new ReflectionClass(Assets\OneToManyEntityWithEntities::class),
         ];
         $this
@@ -2142,7 +2154,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->exactly(2))
             ->method('find')
             ->with(
-                Assets\SimpleEntity::class,
+                Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
             ->will(
@@ -2167,7 +2179,7 @@ class DoctrineObjectTest extends TestCase
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
-            $this->assertInstanceOf(Assets\SimpleEntity::class, $en);
+            $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertInternalType('integer', $en->getId());
             $this->assertInternalType('string', $en->getField());
             $this->assertContains('Modified By Hydrate', $en->getField(false));
@@ -2186,11 +2198,11 @@ class DoctrineObjectTest extends TestCase
         $entity = new Assets\OneToManyEntity();
         $this->configureObjectManagerForOneToManyEntity();
 
-        $toMany1 = new Assets\SimpleEntity();
+        $toMany1 = new Assets\ByValueDifferentiatorEntity();
         $toMany1->setId(2);
         $toMany1->setField('foo', false);
 
-        $toMany2 = new Assets\SimpleEntity();
+        $toMany2 = new Assets\ByValueDifferentiatorEntity();
         $toMany2->setId(3);
         $toMany2->setField('bar', false);
 
@@ -2218,11 +2230,11 @@ class DoctrineObjectTest extends TestCase
             'entities' => [2, 3],
         ];
 
-        $entityInDatabaseWithIdOfTwo = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfTwo = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfTwo->setId(2);
         $entityInDatabaseWithIdOfTwo->setField('foo', false);
 
-        $entityInDatabaseWithIdOfThree = new Assets\SimpleEntity();
+        $entityInDatabaseWithIdOfThree = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithIdOfThree->setId(3);
         $entityInDatabaseWithIdOfThree->setField('bar', false);
 
@@ -2235,7 +2247,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->any())
             ->method('find')
             ->with(
-                Assets\SimpleEntity::class,
+                Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
             ->will(
@@ -2268,7 +2280,7 @@ class DoctrineObjectTest extends TestCase
             ],
         ];
 
-        $entityInDatabaseWithEmptyId = new Assets\SimpleEntity();
+        $entityInDatabaseWithEmptyId = new Assets\ByValueDifferentiatorEntity();
         $entityInDatabaseWithEmptyId->setId('');
         $entityInDatabaseWithEmptyId->setField('baz', false);
 
@@ -2276,7 +2288,7 @@ class DoctrineObjectTest extends TestCase
             ->objectManager
             ->expects($this->any())
             ->method('find')
-            ->with(Assets\SimpleEntity::class, '')
+            ->with(Assets\ByValueDifferentiatorEntity::class, '')
             ->will($this->returnValue($entityInDatabaseWithEmptyId));
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -2288,7 +2300,7 @@ class DoctrineObjectTest extends TestCase
 
         $this->assertCount(1, $entities);
 
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertSame($entityInDatabaseWithEmptyId, $entity);
     }
 
@@ -2337,69 +2349,69 @@ class DoctrineObjectTest extends TestCase
     {
         $entity = new Assets\OneToOneEntityNotNullable();
 
-        $entity->setToOne(new Assets\SimpleEntity());
+        $entity->setToOne(new Assets\ByValueDifferentiatorEntity());
         $this->configureObjectManagerForOneToOneEntityNotNullable();
         $this->objectManager->expects($this->never())->method('find');
 
         $data = ['toOne' => null];
 
         $object = $this->hydratorByValue->hydrate($data, $entity);
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $object->getToOne(false));
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $object->getToOne(false));
     }
 
     public function testUsesStrategyOnSimpleFieldsWhenHydratingByValue()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $entity = new Assets\SimpleEntity();
-        $this->configureObjectManagerForSimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
         $data = ['field' => 'foo'];
 
         $this->hydratorByValue->addStrategy('field', new Assets\SimpleStrategy());
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertEquals('From setter: modified while hydrating', $entity->getField(false));
     }
 
     public function testUsesStrategyOnSimpleFieldsWhenHydratingByReference()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $entity = new Assets\SimpleEntity();
-        $this->configureObjectManagerForSimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
         $data = ['field' => 'foo'];
 
         $this->hydratorByReference->addStrategy('field', new Assets\SimpleStrategy());
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertEquals('modified while hydrating', $entity->getField(false));
     }
 
     public function testUsesStrategyOnSimpleFieldsWhenExtractingByValue()
     {
-        $entity = new Assets\SimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
         $entity->setId(2);
         $entity->setField('foo', false);
 
-        $this->configureObjectManagerForSimpleEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
 
         $this->hydratorByValue->addStrategy('field', new Assets\SimpleStrategy());
         $data = $this->hydratorByValue->extract($entity);
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertEquals(['id' => 2, 'field' => 'modified while extracting'], $data);
     }
 
     public function testUsesStrategyOnSimpleFieldsWhenExtractingByReference()
     {
-        $entity = new Assets\SimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
         $entity->setId(2);
         $entity->setField('foo', false);
 
-        $this->configureObjectManagerForSimpleEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
 
         $this->hydratorByReference->addStrategy('field', new Assets\SimpleStrategy());
         $data = $this->hydratorByReference->extract($entity);
-        $this->assertInstanceOf(Assets\SimpleEntity::class, $entity);
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertEquals(['id' => 2, 'field' => 'modified while extracting'], $data);
     }
 
@@ -2431,13 +2443,13 @@ class DoctrineObjectTest extends TestCase
 
     public function testExtractWithPropertyNameFilterByValue()
     {
-        $entity = new Assets\SimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
         $entity->setId(2);
         $entity->setField('foo', false);
 
         $filter = new Filter\PropertyName(['id'], false);
 
-        $this->configureObjectManagerForSimpleEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
 
         $this->hydratorByValue->addFilter('propertyname', $filter);
         $data = $this->hydratorByValue->extract($entity);
@@ -2448,13 +2460,13 @@ class DoctrineObjectTest extends TestCase
 
     public function testExtractWithPropertyNameFilterByReference()
     {
-        $entity = new Assets\SimpleEntity();
+        $entity = new Assets\ByValueDifferentiatorEntity();
         $entity->setId(2);
         $entity->setField('foo', false);
 
         $filter = new Filter\PropertyName(['id'], false);
 
-        $this->configureObjectManagerForSimpleEntity();
+        $this->configureObjectManagerForByValueDifferentiatorEntity();
 
         $this->hydratorByReference->addFilter('propertyname', $filter);
         $data = $this->hydratorByReference->extract($entity);
@@ -2632,5 +2644,32 @@ class DoctrineObjectTest extends TestCase
             Assets\DifferentAllowRemoveByReference::class,
             $this->hydratorByReference->getStrategy('entities')
         );
+    }
+
+    /**
+     * https://github.com/doctrine/DoctrineModule/issues/639
+     */
+    public function testStrategyWithArray()
+    {
+        $entity = new Assets\SimpleEntity();
+
+        $data = ['field' => ['complex', 'value']];
+        $this->configureObjectManagerForSimpleEntity();
+        $this->hydratorByValue->addStrategy('field', new class implements StrategyInterface {
+            public function extract($value) : array
+            {
+                return explode(',', $value);
+            }
+
+            public function hydrate($value) : string
+            {
+                return implode(',', $value);
+            }
+
+        });
+
+        $this->hydratorByValue->hydrate($data, $entity);
+
+        $this->assertEquals('complex,value', $entity->getField());
     }
 }

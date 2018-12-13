@@ -253,6 +253,23 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
+     * Converts a value for hydration
+     * Apply strategies first, then the type conversions
+     *
+     * @inheritdoc
+     */
+    public function hydrateValue($name, $value, $data = null)
+    {
+        $value = parent::hydrateValue($name, $value, $data);
+
+        if (is_null($value) && $this->isNullable($name)) {
+            return null;
+        }
+
+        return $this->handleTypeConversions($value, $this->metadata->getTypeOfField($name));
+    }
+
+    /**
      * Hydrate the object using a by-value logic (this means that it uses the entity API, in this
      * case, setters)
      *
@@ -272,7 +289,6 @@ class DoctrineObject extends AbstractHydrator
 
         foreach ($data as $field => $value) {
             $field = $this->computeHydrateFieldName($field);
-            $value = $this->handleTypeConversions($value, $metadata->getTypeOfField($field));
             $setter = 'set' . Inflector::classify($field);
 
             if ($metadata->hasAssociation($field)) {
@@ -334,7 +350,6 @@ class DoctrineObject extends AbstractHydrator
                 continue;
             }
 
-            $value = $this->handleTypeConversions($value, $metadata->getTypeOfField($field));
             $reflProperty = $refl->getProperty($field);
             $reflProperty->setAccessible(true);
 
@@ -511,6 +526,10 @@ class DoctrineObject extends AbstractHydrator
      */
     protected function handleTypeConversions($value, $typeOfField)
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         switch ($typeOfField) {
             case 'boolean':
                 $value = (bool) $value;
@@ -599,6 +618,28 @@ class DoctrineObject extends AbstractHydrator
             );
 
             return empty($nonNullIdentifiers);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check the field is nullable
+     *
+     * @param $name
+     * @return bool
+     */
+    private function isNullable($name)
+    {
+        //TODO: need update after updating isNullable method of Doctrine\ORM\Mapping\ClassMetadata
+        if ($this->metadata->hasField($name)) {
+            return method_exists($this->metadata, 'isNullable') && $this->metadata->isNullable($name);
+        }
+
+        if ($this->metadata->hasAssociation($name) && method_exists($this->metadata, 'getAssociationMapping')) {
+            $mapping = $this->metadata->getAssociationMapping($name);
+
+            return false !== $mapping && isset($mapping['nullable']) && $mapping['nullable'];
         }
 
         return false;

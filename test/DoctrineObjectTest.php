@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace ZendTest\Doctrine\Hydrator;
+namespace DoctrineTest\Zend\Hydrator;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineObjectHydrator;
+use Doctrine\Zend\Hydrator\Filter;
+use Doctrine\Zend\Hydrator\Strategy;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 use ReflectionClass;
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineObjectHydrator;
-use Zend\Doctrine\Hydrator\Filter;
-use Zend\Doctrine\Hydrator\Strategy;
 use Zend\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Collections\Collection;
 use Zend\Hydrator\Strategy\StrategyInterface;
 
 class DoctrineObjectTest extends TestCase
@@ -910,7 +910,7 @@ class DoctrineObjectTest extends TestCase
     /**
      * When using hydration by value, it will use the public API of the entity to set values (setters)
      *
-     * @covers \Zend\Doctrine\Hydrator\DoctrineObject::hydrateByValue
+     * @covers \Doctrine\Zend\Hydrator\DoctrineObject::hydrateByValue
      */
     public function testCanHydrateSimpleEntityWithStringIdByValue()
     {
@@ -941,7 +941,7 @@ class DoctrineObjectTest extends TestCase
     /**
      * When using hydration by reference, it won't use the public API of the entity to set values (getters)
      *
-     * @covers \Zend\Doctrine\Hydrator\DoctrineObject::hydrateByReference
+     * @covers \Doctrine\Zend\Hydrator\DoctrineObject::hydrateByReference
      */
     public function testCanHydrateSimpleEntityWithStringIdByReference()
     {

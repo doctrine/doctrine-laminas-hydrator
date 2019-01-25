@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace ZendTest\Doctrine\Hydrator;
+namespace DoctrineTest\Zend\Hydrator;
 
 use DateTime;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineObjectHydrator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineObjectHydrator;
 
 class DoctrineObjectTypeConversionsTest extends TestCase
 {

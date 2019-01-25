@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Zend\Doctrine\Hydrator;
+namespace Doctrine\Zend\Hydrator;
 
 use DateTime;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Zend\Hydrator\Strategy\AllowRemoveByReference;
+use Doctrine\Zend\Hydrator\Strategy\AllowRemoveByValue;
 use InvalidArgumentException;
 use RuntimeException;
 use Traversable;
-use Zend\Doctrine\Hydrator\Strategy\AllowRemoveByReference;
-use Zend\Doctrine\Hydrator\Strategy\AllowRemoveByValue;
 use Zend\Hydrator\AbstractHydrator;
 use Zend\Hydrator\Filter\FilterProviderInterface;
 use Zend\Stdlib\ArrayUtils;

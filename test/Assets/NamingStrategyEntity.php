@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ZendTest\Doctrine\Hydrator\Assets;
+namespace DoctrineTest\Zend\Hydrator\Assets;
 
 class NamingStrategyEntity
 {

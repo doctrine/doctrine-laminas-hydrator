@@ -1,7 +1,7 @@
-# zend-doctrine-hydrator
+# doctrine-zend-hydrator
 
-[![Build Status](https://travis-ci.org/webimpress/zend-doctrine-hydrator.svg?branch=master)](https://travis-ci.org/webimpress/zend-doctrine-hydrator)
-[![Coverage Status](https://coveralls.io/repos/github/webimpress/zend-doctrine-hydrator/badge.svg?branch=master)](https://coveralls.io/github/webimpress/zend-doctrine-hydrator?branch=master)
+[![Build Status](https://travis-ci.org/webimpress/doctrine-zend-hydrator.svg?branch=master)](https://travis-ci.org/webimpress/doctrine-zend-hydrator)
+[![Coverage Status](https://coveralls.io/repos/github/webimpress/doctrine-zend-hydrator/badge.svg?branch=master)](https://coveralls.io/github/webimpress/doctrine-zend-hydrator?branch=master)
 
 This library provides Doctrine Hydrators for Zend Framework application. 
 
@@ -10,7 +10,7 @@ This library provides Doctrine Hydrators for Zend Framework application.
 Run the following to install this library:
 
 ```bash
-$ composer require webimpress/zend-doctrine-hydrator
+$ composer require webimpress/doctrine-zend-hydrator
 ```
 
 ## Usage
@@ -32,7 +32,7 @@ To create a Doctrine Hydrator, you just need one thing: an object manager (also 
 or Document Manager in Doctrine ODM):
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($objectManager);
 ```
@@ -88,7 +88,7 @@ class City
 Now, let's use the Doctrine hydrator:
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $city = new City();
@@ -152,7 +152,7 @@ class Appointment
 Let's use the hydrator:
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $appointment = new Appointment();
@@ -295,7 +295,7 @@ DoctrineHydrator natively supports both cases.
 When the association's entity already exists, all you need to do is simply give the identifier of the association:
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $blogPost = new BlogPost();
@@ -338,7 +338,7 @@ $data = [
 If the association's entity does not exist, you just need to give the object:
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $blogPost = new BlogPost();
@@ -389,7 +389,7 @@ be hydrated before it is passed to the BlogPost entity.
 **NOTE** : you're not really allowing users to be added via a blog post, are you?
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager, 'Application\Entity\BlogPost');
 $blogPost = new BlogPost();
@@ -565,7 +565,7 @@ Once again, two cases may arise: the tags already exist or they do not.
 When the association's entity already exists, what you need to do is simply give the identifiers of the entities:
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $blogPost = new BlogPost();
@@ -609,7 +609,7 @@ $data = [
 If the association's entity does not exist, you just need to give the object:
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $blogPost = new BlogPost();
@@ -678,14 +678,14 @@ The hydrator will check whether the setCity() method on the Entity allows null v
 
 By default, every collections association has a special strategy attached to it that is called during the hydrating
 and extracting phase. All those strategies extend from the class
-`Zend\Doctrine\Hydrator\Strategy\AbstractCollectionStrategy`.
+`Doctrine\Zend\Hydrator\Strategy\AbstractCollectionStrategy`.
 
 The library provides four strategies out of the box:
 
-1. `Zend\Doctrine\Hydrator\Strategy\AllowRemoveByValue`: this is the default strategy, it removes old elements that are not in the new collection.
-2. `Zend\Doctrine\Hydrator\Strategy\AllowRemoveByReference`: this is the default strategy (if set to byReference), it removes old elements that are not in the new collection.
-3. `Zend\Doctrine\Hydrator\Strategy\DisallowRemoveByValue`: this strategy does not remove old elements even if they are not in the new collection.
-4. `Zend\Doctrine\Hydrator\Strategy\DisallowRemoveByReference`: this strategy does not remove old elements even if they are not in the new collection.
+1. `Doctrine\Zend\Hydrator\Strategy\AllowRemoveByValue`: this is the default strategy, it removes old elements that are not in the new collection.
+2. `Doctrine\Zend\Hydrator\Strategy\AllowRemoveByReference`: this is the default strategy (if set to byReference), it removes old elements that are not in the new collection.
+3. `Doctrine\Zend\Hydrator\Strategy\DisallowRemoveByValue`: this strategy does not remove old elements even if they are not in the new collection.
+4. `Doctrine\Zend\Hydrator\Strategy\DisallowRemoveByReference`: this strategy does not remove old elements even if they are not in the new collection.
 
 As a consequence, when using `AllowRemove*`, you need to define both adder (eg. addTags) and remover (eg. removeTags).
 On the other hand, when using the `DisallowRemove*` strategy, you must always define at least the adder, but the remover
@@ -708,8 +708,8 @@ remove elements directly from the collection.
 Changing the strategy for collections is plain easy.
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\Doctrine\Hydrator\Strategy;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\Strategy;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $hydrator->addStrategy('tags', new Strategy\DisallowRemoveByValue());
@@ -728,7 +728,7 @@ and hence bypass any logic you may include in your setters/getters).
 To change the behaviour, just give the second parameter of the constructor to false:
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($objectManager, false);
 ```
@@ -762,7 +762,7 @@ class SimpleEntity
 Let's now use the hydrator using the default method, by value:
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($objectManager);
 $object   = new SimpleEntity();
@@ -778,7 +778,7 @@ As we can see here, the hydrator used the public API (here getFoo) to retrieve t
 However, if we use it by reference:
 
 ```php
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($objectManager, false);
 $object   = new SimpleEntity();
@@ -964,7 +964,7 @@ namespace Application\Form;
 
 use Application\Entity\Tag;
 use Doctrine\Common\Persistence\ObjectManager;
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 
@@ -1012,7 +1012,7 @@ namespace Application\Form;
 
 use Application\Entity\BlogPost;
 use Doctrine\Common\Persistence\ObjectManager;
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 
@@ -1068,7 +1068,7 @@ Here is the create form:
 namespace Application\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Form;
 
 class CreateBlogPostForm extends Form
@@ -1098,7 +1098,7 @@ And the update form:
 namespace Application\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Form;
 
 class UpdateBlogPostForm extends Form
@@ -1247,7 +1247,7 @@ namespace Application\Form;
 
 use Application\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 
@@ -1295,7 +1295,7 @@ namespace Application\Form;
 
 use Application\Entity\City;
 use Doctrine\Common\Persistence\ObjectManager;
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 
@@ -1353,7 +1353,7 @@ be like this :
 namespace Application\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Form;
 
 class EditNameForm extends Form
@@ -1440,7 +1440,7 @@ EditUserForm :
 namespace Application\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Zend\Doctrine\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Form;
 
 class EditNameForm extends Form

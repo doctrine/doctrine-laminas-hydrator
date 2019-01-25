@@ -1,17 +1,17 @@
 {
-    "name": "webimpress/zend-doctrine-hydrator",
+    "name": "webimpress/doctrine-zend-hydrator",
     "description": "Doctrine hydrators for Zend Framework applications",
     "license": "BSD-2-Clause",
     "keywords": [
-        "zf",
-        "zendframework",
         "doctrine",
-        "hydrator"
+        "hydrator",
+        "zf",
+        "zendframework"
     ],
     "support": {
-        "issues": "https://github.com/webimpress/zend-doctrine-hydrator/issues",
-        "source": "https://github.com/webimpress/zend-doctrine-hydrator",
-        "rss": "https://github.com/webimpress/zend-doctrine-hydrator/releases.atom"
+        "issues": "https://github.com/webimpress/doctrine-zend-hydrator/issues",
+        "source": "https://github.com/webimpress/doctrine-zend-hydrator",
+        "rss": "https://github.com/webimpress/doctrine-zend-hydrator/releases.atom"
     },
     "require": {
         "php": "^7.1",
@@ -28,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Zend\\Doctrine\\Hydrator\\": "src/"
+            "Doctrine\\Zend\\Hydrator\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ZendTest\\Doctrine\\Hydrator\\": "test/"
+            "DoctrineTest\\Zend\\Hydrator\\": "test/"
         }
     },
     "config": {

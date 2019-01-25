@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zend\Doctrine\Hydrator\Strategy;
+namespace Doctrine\Zend\Hydrator\Strategy;
 
 /**
  * When this strategy is used for Collections, if the new collection does not contain elements that are present in

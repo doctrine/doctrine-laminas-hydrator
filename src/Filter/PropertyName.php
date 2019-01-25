@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zend\Doctrine\Hydrator\Filter;
+namespace Doctrine\Zend\Hydrator\Filter;
 
 use Zend\Hydrator\Filter\FilterInterface;
 

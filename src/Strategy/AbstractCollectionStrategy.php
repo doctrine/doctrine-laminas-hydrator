@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zend\Doctrine\Hydrator\Strategy;
+namespace Doctrine\Zend\Hydrator\Strategy;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;

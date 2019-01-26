@@ -34,10 +34,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
      */
     protected $objectManager;
 
-    /**
-     * setUp
-     */
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
 

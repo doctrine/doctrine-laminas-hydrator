@@ -14,6 +14,7 @@ use Doctrine\Zend\Hydrator\Strategy;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
+use Prophecy\Argument;
 use ReflectionClass;
 use Zend\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Zend\Hydrator\Strategy\StrategyInterface;
@@ -2649,7 +2650,7 @@ class DoctrineObjectTest extends TestCase
     /**
      * https://github.com/doctrine/DoctrineModule/issues/639
      */
-    public function testStrategyWithArray()
+    public function testStrategyWithArrayByValue()
     {
         $entity = new Assets\SimpleEntity();
 
@@ -2671,5 +2672,124 @@ class DoctrineObjectTest extends TestCase
         $this->hydratorByValue->hydrate($data, $entity);
 
         $this->assertEquals('complex,value', $entity->getField());
+    }
+
+    public function testStrategyWithArrayByReference()
+    {
+        $entity = new Assets\SimpleEntity();
+
+        $data = ['field' => ['complex', 'value']];
+        $this->configureObjectManagerForSimpleEntity();
+        $this->hydratorByReference->addStrategy('field', new class implements StrategyInterface {
+            public function extract($value) : array
+            {
+                return explode(',', $value);
+            }
+
+            public function hydrate($value) : string
+            {
+                return implode(',', $value);
+            }
+
+        });
+
+        $this->hydratorByReference->hydrate($data, $entity);
+
+        $this->assertSame('complex,value', $entity->getField());
+    }
+
+    private function getObjectManagerForNestedHydration()
+    {
+        $oneToOneMetadata = $this->prophesize(ClassMetadata::class);
+        $oneToOneMetadata->getName()->willReturn(Assets\OneToOneEntity::class);
+        $oneToOneMetadata->getFieldNames()->willReturn(['id', 'toOne', 'createdAt']);
+        $oneToOneMetadata->getAssociationNames()->willReturn(['toOne']);
+        $oneToOneMetadata->getTypeOfField('id')->willReturn('integer');
+        $oneToOneMetadata->getTypeOfField('toOne')->willReturn(Assets\ByValueDifferentiatorEntity::class);
+        $oneToOneMetadata->getTypeOfField('createdAt')->willReturn('datetime');
+        $oneToOneMetadata->hasAssociation('id')->willReturn(false);
+        $oneToOneMetadata->hasAssociation('toOne')->willReturn(true);
+        $oneToOneMetadata->hasAssociation('createdAt')->willReturn(false);
+        $oneToOneMetadata->isSingleValuedAssociation('toOne')->willReturn(true);
+        $oneToOneMetadata->isCollectionValuedAssociation('toOne')->willReturn(false);
+        $oneToOneMetadata->getAssociationTargetClass('toOne')->willReturn(Assets\ByValueDifferentiatorEntity::class);
+        $oneToOneMetadata->getReflectionClass()->willReturn(new ReflectionClass(Assets\OneToOneEntity::class));
+        $oneToOneMetadata->getIdentifier()->willReturn(['id']);
+        $oneToOneMetadata->getIdentifierFieldNames(Argument::type(Assets\OneToOneEntity::class))->willReturn(['id']);
+
+        $byValueDifferentiatorEntity = $this->prophesize(ClassMetadata::class);
+        $byValueDifferentiatorEntity->getName()->willReturn(Assets\ByValueDifferentiatorEntity::class);
+        $byValueDifferentiatorEntity->getAssociationNames()->willReturn([]);
+        $byValueDifferentiatorEntity->getFieldNames()->willReturn(['id', 'field']);
+        $byValueDifferentiatorEntity->getTypeOfField('id')->willReturn('integer');
+        $byValueDifferentiatorEntity->getTypeOfField('field')->willReturn('string');
+        $byValueDifferentiatorEntity->hasAssociation(Argument::any())->willReturn(false);
+        $byValueDifferentiatorEntity->getIdentifier()->willReturn(['id']);
+        $byValueDifferentiatorEntity
+            ->getIdentifierFieldNames(Argument::type(Assets\ByValueDifferentiatorEntity::class))
+            ->willReturn(['id']);
+        $byValueDifferentiatorEntity
+            ->getReflectionClass()
+            ->willReturn(new ReflectionClass(Assets\ByValueDifferentiatorEntity::class));
+
+        $objectManager = $this->prophesize(ObjectManager::class);
+        $objectManager
+            ->getClassMetadata(Assets\OneToOneEntity::class)
+            ->will([$oneToOneMetadata, 'reveal']);
+        $objectManager
+            ->getClassMetadata(Assets\ByValueDifferentiatorEntity::class)
+            ->will([$byValueDifferentiatorEntity, 'reveal']);
+        $objectManager->find(Assets\OneToOneEntity::class, ['id' => 12])->willReturn(false);
+        $objectManager->find(Assets\ByValueDifferentiatorEntity::class, ['id' => 13])->willReturn(false);
+
+        return $objectManager->reveal();
+    }
+
+    public function testNestedHydrationByValue()
+    {
+        $objectManager = $this->getObjectManagerForNestedHydration();
+        $hydrator = new DoctrineObjectHydrator($objectManager, true);
+        $entity = new Assets\OneToOneEntity();
+
+        $data = [
+            'id' => 12,
+            'toOne' => [
+                'id' => 13,
+                'field' => 'value',
+            ],
+            'createdAt' => '2019-01-24 12:00:00',
+        ];
+
+        $hydrator->hydrate($data, $entity);
+
+        $this->assertSame(12, $entity->getId());
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity->getToOne(false));
+        $this->assertSame(13, $entity->getToOne(false)->getId());
+        $this->assertSame('Modified from setToOne setter', $entity->getToOne(false)->getField(false));
+        $this->assertSame('2019-01-24 12:00:00', $entity->getCreatedAt()->format('Y-m-d H:i:s'));
+    }
+
+    public function testNestedHydrationByReference()
+    {
+        $objectManager = $this->getObjectManagerForNestedHydration();
+        $hydrator = new DoctrineObjectHydrator($objectManager, false);
+        $entity = new Assets\OneToOneEntity();
+
+        $data = [
+            'id' => 12,
+            'toOne' => [
+                'id' => 13,
+                'field' => 'value',
+            ],
+            'createdAt' => '2019-01-24 12:00:00',
+        ];
+
+        $hydrator->hydrate($data, $entity);
+
+        $this->assertSame(12, $entity->getId());
+        $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity->getToOne(false));
+        $this->assertSame(13, $entity->getToOne(false)->getId());
+        $this->assertSame('value', $entity->getToOne(false)->getField(false));
+        $this->assertSame('2019-01-24 12:00:00', $entity->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 }

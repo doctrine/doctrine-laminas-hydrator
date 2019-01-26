@@ -1,5 +1,5 @@
 {
-    "name": "webimpress/doctrine-zend-hydrator",
+    "name": "doctrine/doctrine-zend-hydrator",
     "description": "Doctrine hydrators for Zend Framework applications",
     "license": "BSD-2-Clause",
     "keywords": [
@@ -9,9 +9,9 @@
         "zendframework"
     ],
     "support": {
-        "issues": "https://github.com/webimpress/doctrine-zend-hydrator/issues",
-        "source": "https://github.com/webimpress/doctrine-zend-hydrator",
-        "rss": "https://github.com/webimpress/doctrine-zend-hydrator/releases.atom"
+        "issues": "https://github.com/doctrine/doctrine-zend-hydrator/issues",
+        "source": "https://github.com/doctrine/doctrine-zend-hydrator",
+        "rss": "https://github.com/doctrine/doctrine-zend-hydrator/releases.atom"
     },
     "require": {
         "php": "^7.1",

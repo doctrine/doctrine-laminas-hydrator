@@ -10,13 +10,16 @@ namespace Doctrine\Zend\Hydrator\Strategy;
  * collection initially contains elements A and B, and that the new collection contains elements B and C, then the
  * final collection will contain elements B and C (while element A will be asked to be removed).
  * This strategy is by reference, this means it won't use public API to add/remove elements to the collection
+ *
+ * @internal
  */
-class AllowRemoveByReference extends AbstractCollectionStrategy
+trait AllowRemoveByReferenceTrait
 {
     /**
-     * {@inheritDoc}
+     * @param mixed $value
+     * @return mixed
      */
-    public function hydrate($value)
+    private function hydrateInternal($value)
     {
         $collection = $this->getCollectionFromObjectByReference();
         $collectionArray = $collection->toArray();

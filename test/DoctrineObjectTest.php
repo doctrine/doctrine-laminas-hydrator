@@ -1970,10 +1970,10 @@ class DoctrineObjectTest extends TestCase
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $data = [
-            'entities' => new ArrayCollection([
+            'entities' => [
                 ['id' => 2, 'field' => 'Modified By Hydrate'],
                 ['id' => 3, 'field' => 'Modified By Hydrate'],
-            ]),
+            ],
         ];
 
         $entityInDatabaseWithIdOfTwo = new Assets\ByValueDifferentiatorEntity();
@@ -2654,12 +2654,12 @@ class DoctrineObjectTest extends TestCase
         $data = ['field' => ['complex', 'value']];
         $this->configureObjectManagerForSimpleEntity();
         $this->hydratorByValue->addStrategy('field', new class implements StrategyInterface {
-            public function extract($value) : array
+            public function extract($value, ?object $object = null) : array
             {
                 return explode(',', $value);
             }
 
-            public function hydrate($value) : string
+            public function hydrate($value, ?array $data) : string
             {
                 return implode(',', $value);
             }

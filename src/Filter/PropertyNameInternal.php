@@ -9,8 +9,10 @@ use Zend\Hydrator\Filter\FilterInterface;
 /**
  * Provides a filter to restrict returned fields by whitelisting or
  * blacklisting property names.
+ *
+ * @internal
  */
-class PropertyName implements FilterInterface
+abstract class PropertyNameInternal implements FilterInterface
 {
     /**
      * The propteries to exclude.
@@ -36,12 +38,5 @@ class PropertyName implements FilterInterface
         $this->properties = is_array($properties)
             ? $properties
             : [$properties];
-    }
-
-    public function filter($property)
-    {
-        return in_array($property, $this->properties)
-            ? ! $this->exclude
-            : $this->exclude;
     }
 }

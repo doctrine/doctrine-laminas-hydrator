@@ -1,7 +1,7 @@
 # doctrine-zend-hydrator
 
-[![Build Status](https://travis-ci.org/webimpress/doctrine-zend-hydrator.svg?branch=master)](https://travis-ci.org/webimpress/doctrine-zend-hydrator)
-[![Coverage Status](https://coveralls.io/repos/github/webimpress/doctrine-zend-hydrator/badge.svg?branch=master)](https://coveralls.io/github/webimpress/doctrine-zend-hydrator?branch=master)
+[![Build Status](https://travis-ci.org/doctrine/doctrine-zend-hydrator.svg?branch=master)](https://travis-ci.org/doctrine/doctrine-zend-hydrator)
+[![Coverage Status](https://coveralls.io/repos/github/doctrine/doctrine-zend-hydrator/badge.svg?branch=master)](https://coveralls.io/github/doctrine/doctrine-zend-hydrator?branch=master)
 
 This library provides Doctrine Hydrators for Zend Framework application. 
 
@@ -10,7 +10,7 @@ This library provides Doctrine Hydrators for Zend Framework application.
 Run the following to install this library:
 
 ```bash
-$ composer require webimpress/doctrine-zend-hydrator
+$ composer require doctrine/doctrine-zend-hydrator
 ```
 
 ## Usage

@@ -1,7 +1,7 @@
 {
     "name": "doctrine/doctrine-zend-hydrator",
     "description": "Doctrine hydrators for Zend Framework applications",
-    "license": "BSD-2-Clause",
+    "license": "MIT",
     "keywords": [
         "doctrine",
         "hydrator",

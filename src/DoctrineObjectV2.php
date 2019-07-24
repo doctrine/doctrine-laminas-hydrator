@@ -36,7 +36,7 @@ class DoctrineObjectV2 extends DoctrineObjectInternal
      * @param object $object
      * @return object
      */
-    public function hydrate($data, $object)
+    public function hydrate(array $data, $object)
     {
         return $this->hydrateInternal($data, $object);
     }

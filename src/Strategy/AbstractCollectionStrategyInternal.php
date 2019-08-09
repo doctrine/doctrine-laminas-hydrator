@@ -10,7 +10,7 @@ use Doctrine\Common\Util\Inflector;
 use InvalidArgumentException;
 use Zend\Hydrator\Strategy\StrategyInterface;
 
-abstract class AbstractCollectionStrategy implements StrategyInterface
+abstract class AbstractCollectionStrategyInternal implements StrategyInterface
 {
     /**
      * @var string
@@ -32,7 +32,7 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      * Set the name of the collection
      *
      * @param  string $collectionName
-     * @return AbstractCollectionStrategy
+     * @return AbstractCollectionStrategyInternal
      */
     public function setCollectionName($collectionName)
     {
@@ -54,7 +54,7 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      * Set the class metadata
      *
      * @param  ClassMetadata $classMetadata
-     * @return AbstractCollectionStrategy
+     * @return AbstractCollectionStrategyInternal
      */
     public function setClassMetadata(ClassMetadata $classMetadata)
     {
@@ -77,7 +77,7 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      *
      * @param  object $object
      * @throws InvalidArgumentException
-     * @return AbstractCollectionStrategy
+     * @return AbstractCollectionStrategyInternal
      */
     public function setObject($object)
     {
@@ -101,10 +101,7 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
         return $this->object;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function extract($value)
+    protected function extractInternal($value)
     {
         return $value;
     }

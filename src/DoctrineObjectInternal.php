@@ -17,7 +17,10 @@ use Zend\Hydrator\AbstractHydrator;
 use Zend\Hydrator\Filter\FilterProviderInterface;
 use Zend\Stdlib\ArrayUtils;
 
-class DoctrineObject extends AbstractHydrator
+/**
+ * @internal Only for internal use to deliver support for zend-hydrator v2 and v3.
+ */
+abstract class DoctrineObjectInternal extends AbstractHydrator
 {
     /**
      * @var ObjectManager
@@ -45,18 +48,6 @@ class DoctrineObject extends AbstractHydrator
     protected $defaultByReferenceStrategy = AllowRemoveByReference::class;
 
     /**
-     * @param ObjectManager $objectManager The ObjectManager to use
-     * @param bool $byValue If set to true, hydrator will always use entity's public API
-     */
-    public function __construct(ObjectManager $objectManager, $byValue = true)
-    {
-        parent::__construct();
-
-        $this->objectManager = $objectManager;
-        $this->byValue = (bool) $byValue;
-    }
-
-    /**
      * @return string
      */
     public function getDefaultByValueStrategy()
@@ -66,7 +57,7 @@ class DoctrineObject extends AbstractHydrator
 
     /**
      * @param string $defaultByValueStrategy
-     * @return DoctrineObject
+     * @return $this
      */
     public function setDefaultByValueStrategy($defaultByValueStrategy)
     {
@@ -84,7 +75,7 @@ class DoctrineObject extends AbstractHydrator
 
     /**
      * @param string $defaultByReferenceStrategy
-     * @return DoctrineObject
+     * @return $this
      */
     public function setDefaultByReferenceStrategy($defaultByReferenceStrategy)
     {
@@ -95,10 +86,12 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Extract values from an object
      *
+     * @internal Used in v2 and v3 proxies.
+     *
      * @param  object $object
      * @return array
      */
-    public function extract($object)
+    protected function extractInternal($object)
     {
         $this->prepare($object);
 
@@ -112,11 +105,13 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Hydrate $object with the provided $data.
      *
+     * @internal Used in v2 and v3 proxies.
+     *
      * @param  array $data
      * @param  object $object
      * @return object
      */
-    public function hydrate(array $data, $object)
+    protected function hydrateInternal(array $data, $object)
     {
         $this->prepare($object);
 
@@ -164,7 +159,7 @@ class DoctrineObject extends AbstractHydrator
 
                 $strategy = $this->getStrategy($association);
 
-                if (! $strategy instanceof Strategy\AbstractCollectionStrategy) {
+                if (! $strategy instanceof Strategy\AbstractCollectionStrategyInternal) {
                     throw new InvalidArgumentException(
                         sprintf(
                             'Strategies used for collections valued associations must inherit from '
@@ -258,7 +253,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @inheritdoc
      */
-    public function hydrateValue($name, $value, $data = null)
+    protected function hydrateValueInternal($name, $value, $data = null)
     {
         $value = parent::hydrateValue($name, $value, $data);
 

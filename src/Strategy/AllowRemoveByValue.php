@@ -15,16 +15,13 @@ use LogicException;
  * collection initially contains elements A and B, and that the new collection contains elements B and C, then the
  * final collection will contain elements B and C (while element A will be asked to be removed).
  * This strategy is by value, this means it will use the public API (in this case, adder and remover)
- *
- * @internal
  */
-trait AllowRemoveByValueTrait
+class AllowRemoveByValue extends AbstractCollectionStrategy
 {
     /**
-     * @param mixed $value
-     * @return mixed
+     * {@inheritDoc}
      */
-    private function hydrateInternal($value)
+    public function hydrate($value)
     {
         // AllowRemove strategy need "adder" and "remover"
         $adder = 'add' . Inflector::classify($this->collectionName);

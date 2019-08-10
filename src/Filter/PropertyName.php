@@ -13,7 +13,7 @@ use Zend\Hydrator\Filter\FilterInterface;
 class PropertyName implements FilterInterface
 {
     /**
-     * The propteries to exclude.
+     * The properties to exclude.
      *
      * @var array
      */
@@ -24,7 +24,7 @@ class PropertyName implements FilterInterface
      *
      * @var bool
      */
-    protected $exclude = null;
+    protected $exclude;
 
     /**
      * @param [ string | array ] $properties The properties to exclude or include.
@@ -38,9 +38,9 @@ class PropertyName implements FilterInterface
             : [$properties];
     }
 
-    public function filter($property)
+    public function filter(string $property) : bool
     {
-        return in_array($property, $this->properties)
+        return in_array($property, $this->properties, true)
             ? ! $this->exclude
             : $this->exclude;
     }

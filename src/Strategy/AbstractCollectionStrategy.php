@@ -104,7 +104,7 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function extract($value)
+    public function extract($value, ?object $object = null)
     {
         return $value;
     }

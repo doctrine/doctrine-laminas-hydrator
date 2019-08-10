@@ -50,8 +50,6 @@ class DoctrineObject extends AbstractHydrator
      */
     public function __construct(ObjectManager $objectManager, $byValue = true)
     {
-        parent::__construct();
-
         $this->objectManager = $objectManager;
         $this->byValue = (bool) $byValue;
     }
@@ -98,7 +96,7 @@ class DoctrineObject extends AbstractHydrator
      * @param  object $object
      * @return array
      */
-    public function extract($object)
+    public function extract(object $object) : array
     {
         $this->prepare($object);
 
@@ -116,7 +114,7 @@ class DoctrineObject extends AbstractHydrator
      * @param  object $object
      * @return object
      */
-    public function hydrate(array $data, $object)
+    public function hydrate(array $data, object $object)
     {
         $this->prepare($object);
 

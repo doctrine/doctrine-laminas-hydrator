@@ -16,7 +16,7 @@ class DisallowRemoveByReference extends AbstractCollectionStrategy
     /**
      * {@inheritDoc}
      */
-    public function hydrate($value)
+    public function hydrate($value, ?array $data)
     {
         $collection = $this->getCollectionFromObjectByReference();
         $collectionArray = $collection->toArray();

@@ -15,7 +15,7 @@ class PropertyName implements FilterInterface
     /**
      * The properties to exclude.
      *
-     * @var array
+     * @var string[]
      */
     protected $properties = [];
 
@@ -27,10 +27,10 @@ class PropertyName implements FilterInterface
     protected $exclude;
 
     /**
-     * @param [ string | array ] $properties The properties to exclude or include.
+     * @param string|string[] $properties The properties to exclude or include.
      * @param bool $exclude If the method should be excluded
      */
-    public function __construct($properties, $exclude = true)
+    public function __construct($properties, bool $exclude = true)
     {
         $this->exclude = $exclude;
         $this->properties = is_array($properties)

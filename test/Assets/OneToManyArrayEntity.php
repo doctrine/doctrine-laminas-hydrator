@@ -54,10 +54,7 @@ class OneToManyArrayEntity
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getEntities($modifyValue = true)
+    public function getEntities($modifyValue = true) : Collection
     {
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue) {
@@ -66,6 +63,6 @@ class OneToManyArrayEntity
             }
         }
 
-        return $this->entities->toArray();
+        return $this->entities;
     }
 }

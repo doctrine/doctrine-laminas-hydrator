@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DoctrineTest\Zend\Hydrator\Assets;
+namespace DoctrineTest\Laminas\Hydrator\Assets;
 
-use Doctrine\Zend\Hydrator\Strategy\AllowRemoveByReference;
+use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByReference;
 
 class DifferentAllowRemoveByReference extends AllowRemoveByReference
 {

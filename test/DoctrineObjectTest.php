@@ -1319,7 +1319,7 @@ class DoctrineObjectTest extends TestCase
         $data = $this->hydratorByValue->extract($entity);
 
         $this->assertEquals(4, $data['id']);
-        $this->assertIsArray($data['entities']);
+        $this->assertInstanceOf(Collection::class, $data['entities']);
 
         $this->assertEquals($toMany1->getId(), $data['entities'][0]->getId());
         $this->assertSame($toMany1, $data['entities'][0]);

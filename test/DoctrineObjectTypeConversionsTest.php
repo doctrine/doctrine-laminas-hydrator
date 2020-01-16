@@ -49,7 +49,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
     /**
      * @param string $genericFieldType
      */
-    public function configureObjectManagerForSimpleEntityWithGenericField($genericFieldType)
+    public function configureObjectManagerForSimpleEntityWithGenericField(string $genericFieldType)
     {
         $refl = new ReflectionClass(Assets\SimpleEntityWithGenericField::class);
 
@@ -716,7 +716,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
     public function testHandleTypeConversionsNullable()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $this->configureObjectManagerForSimpleEntityWithGenericField(null);
+        $this->configureObjectManagerForSimpleEntityWithGenericField('string');
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $data = ['genericField' => null];

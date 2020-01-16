@@ -256,7 +256,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @inheritdoc
      */
-    public function hydrateValue($name, $value, $data = null)
+    public function hydrateValue(string $name, $value, ?array $data = null)
     {
         $value = parent::hydrateValue($name, $value, $data);
 

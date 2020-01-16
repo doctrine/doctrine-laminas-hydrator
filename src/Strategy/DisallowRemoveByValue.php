@@ -8,6 +8,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Inflector\Inflector;
 use LogicException;
+use function array_udiff;
+use function get_class;
+use function method_exists;
+use function sprintf;
 
 /**
  * When this strategy is used for Collections, if the new collection does not contain elements that are present in

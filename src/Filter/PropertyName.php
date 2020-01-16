@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Doctrine\Laminas\Hydrator\Filter;
 
 use Laminas\Hydrator\Filter\FilterInterface;
+use function in_array;
+use function is_array;
 
 /**
  * Provides a filter to restrict returned fields by whitelisting or
@@ -17,22 +19,20 @@ class PropertyName implements FilterInterface
      *
      * @var string[]
      */
-    protected $properties = [];
+    protected array $properties = [];
 
     /**
      * Either an exclude or an include.
-     *
-     * @var bool
      */
-    protected $exclude;
+    protected bool $exclude;
 
     /**
      * @param string|string[] $properties The properties to exclude or include.
-     * @param bool $exclude If the method should be excluded
+     * @param bool            $exclude    If the method should be excluded
      */
     public function __construct($properties, bool $exclude = true)
     {
-        $this->exclude = $exclude;
+        $this->exclude    = $exclude;
         $this->properties = is_array($properties)
             ? $properties
             : [$properties];

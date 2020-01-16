@@ -6,18 +6,11 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class OneToOneEntityNotNullable
 {
-    /**
-     * @var int
-     */
-    protected $id;
+    protected int $id;
 
-    /**
-     * @var ByValueDifferentiatorEntity
-     */
-    protected $toOne;
+    protected ByValueDifferentiatorEntity $toOne;
 
-
-    public function setId($id)
+    public function setId($id) : void
     {
         $this->id = $id;
     }
@@ -27,7 +20,7 @@ class OneToOneEntityNotNullable
         return $this->id;
     }
 
-    public function setToOne(ByValueDifferentiatorEntity $entity, $modifyValue = true)
+    public function setToOne(ByValueDifferentiatorEntity $entity, $modifyValue = true) : void
     {
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue) {

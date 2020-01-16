@@ -8,17 +8,11 @@ use DateTime;
 
 class SimpleEntityWithDateTime
 {
-    /**
-     * @var int
-     */
-    protected $id;
+    protected int $id;
 
-    /**
-     * @var DateTime
-     */
-    protected $date;
+    protected DateTime $date;
 
-    public function setId($id)
+    public function setId($id) : void
     {
         $this->id = $id;
     }
@@ -28,7 +22,7 @@ class SimpleEntityWithDateTime
         return $this->id;
     }
 
-    public function setDate(DateTime $date = null)
+    public function setDate(?DateTime $date = null) : void
     {
         $this->date = $date;
     }

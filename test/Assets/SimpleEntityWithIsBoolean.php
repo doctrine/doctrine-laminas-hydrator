@@ -6,17 +6,11 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class SimpleEntityWithIsBoolean
 {
-    /**
-     * @var int
-     */
-    protected $id;
+    protected int $id;
 
-    /**
-     * @var bool
-     */
-    protected $isActive;
+    protected bool $isActive;
 
-    public function setId($id)
+    public function setId($id) : void
     {
         $this->id = $id;
     }
@@ -26,7 +20,7 @@ class SimpleEntityWithIsBoolean
         return $this->id;
     }
 
-    public function setIsActive($isActive)
+    public function setIsActive($isActive) : void
     {
         $this->isActive = (bool) $isActive;
     }

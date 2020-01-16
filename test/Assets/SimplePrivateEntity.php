@@ -4,25 +4,27 @@ declare(strict_types=1);
 
 namespace DoctrineTest\Laminas\Hydrator\Assets;
 
+use Exception;
+
 class SimplePrivateEntity
 {
-    private function setPrivate($value)
+    private function setPrivate($value) : void
     {
-        throw new \Exception('Should never be called');
+        throw new Exception('Should never be called');
     }
 
-    private function getPrivate()
+    private function getPrivate() : void
     {
-        throw new \Exception('Should never be called');
+        throw new Exception('Should never be called');
     }
 
-    protected function setProtected($value)
+    protected function setProtected($value) : void
     {
-        throw new \Exception('Should never be called');
+        throw new Exception('Should never be called');
     }
 
-    protected function getProtected()
+    protected function getProtected() : void
     {
-        throw new \Exception('Should never be called');
+        throw new Exception('Should never be called');
     }
 }

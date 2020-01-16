@@ -5,27 +5,23 @@ declare(strict_types=1);
 namespace Doctrine\Laminas\Hydrator\Strategy;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use InvalidArgumentException;
 use Laminas\Hydrator\Strategy\StrategyInterface;
+use function get_class;
+use function method_exists;
+use function spl_object_hash;
+use function sprintf;
+use function strcmp;
 
 abstract class AbstractCollectionStrategy implements StrategyInterface
 {
-    /**
-     * @var string
-     */
-    protected $collectionName;
+    protected string $collectionName;
 
-    /**
-     * @var ClassMetadata
-     */
-    protected $metadata;
+    protected ClassMetadata $metadata;
 
-    /**
-     * @var object
-     */
-    protected $object;
+    protected object $object;
 
     /**
      * Set the name of the collection
@@ -112,15 +108,14 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      */
     protected function getCollectionFromObjectByReference() : Collection
     {
-        $object = $this->getObject();
-        $refl = $this->getClassMetadata()->getReflectionClass();
+        $object       = $this->getObject();
+        $refl         = $this->getClassMetadata()->getReflectionClass();
         $reflProperty = $refl->getProperty($this->getCollectionName());
 
         $reflProperty->setAccessible(true);
 
         return $reflProperty->getValue($object);
     }
-
 
     /**
      * This method is used internally by array_udiff to check if two objects are equal, according to their

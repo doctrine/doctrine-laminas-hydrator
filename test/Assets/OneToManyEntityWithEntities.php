@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class OneToManyEntityWithEntities extends OneToManyEntity
 {
-    public function __construct(ArrayCollection $entities = null)
+    public function __construct(?ArrayCollection $entities = null)
     {
         $this->entities = $entities;
     }

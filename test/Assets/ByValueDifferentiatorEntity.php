@@ -6,17 +6,11 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class ByValueDifferentiatorEntity
 {
-    /**
-     * @var int
-     */
-    protected $id;
+    protected int $id;
 
-    /**
-     * @var string
-     */
-    protected $field;
+    protected string $field;
 
-    public function setId($id)
+    public function setId($id) : void
     {
         $this->id = $id;
     }
@@ -26,7 +20,7 @@ class ByValueDifferentiatorEntity
         return $this->id;
     }
 
-    public function setField($field, $modifyValue = true)
+    public function setField($field, $modifyValue = true) : void
     {
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue) {
@@ -41,8 +35,8 @@ class ByValueDifferentiatorEntity
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue) {
             return "From getter: $this->field";
-        } else {
-            return $this->field;
         }
+
+        return $this->field;
     }
 }

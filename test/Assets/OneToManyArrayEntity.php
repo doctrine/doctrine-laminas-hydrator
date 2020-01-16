@@ -9,23 +9,17 @@ use Doctrine\Common\Collections\Collection;
 
 class OneToManyArrayEntity
 {
-    /**
-     * @var int
-     */
-    protected $id;
+    protected int $id;
 
-    /**
-     * @var Collection
-     */
-    protected $entities;
-
+    /** @var Collection */
+    protected Collection $entities;
 
     public function __construct()
     {
         $this->entities = new ArrayCollection();
     }
 
-    public function setId($id)
+    public function setId($id) : void
     {
         $this->id = $id;
     }
@@ -35,7 +29,7 @@ class OneToManyArrayEntity
         return $this->id;
     }
 
-    public function addEntities(Collection $entities, $modifyValue = true)
+    public function addEntities(Collection $entities, $modifyValue = true) : void
     {
         foreach ($entities as $entity) {
             // Modify the value to illustrate the difference between by value and by reference
@@ -47,7 +41,7 @@ class OneToManyArrayEntity
         }
     }
 
-    public function removeEntities(Collection $entities)
+    public function removeEntities(Collection $entities) : void
     {
         foreach ($entities as $entity) {
             $this->entities->removeElement($entity);

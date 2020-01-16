@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\Laminas\Hydrator\Strategy;
 
+use function array_udiff;
+
 /**
  * When this strategy is used for Collections, if the new collection does not contain elements that are present in
  * the original collection, then this strategy remove elements from the original collection. For instance, if the
@@ -18,10 +20,10 @@ class AllowRemoveByReference extends AbstractCollectionStrategy
      */
     public function hydrate($value, ?array $data)
     {
-        $collection = $this->getCollectionFromObjectByReference();
+        $collection      = $this->getCollectionFromObjectByReference();
         $collectionArray = $collection->toArray();
 
-        $toAdd = array_udiff($value, $collectionArray, [$this, 'compareObjects']);
+        $toAdd    = array_udiff($value, $collectionArray, [$this, 'compareObjects']);
         $toRemove = array_udiff($collectionArray, $value, [$this, 'compareObjects']);
 
         foreach ($toAdd as $element) {

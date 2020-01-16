@@ -6,17 +6,11 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class SimpleEntityWithGenericField
 {
-    /**
-     * @var int
-     */
-    protected $id;
+    protected int $id;
 
-    /**
-     * @var float
-     */
-    protected $genericField;
+    protected float $genericField;
 
-    public function setId($id)
+    public function setId($id) : void
     {
         $this->id = $id;
     }

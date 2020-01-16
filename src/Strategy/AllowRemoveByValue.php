@@ -8,6 +8,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Util\Inflector;
 use LogicException;
+use function array_udiff;
+use function get_class;
+use function method_exists;
+use function sprintf;
 
 /**
  * When this strategy is used for Collections, if the new collection does not contain elements that are present in
@@ -24,7 +28,7 @@ class AllowRemoveByValue extends AbstractCollectionStrategy
     public function hydrate($value, ?array $data)
     {
         // AllowRemove strategy need "adder" and "remover"
-        $adder = 'add' . Inflector::classify($this->collectionName);
+        $adder   = 'add' . Inflector::classify($this->collectionName);
         $remover = 'remove' . Inflector::classify($this->collectionName);
 
         if (! method_exists($this->object, $adder) || ! method_exists($this->object, $remover)) {
@@ -45,7 +49,7 @@ class AllowRemoveByValue extends AbstractCollectionStrategy
             $collection = $collection->toArray();
         }
 
-        $toAdd = new ArrayCollection(array_udiff($value, $collection, [$this, 'compareObjects']));
+        $toAdd    = new ArrayCollection(array_udiff($value, $collection, [$this, 'compareObjects']));
         $toRemove = new ArrayCollection(array_udiff($collection, $value, [$this, 'compareObjects']));
 
         $this->object->$adder($toAdd);

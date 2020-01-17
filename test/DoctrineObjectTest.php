@@ -2721,11 +2721,17 @@ class DoctrineObjectTest extends TestCase
         $data = ['field' => ['complex', 'value']];
         $this->configureObjectManagerForSimpleEntity();
         $this->hydratorByReference->addStrategy('field', new class implements StrategyInterface {
+            /**
+             * @return string[]
+             */
             public function extract($value, ?object $object = null) : array
             {
                 return explode(',', $value);
             }
 
+            /**
+             * @param mixed[] $data
+             */
             public function hydrate($value, ?array $data) : string
             {
                 return implode(',', $value);
@@ -2737,6 +2743,9 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame('complex,value', $entity->getField());
     }
 
+    /**
+     * @return Double\ObjectManager\P2
+     */
     private function getObjectManagerForNestedHydration()
     {
         $oneToOneMetadata = $this->prophesize(ClassMetadata::class);

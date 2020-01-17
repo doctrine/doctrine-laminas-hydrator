@@ -82,6 +82,8 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
     /**
      * Return the collection by value (using the public API)
      *
+     * @return mixed[]
+     *
      * @throws InvalidArgumentException
      */
     protected function getCollectionFromObjectByValue() : Collection
@@ -105,6 +107,8 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
 
     /**
      * Return the collection by reference (not using the public API)
+     *
+     * @return mixed[]
      */
     protected function getCollectionFromObjectByReference() : Collection
     {

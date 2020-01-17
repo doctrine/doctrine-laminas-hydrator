@@ -13,7 +13,7 @@ use function array_udiff;
  * final collection will contain elements B and C (while element A will be asked to be removed).
  * This strategy is by reference, this means it won't use public API to add/remove elements to the collection
  */
-class AllowRemoveByReference extends AbstractCollectionStrategy
+class AllowRemoveByReference extends CollectionStrategy
 {
     /**
      * {@inheritDoc}

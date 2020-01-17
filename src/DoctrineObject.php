@@ -151,11 +151,11 @@ class DoctrineObject extends AbstractHydrator
 
             $strategy = $this->getStrategy($association);
 
-            if (! $strategy instanceof Strategy\AbstractCollectionStrategy) {
+            if (! $strategy instanceof Strategy\CollectionStrategy) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Strategies used for collections valued associations must inherit from '
-                        . 'Strategy\AbstractCollectionStrategy, %s given',
+                        . 'Strategy\CollectionStrategy, %s given',
                         get_class($strategy)
                     )
                 );
@@ -416,7 +416,7 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Handle ToMany associations. In proper Doctrine design, Collections should not be swapped, so
      * collections are always handled by reference. Internally, every collection is handled using specials
-     * strategies that inherit from AbstractCollectionStrategy class, and that add or remove elements but without
+     * strategies that inherit from CollectionStrategy class, and that add or remove elements but without
      * changing the collection of the object
      *
      * @param mixed $values
@@ -494,7 +494,7 @@ class DoctrineObject extends AbstractHydrator
         // Set the object so that the strategy can extract the Collection from it
 
         $collectionStrategy = $this->getStrategy($collectionName);
-        assert($collectionStrategy instanceof Strategy\AbstractCollectionStrategy);
+        assert($collectionStrategy instanceof Strategy\CollectionStrategy);
         $collectionStrategy->setObject($object);
 
         // We could directly call hydrate method from the strategy, but if people want to override

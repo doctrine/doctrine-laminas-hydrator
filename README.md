@@ -678,7 +678,7 @@ The hydrator will check whether the setCity() method on the Entity allows null v
 
 By default, every collections association has a special strategy attached to it that is called during the hydrating
 and extracting phase. All those strategies extend from the class
-`Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy`.
+`Doctrine\Laminas\Hydrator\Strategy\CollectionStrategy`.
 
 The library provides four strategies out of the box:
 

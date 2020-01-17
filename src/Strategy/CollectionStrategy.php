@@ -15,7 +15,7 @@ use function spl_object_hash;
 use function sprintf;
 use function strcmp;
 
-abstract class AbstractCollectionStrategy implements StrategyInterface
+abstract class CollectionStrategy implements StrategyInterface
 {
     protected string $collectionName;
 

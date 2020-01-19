@@ -2743,10 +2743,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame('complex,value', $entity->getField());
     }
 
-    /**
-     * @return Double\ObjectManager\P2
-     */
-    private function getObjectManagerForNestedHydration()
+    private function getObjectManagerForNestedHydration() : Double\ObjectManager\P2
     {
         $oneToOneMetadata = $this->prophesize(ClassMetadata::class);
         $oneToOneMetadata->getName()->willReturn(Assets\OneToOneEntity::class);

@@ -14,7 +14,7 @@ use PHPUnit_Framework_MockObject_MockObject;
 use ReflectionClass;
 use function is_bool;
 use function is_float;
-use function is_integer;
+use function is_int;
 use function is_string;
 
 class DoctrineObjectTypeConversionsTest extends TestCase
@@ -415,7 +415,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
@@ -424,7 +424,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
     }
 
@@ -439,7 +439,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
@@ -448,7 +448,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
     }
 

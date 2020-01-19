@@ -21,7 +21,7 @@ class DisallowRemoveByValue extends AbstractCollectionStrategy
     /**
      * {@inheritDoc}
      */
-    public function hydrate($value)
+    public function hydrate($value, ?array $data)
     {
         // AllowRemove strategy need "adder"
         $adder = 'add' . Inflector::classify($this->collectionName);

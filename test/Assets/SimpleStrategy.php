@@ -8,12 +8,12 @@ use Zend\Hydrator\Strategy\StrategyInterface;
 
 class SimpleStrategy implements StrategyInterface
 {
-    public function extract($value)
+    public function extract($value, ?object $object = null)
     {
         return 'modified while extracting';
     }
 
-    public function hydrate($value)
+    public function hydrate($value, ?array $data)
     {
         return 'modified while hydrating';
     }

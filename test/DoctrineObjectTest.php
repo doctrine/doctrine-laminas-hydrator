@@ -41,7 +41,7 @@ class DoctrineObjectTest extends TestCase
      */
     protected $objectManager;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 
@@ -1417,7 +1417,7 @@ class DoctrineObjectTest extends TestCase
         foreach ($entities as $en) {
             $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertIsInt($en->getId());
-            $this->assertContains('Modified from addEntities adder', $en->getField(false));
+            $this->assertStringContainsString('Modified from addEntities adder', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -1457,7 +1457,7 @@ class DoctrineObjectTest extends TestCase
         foreach ($entities as $en) {
             $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertIsInt($en->getId());
-            $this->assertContains('Modified from addEntities adder', $en->getField(false));
+            $this->assertStringContainsString('Modified from addEntities adder', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -1494,7 +1494,7 @@ class DoctrineObjectTest extends TestCase
         foreach ($entities as $en) {
             $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertIsInt($en->getId());
-            $this->assertNotContains('Modified from addEntities adder', $en->getField(false));
+            $this->assertStringNotContainsString('Modified from addEntities adder', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -1534,7 +1534,7 @@ class DoctrineObjectTest extends TestCase
         foreach ($entities as $en) {
             $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertIsInt($en->getId());
-            $this->assertNotContains('Modified from addEntities adder', $en->getField(false));
+            $this->assertStringNotContainsString('Modified from addEntities adder', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -1594,7 +1594,7 @@ class DoctrineObjectTest extends TestCase
         foreach ($entities as $en) {
             $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertIsInt($en->getId());
-            $this->assertContains('Modified from addEntities adder', $en->getField(false));
+            $this->assertStringContainsString('Modified from addEntities adder', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -1657,7 +1657,7 @@ class DoctrineObjectTest extends TestCase
         foreach ($entities as $en) {
             $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertIsInt($en->getId());
-            $this->assertContains('Modified from addEntities adder', $en->getField(false));
+            $this->assertStringContainsString('Modified from addEntities adder', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -1720,7 +1720,7 @@ class DoctrineObjectTest extends TestCase
         foreach ($entities as $en) {
             $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertIsInt($en->getId());
-            $this->assertNotContains('Modified from addEntities adder', $en->getField(false));
+            $this->assertStringNotContainsString('Modified from addEntities adder', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -1779,7 +1779,7 @@ class DoctrineObjectTest extends TestCase
         foreach ($entities as $en) {
             $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertIsInt($en->getId());
-            $this->assertNotContains('Modified from addEntities adder', $en->getField(false));
+            $this->assertStringNotContainsString('Modified from addEntities adder', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -1882,7 +1882,7 @@ class DoctrineObjectTest extends TestCase
 
             // Only the third element is new so the adder has not been called on it
             if ($en === $toMany3) {
-                $this->assertNotContains('Modified from addEntities adder', $en->getField(false));
+                $this->assertStringNotContainsString('Modified from addEntities adder', $en->getField(false));
             }
         }
 
@@ -1955,7 +1955,7 @@ class DoctrineObjectTest extends TestCase
             $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertIsInt($en->getId());
             $this->assertIsString($en->getField());
-            $this->assertContains('Modified By Hydrate', $en->getField(false));
+            $this->assertStringContainsString('Modified By Hydrate', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -1970,10 +1970,10 @@ class DoctrineObjectTest extends TestCase
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $data = [
-            'entities' => new ArrayCollection([
+            'entities' => [
                 ['id' => 2, 'field' => 'Modified By Hydrate'],
                 ['id' => 3, 'field' => 'Modified By Hydrate'],
-            ]),
+            ],
         ];
 
         $entityInDatabaseWithIdOfTwo = new Assets\ByValueDifferentiatorEntity();
@@ -2025,7 +2025,7 @@ class DoctrineObjectTest extends TestCase
             $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertIsInt($en->getId());
             $this->assertIsString($en->getField());
-            $this->assertContains('Modified By Hydrate', $en->getField(false));
+            $this->assertStringContainsString('Modified By Hydrate', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -2180,7 +2180,7 @@ class DoctrineObjectTest extends TestCase
             $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $en);
             $this->assertIsInt($en->getId());
             $this->assertIsString($en->getField());
-            $this->assertContains('Modified By Hydrate', $en->getField(false));
+            $this->assertStringContainsString('Modified By Hydrate', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -2654,12 +2654,12 @@ class DoctrineObjectTest extends TestCase
         $data = ['field' => ['complex', 'value']];
         $this->configureObjectManagerForSimpleEntity();
         $this->hydratorByValue->addStrategy('field', new class implements StrategyInterface {
-            public function extract($value) : array
+            public function extract($value, ?object $object = null) : array
             {
                 return explode(',', $value);
             }
 
-            public function hydrate($value) : string
+            public function hydrate($value, ?array $data) : string
             {
                 return implode(',', $value);
             }
@@ -2678,12 +2678,12 @@ class DoctrineObjectTest extends TestCase
         $data = ['field' => ['complex', 'value']];
         $this->configureObjectManagerForSimpleEntity();
         $this->hydratorByReference->addStrategy('field', new class implements StrategyInterface {
-            public function extract($value) : array
+            public function extract($value, ?object $object = null) : array
             {
                 return explode(',', $value);
             }
 
-            public function hydrate($value) : string
+            public function hydrate($value, ?array $data) : string
             {
                 return implode(',', $value);
             }

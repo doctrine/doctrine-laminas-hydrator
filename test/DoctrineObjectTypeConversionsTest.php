@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace DoctrineTest\Zend\Hydrator;
+namespace DoctrineTest\Laminas\Hydrator;
 
 use DateTime;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineObjectHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineObjectHydrator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;

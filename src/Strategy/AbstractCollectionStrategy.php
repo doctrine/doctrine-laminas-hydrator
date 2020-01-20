@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Zend\Hydrator\Strategy;
+namespace Doctrine\Laminas\Hydrator\Strategy;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Util\Inflector;
 use InvalidArgumentException;
-use Zend\Hydrator\Strategy\StrategyInterface;
+use Laminas\Hydrator\Strategy\StrategyInterface;
 
 abstract class AbstractCollectionStrategy implements StrategyInterface
 {

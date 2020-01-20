@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Zend\Hydrator;
+namespace Doctrine\Laminas\Hydrator;
 
 use DateTime;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Zend\Hydrator\Strategy\AllowRemoveByReference;
-use Doctrine\Zend\Hydrator\Strategy\AllowRemoveByValue;
+use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByReference;
+use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByValue;
 use InvalidArgumentException;
 use RuntimeException;
 use Traversable;
-use Zend\Hydrator\AbstractHydrator;
-use Zend\Hydrator\Filter\FilterProviderInterface;
-use Zend\Stdlib\ArrayUtils;
+use Laminas\Hydrator\AbstractHydrator;
+use Laminas\Hydrator\Filter\FilterProviderInterface;
+use Laminas\Stdlib\ArrayUtils;
 
 class DoctrineObject extends AbstractHydrator
 {

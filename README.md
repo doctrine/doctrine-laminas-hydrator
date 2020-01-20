@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/doctrine/doctrine-zend-hydrator.svg?branch=master)](https://travis-ci.org/doctrine/doctrine-zend-hydrator)
 [![Coverage Status](https://coveralls.io/repos/github/doctrine/doctrine-zend-hydrator/badge.svg?branch=master)](https://coveralls.io/github/doctrine/doctrine-zend-hydrator?branch=master)
 
-This library provides Doctrine Hydrators for Zend Framework application. 
+This library provides Doctrine Hydrators for Laminas.
 
 ## Installation
 
@@ -17,9 +17,9 @@ $ composer require doctrine/doctrine-zend-hydrator
 
 Hydrators convert an array of data to an object (this is called "hydrating") and
 convert an object back to an array (this is called "extracting"). Hydrators are mainly used in the context of Forms,
-with the binding functionality of Zend Framework, but can also be used in any hydrating/extracting context (for
+with the binding functionality of Laminas, but can also be used in any hydrating/extracting context (for
 instance, it can be used in RESTful context). If you are not really comfortable with hydrators, please first
-read [Zend Framework hydrator's documentation](https://docs.zendframework.com/zend-hydrator/).
+read [Laminas hydrator's documentation](https://docs.zendframework.com/zend-hydrator/).
 
 
 ### Basic usage
@@ -32,7 +32,7 @@ To create a Doctrine Hydrator, you just need one thing: an object manager (also 
 or Document Manager in Doctrine ODM):
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($objectManager);
 ```
@@ -88,7 +88,7 @@ class City
 Now, let's use the Doctrine hydrator:
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $city = new City();
@@ -152,7 +152,7 @@ class Appointment
 Let's use the hydrator:
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $appointment = new Appointment();
@@ -295,7 +295,7 @@ DoctrineHydrator natively supports both cases.
 When the association's entity already exists, all you need to do is simply give the identifier of the association:
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $blogPost = new BlogPost();
@@ -338,7 +338,7 @@ $data = [
 If the association's entity does not exist, you just need to give the object:
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $blogPost = new BlogPost();
@@ -389,7 +389,7 @@ be hydrated before it is passed to the BlogPost entity.
 **NOTE** : you're not really allowing users to be added via a blog post, are you?
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager, 'Application\Entity\BlogPost');
 $blogPost = new BlogPost();
@@ -412,8 +412,8 @@ echo $blogPost->getUser()->getPassword(); // prints 2BorN0t2B
 
 #### Example 3 : OneToMany association
 
-Doctrine Hydrator also handles OneToMany relationships (when use `Zend\Form\Element\Collection` element). Please
-refer to the official [Zend Framework documentation](https://docs.zendframework.com/zend-form/collections/) to learn more about Collection.
+Doctrine Hydrator also handles OneToMany relationships (when use `Laminas\Form\Element\Collection` element). Please
+refer to the official [Laminas documentation](https://docs.zendframework.com/zend-form/collections/) to learn more about Collection.
 
 > Note: internally, for a given collection, if an array contains identifiers, the hydrator automatically fetches the
 objects through the Doctrine `find` function. However, this may cause problems if one of the values of the collection
@@ -565,7 +565,7 @@ Once again, two cases may arise: the tags already exist or they do not.
 When the association's entity already exists, what you need to do is simply give the identifiers of the entities:
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $blogPost = new BlogPost();
@@ -609,7 +609,7 @@ $data = [
 If the association's entity does not exist, you just need to give the object:
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $blogPost = new BlogPost();
@@ -678,14 +678,14 @@ The hydrator will check whether the setCity() method on the Entity allows null v
 
 By default, every collections association has a special strategy attached to it that is called during the hydrating
 and extracting phase. All those strategies extend from the class
-`Doctrine\Zend\Hydrator\Strategy\AbstractCollectionStrategy`.
+`Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy`.
 
 The library provides four strategies out of the box:
 
-1. `Doctrine\Zend\Hydrator\Strategy\AllowRemoveByValue`: this is the default strategy, it removes old elements that are not in the new collection.
-2. `Doctrine\Zend\Hydrator\Strategy\AllowRemoveByReference`: this is the default strategy (if set to byReference), it removes old elements that are not in the new collection.
-3. `Doctrine\Zend\Hydrator\Strategy\DisallowRemoveByValue`: this strategy does not remove old elements even if they are not in the new collection.
-4. `Doctrine\Zend\Hydrator\Strategy\DisallowRemoveByReference`: this strategy does not remove old elements even if they are not in the new collection.
+1. `Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByValue`: this is the default strategy, it removes old elements that are not in the new collection.
+2. `Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByReference`: this is the default strategy (if set to byReference), it removes old elements that are not in the new collection.
+3. `Doctrine\Laminas\Hydrator\Strategy\DisallowRemoveByValue`: this strategy does not remove old elements even if they are not in the new collection.
+4. `Doctrine\Laminas\Hydrator\Strategy\DisallowRemoveByReference`: this strategy does not remove old elements even if they are not in the new collection.
 
 As a consequence, when using `AllowRemove*`, you need to define both adder (eg. addTags) and remover (eg. removeTags).
 On the other hand, when using the `DisallowRemove*` strategy, you must always define at least the adder, but the remover
@@ -708,8 +708,8 @@ remove elements directly from the collection.
 Changing the strategy for collections is plain easy.
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
-use Doctrine\Zend\Hydrator\Strategy;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\Strategy;
 
 $hydrator = new DoctrineHydrator($entityManager);
 $hydrator->addStrategy('tags', new Strategy\DisallowRemoveByValue());
@@ -728,7 +728,7 @@ and hence bypass any logic you may include in your setters/getters).
 To change the behaviour, just give the second parameter of the constructor to false:
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($objectManager, false);
 ```
@@ -762,7 +762,7 @@ class SimpleEntity
 Let's now use the hydrator using the default method, by value:
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($objectManager);
 $object   = new SimpleEntity();
@@ -778,7 +778,7 @@ As we can see here, the hydrator used the public API (here getFoo) to retrieve t
 However, if we use it by reference:
 
 ```php
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
 $hydrator = new DoctrineHydrator($objectManager, false);
 $object   = new SimpleEntity();
@@ -792,9 +792,9 @@ echo $data['foo']; // prints 'bar'
 It now only prints "bar", which shows clearly that the getter has not been called.
 
 
-### A complete example using Zend\Form
+### A complete example using Laminas\Form
 
-Now that we understand how the hydrator works, let's see how it integrates into the Zend Framework's Form component.
+Now that we understand how the hydrator works, let's see how it integrates into the Laminas' Form component.
 We are going to use a simple example with, once again, a BlogPost and a Tag entities. We will see how we can create the
 blog post, and being able to edit it.
 
@@ -950,7 +950,7 @@ class Tag
 
 #### The fieldsets
 
-We now need to create two fieldsets that will map those entities. With Zend Framework, it's a good practice to create
+We now need to create two fieldsets that will map those entities. With Laminas it's a good practice to create
 one fieldset per entity in order to reuse them across many forms.
 
 Here is the fieldset for the Tag. Notice that in this example, I added a hidden input whose name is "id". This is
@@ -964,9 +964,9 @@ namespace Application\Form;
 
 use Application\Entity\Tag;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\Form\Fieldset;
-use Zend\InputFilter\InputFilterProviderInterface;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Laminas\Form\Fieldset;
+use Laminas\InputFilter\InputFilterProviderInterface;
 
 class TagFieldset extends Fieldset implements InputFilterProviderInterface
 {
@@ -978,12 +978,12 @@ class TagFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new Tag());
 
         $this->add([
-            'type' => 'Zend\Form\Element\Hidden',
+            'type' => 'Laminas\Form\Element\Hidden',
             'name' => 'id',
         ]);
 
         $this->add([
-            'type'    => 'Zend\Form\Element\Text',
+            'type'    => 'Laminas\Form\Element\Text',
             'name'    => 'name',
             'options' => [
                 'label' => 'Tag',
@@ -1012,9 +1012,9 @@ namespace Application\Form;
 
 use Application\Entity\BlogPost;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\Form\Fieldset;
-use Zend\InputFilter\InputFilterProviderInterface;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Laminas\Form\Fieldset;
+use Laminas\InputFilter\InputFilterProviderInterface;
 
 class BlogPostFieldset extends Fieldset implements InputFilterProviderInterface
 {
@@ -1026,13 +1026,13 @@ class BlogPostFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new BlogPost());
 
         $this->add([
-            'type' => 'Zend\Form\Element\Text',
+            'type' => 'Laminas\Form\Element\Text',
             'name' => 'title',
         ]);
 
         $tagFieldset = new TagFieldset($objectManager);
         $this->add([
-            'type'    => 'Zend\Form\Element\Collection',
+            'type'    => 'Laminas\Form\Element\Collection',
             'name'    => 'tags',
             'options' => [
                 'count'          => 2,
@@ -1052,7 +1052,7 @@ class BlogPostFieldset extends Fieldset implements InputFilterProviderInterface
 }
 ```
 
-Plain and easy. The blog post is just a simple fieldset with an element type of ``Zend\Form\Element\Collection``
+Plain and easy. The blog post is just a simple fieldset with an element type of ``Laminas\Form\Element\Collection``
 that represents the ManyToOne association.
 
 #### The form
@@ -1068,8 +1068,8 @@ Here is the create form:
 namespace Application\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\Form\Form;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Laminas\Form\Form;
 
 class CreateBlogPostForm extends Form
 {
@@ -1098,8 +1098,8 @@ And the update form:
 namespace Application\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\Form\Form;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Laminas\Form\Form;
 
 class UpdateBlogPostForm extends Form
 {
@@ -1233,11 +1233,11 @@ class User
 }
 ```
 
-This simple entity contains an id, a string property, and a OneToOne relationship. If you are using Zend Framework
+This simple entity contains an id, a string property, and a OneToOne relationship. If you are using Laminas
 forms the correct way, you will likely have a fieldset for every entity, so that you have a perfect mapping between
 entities and fieldsets. Here are fieldsets for User and and City entities.
 
-> If you are not comfortable with Fieldsets and how they should work, please refer to [this part of Zend Framework 
+> If you are not comfortable with Fieldsets and how they should work, please refer to [this part of Laminas
 documentation](https://docs.zendframework.com/zend-form/collections/).
 
 First the User fieldset :
@@ -1247,9 +1247,9 @@ namespace Application\Form;
 
 use Application\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\Form\Fieldset;
-use Zend\InputFilter\InputFilterProviderInterface;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Laminas\Form\Fieldset;
+use Laminas\InputFilter\InputFilterProviderInterface;
 
 class UserFieldset extends Fieldset implements InputFilterProviderInterface
 {
@@ -1261,7 +1261,7 @@ class UserFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new User());
 
         $this->add([
-            'type'    => 'Zend\Form\Element\Text',
+            'type'    => 'Laminas\Form\Element\Text',
             'name'    => 'name',
             'options' => [
                 'label' => 'Your name',
@@ -1295,9 +1295,9 @@ namespace Application\Form;
 
 use Application\Entity\City;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\Form\Fieldset;
-use Zend\InputFilter\InputFilterProviderInterface;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Laminas\Form\Fieldset;
+use Laminas\InputFilter\InputFilterProviderInterface;
 
 class CityFieldset extends Fieldset implements InputFilterProviderInterface
 {
@@ -1309,7 +1309,7 @@ class CityFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new City());
 
         $this->add([
-            'type'    => 'Zend\Form\Element\Text',
+            'type'    => 'Laminas\Form\Element\Text',
             'name'    => 'name',
             'options' => [
                 'label' => 'Name of your city',
@@ -1320,7 +1320,7 @@ class CityFieldset extends Fieldset implements InputFilterProviderInterface
         ]);
 
         $this->add([
-            'type'    => 'Zend\Form\Element\Text',
+            'type'    => 'Laminas\Form\Element\Text',
             'name'    => 'postCode',
             'options' => [
                 'label' => 'Postcode of your city',
@@ -1353,8 +1353,8 @@ be like this :
 namespace Application\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\Form\Form;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Laminas\Form\Form;
 
 class EditNameForm extends Form
 {
@@ -1417,7 +1417,7 @@ public function editNameAction()
 ```
 
 This looks good, doesn't it? However, if we check the queries that are made (for instance using the awesome
-[ZendDeveloperTools module](https://github.com/zendframework/zend-developer-tools), we will see that a request is
+[Laminas\DeveloperTools module](https://github.com/laminas/laminas-developer-tools), we will see that a request is
 made to fetch data for the City relationship of the user, and we hence have a completely useless database call,
 as this information is not rendered by the form.
 
@@ -1440,8 +1440,8 @@ EditUserForm :
 namespace Application\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Zend\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\Form\Form;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Laminas\Form\Form;
 
 class EditNameForm extends Form
 {

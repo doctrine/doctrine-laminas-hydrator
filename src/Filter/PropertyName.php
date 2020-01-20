@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Doctrine\Zend\Hydrator\Filter;
+namespace Doctrine\Laminas\Hydrator\Filter;
 
-use Zend\Hydrator\Filter\FilterInterface;
+use Laminas\Hydrator\Filter\FilterInterface;
 
 /**
  * Provides a filter to restrict returned fields by whitelisting or

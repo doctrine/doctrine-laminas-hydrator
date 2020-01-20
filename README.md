@@ -1,7 +1,7 @@
-# doctrine-zend-hydrator
+# doctrine-laminas-hydrator
 
-[![Build Status](https://travis-ci.org/doctrine/doctrine-zend-hydrator.svg?branch=master)](https://travis-ci.org/doctrine/doctrine-zend-hydrator)
-[![Coverage Status](https://coveralls.io/repos/github/doctrine/doctrine-zend-hydrator/badge.svg?branch=master)](https://coveralls.io/github/doctrine/doctrine-zend-hydrator?branch=master)
+[![Build Status](https://travis-ci.org/doctrine/doctrine-laminas-hydrator.svg?branch=master)](https://travis-ci.org/doctrine/doctrine-laminas-hydrator)
+[![Coverage Status](https://coveralls.io/repos/github/doctrine/doctrine-laminas-hydrator/badge.svg?branch=master)](https://coveralls.io/github/doctrine/doctrine-laminas-hydrator?branch=master)
 
 This library provides Doctrine Hydrators for Laminas.
 
@@ -10,7 +10,7 @@ This library provides Doctrine Hydrators for Laminas.
 Run the following to install this library:
 
 ```bash
-$ composer require doctrine/doctrine-zend-hydrator
+$ composer require doctrine/doctrine-laminas-hydrator
 ```
 
 ## Usage

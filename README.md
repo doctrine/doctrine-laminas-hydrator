@@ -1469,6 +1469,6 @@ class EditNameForm extends Form
 }
 ```
 
-And boom! As the UserFieldset does not contain the CityFieldset relation anymore, it won't be extracted!
+And boom! Because the UserFieldset does not contain the CityFieldset relation anymore it won't be extracted.
 
 As a rule of thumb, try to remove any unnecessary fieldset relationship, and always look at which database calls are made.

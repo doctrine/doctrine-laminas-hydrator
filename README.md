@@ -19,7 +19,7 @@ Hydrators convert an array of data to an object (this is called "hydrating") and
 convert an object back to an array (this is called "extracting"). Hydrators are mainly used in the context of Forms,
 with the binding functionality of Laminas, but can also be used in any hydrating/extracting context (for
 instance, it can be used in RESTful context). If you are not really comfortable with hydrators, please first
-read [Laminas hydrator's documentation](https://docs.zendframework.com/zend-hydrator/).
+read [Laminas hydrator's documentation](https://docs.laminas.dev/laminas-hydrator/).
 
 
 ### Basic usage
@@ -172,7 +172,7 @@ allowing us to have a nice API in our entity with correct typehint.
 #### Example 2 : OneToOne/ManyToOne associations
 
 Doctrine Hydrator is especially useful when dealing with associations (OneToOne, OneToMany, ManyToOne) and
-integrates nicely with the Form/Fieldset logic ([learn more about this here](https://docs.zendframework.com/zend-form/collections/)).
+integrates nicely with the Form/Fieldset logic ([learn more about this here](https://docs.laminas.dev/laminas-form/collections/)).
 
 Let's take a simple example with a BlogPost and a User entity to illustrate OneToOne association:
 
@@ -413,7 +413,7 @@ echo $blogPost->getUser()->getPassword(); // prints 2BorN0t2B
 #### Example 3 : OneToMany association
 
 Doctrine Hydrator also handles OneToMany relationships (when use `Laminas\Form\Element\Collection` element). Please
-refer to the official [Laminas documentation](https://docs.zendframework.com/zend-form/collections/) to learn more about Collection.
+refer to the official [Laminas documentation](https://docs.laminas.dev/laminas-form/collections/) to learn more about Collection.
 
 > Note: internally, for a given collection, if an array contains identifiers, the hydrator automatically fetches the
 objects through the Doctrine `find` function. However, this may cause problems if one of the values of the collection
@@ -1238,7 +1238,7 @@ forms the correct way, you will likely have a fieldset for every entity, so that
 entities and fieldsets. Here are fieldsets for User and and City entities.
 
 > If you are not comfortable with Fieldsets and how they should work, please refer to [this part of Laminas
-documentation](https://docs.zendframework.com/zend-form/collections/).
+documentation](https://docs.laminas.dev/laminas-form/collections/).
 
 First the User fieldset :
 
@@ -1383,7 +1383,7 @@ class EditNameForm extends Form
 }
 ```
 
-> Once again, if you are not familiar with the concepts here, please read the [official documentation about that](https://docs.zendframework.com/zend-form/collections/).
+> Once again, if you are not familiar with the concepts here, please read the [official documentation about that](https://docs.laminas.dev/laminas-form/collections/).
 
 Here, we create a simple form called "EditSimpleForm". Because we set the validation group, all the inputs related
 to city (postCode and name of the city) won't be validated, which is exactly what we want. The action will look

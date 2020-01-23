@@ -1,6 +1,6 @@
 {
     "name": "doctrine/doctrine-laminas-hydrator",
-    "description": "Doctrine hydrators for Zend Framework applications",
+    "description": "Doctrine hydrators for Laminas applications",
     "license": "MIT",
     "keywords": [
         "doctrine",

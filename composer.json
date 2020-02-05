@@ -18,8 +18,7 @@
         "ext-ctype": "*",
         "doctrine/common": "^2.10",
         "laminas/laminas-hydrator": "^3.0.2",
-        "laminas/laminas-stdlib": "^3.2.1",
-        "laminas/laminas-dependency-plugin": "^1.0"
+        "laminas/laminas-stdlib": "^3.2.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.3.3",

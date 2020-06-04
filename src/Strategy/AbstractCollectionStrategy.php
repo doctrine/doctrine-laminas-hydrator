@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Laminas\Hydrator\Strategy;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Inflector\InflectorFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Inflector\Inflector;
 use InvalidArgumentException;
@@ -27,6 +28,15 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      */
     protected $object;
 
+    /**
+     * @var Inflector
+     */
+    protected $inflector;
+
+    public function __construct()
+    {
+        $this->inflector = InflectorFactory::create()->build();
+    }
 
     /**
      * Set the name of the collection
@@ -118,7 +128,7 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
     protected function getCollectionFromObjectByValue()
     {
         $object = $this->getObject();
-        $getter = 'get' . Inflector::classify($this->getCollectionName());
+        $getter = 'get' . $this->inflector->classify($this->getCollectionName());
 
         if (! method_exists($object, $getter)) {
             throw new InvalidArgumentException(

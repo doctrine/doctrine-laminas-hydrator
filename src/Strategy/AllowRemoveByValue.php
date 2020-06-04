@@ -7,6 +7,7 @@ namespace Doctrine\Laminas\Hydrator\Strategy;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use LogicException;
 
 /**
@@ -24,8 +25,8 @@ class AllowRemoveByValue extends AbstractCollectionStrategy
     public function hydrate($value, ?array $data)
     {
         // AllowRemove strategy need "adder" and "remover"
-        $adder = 'add' . Inflector::classify($this->collectionName);
-        $remover = 'remove' . Inflector::classify($this->collectionName);
+        $adder = 'add' . $this->inflector->classify($this->collectionName);
+        $remover = 'remove' . $this->inflector->classify($this->collectionName);
 
         if (! method_exists($this->object, $adder) || ! method_exists($this->object, $remover)) {
             throw new LogicException(

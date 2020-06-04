@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Doctrine\Laminas\Hydrator\Strategy;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Util\Inflector;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Inflector\Inflector;
 use InvalidArgumentException;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 

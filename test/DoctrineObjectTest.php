@@ -6,8 +6,8 @@ namespace DoctrineTest\Laminas\Hydrator;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineObjectHydrator;
 use Doctrine\Laminas\Hydrator\Filter;
 use Doctrine\Laminas\Hydrator\Strategy;

@@ -33,9 +33,12 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      */
     protected $inflector;
 
-    public function __construct()
+    /**
+     * @param Inflector|null $inflector
+     */
+    public function __construct(Inflector $inflector = null)
     {
-        $this->inflector = InflectorFactory::create()->build();
+        $this->inflector = $inflector ?? InflectorFactory::create()->build();
     }
 
     /**

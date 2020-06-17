@@ -53,12 +53,13 @@ class DoctrineObject extends AbstractHydrator
     /**
      * @param ObjectManager $objectManager The ObjectManager to use
      * @param bool $byValue If set to true, hydrator will always use entity's public API
+     * @param Inflector|null $inflector
      */
-    public function __construct(ObjectManager $objectManager, $byValue = true)
+    public function __construct(ObjectManager $objectManager, $byValue = true, Inflector $inflector = null)
     {
         $this->objectManager = $objectManager;
         $this->byValue = (bool) $byValue;
-        $this->inflector = InflectorFactory::create()->build();
+        $this->inflector = $inflector ?? InflectorFactory::create()->build();
     }
 
     /**

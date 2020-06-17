@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DoctrineTest\Laminas\Hydrator;
 
 use DateTime;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineObjectHydrator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -25,12 +25,12 @@ class DoctrineObjectTypeConversionsTest extends TestCase
     protected $hydratorByReference;
 
     /**
-     * @var \Doctrine\Common\Persistence\Mapping\ClassMetadata|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Doctrine\Persistence\Mapping\ClassMetadata|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadata;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Doctrine\Persistence\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManager;
 

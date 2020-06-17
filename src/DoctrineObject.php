@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Doctrine\Laminas\Hydrator;
 
 use DateTime;
-use Doctrine\Common\Inflector\Inflector;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByReference;
 use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByValue;
 use InvalidArgumentException;
@@ -45,13 +46,20 @@ class DoctrineObject extends AbstractHydrator
     protected $defaultByReferenceStrategy = AllowRemoveByReference::class;
 
     /**
+     * @var Inflector
+     */
+    private $inflector;
+
+    /**
      * @param ObjectManager $objectManager The ObjectManager to use
      * @param bool $byValue If set to true, hydrator will always use entity's public API
+     * @param Inflector|null $inflector
      */
-    public function __construct(ObjectManager $objectManager, $byValue = true)
+    public function __construct(ObjectManager $objectManager, $byValue = true, Inflector $inflector = null)
     {
         $this->objectManager = $objectManager;
         $this->byValue = (bool) $byValue;
+        $this->inflector = $inflector ?? InflectorFactory::create()->build();
     }
 
     /**
@@ -200,8 +208,8 @@ class DoctrineObject extends AbstractHydrator
                 continue;
             }
 
-            $getter = 'get' . Inflector::classify($fieldName);
-            $isser = 'is' . Inflector::classify($fieldName);
+            $getter = 'get' . $this->inflector->classify($fieldName);
+            $isser = 'is' . $this->inflector->classify($fieldName);
 
             $dataFieldName = $this->computeExtractFieldName($fieldName);
             if (in_array($getter, $methods)) {
@@ -287,7 +295,7 @@ class DoctrineObject extends AbstractHydrator
 
         foreach ($data as $field => $value) {
             $field = $this->computeHydrateFieldName($field);
-            $setter = 'set' . Inflector::classify($field);
+            $setter = 'set' . $this->inflector->classify($field);
 
             if ($metadata->hasAssociation($field)) {
                 $target = $metadata->getAssociationTargetClass($field);
@@ -471,7 +479,7 @@ class DoctrineObject extends AbstractHydrator
                 foreach ($identifier as $field) {
                     switch (gettype($value)) {
                         case 'object':
-                            $getter = 'get' . Inflector::classify($field);
+                            $getter = 'get' . $this->inflector->classify($field);
 
                             if (is_callable([$value, $getter])) {
                                 $find[$field] = $value->$getter();

@@ -6,8 +6,6 @@ namespace Doctrine\Laminas\Hydrator\Strategy;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Inflector\Inflector;
-use Doctrine\Inflector\InflectorFactory;
 use LogicException;
 
 /**

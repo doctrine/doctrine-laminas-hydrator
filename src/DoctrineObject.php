@@ -516,7 +516,7 @@ class DoctrineObject extends AbstractHydrator
 
         // Set the object so that the strategy can extract the Collection from it
 
-        /** @var \DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy $collectionStrategy */
+        /** @var \Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy $collectionStrategy */
         $collectionStrategy = $this->getStrategy($collectionName);
         $collectionStrategy->setObject($object);
 

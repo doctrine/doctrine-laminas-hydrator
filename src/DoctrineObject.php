@@ -186,6 +186,14 @@ class DoctrineObject extends AbstractHydrator
         }
     }
 
+    public function getFieldNames($fieldNames = []){
+        $metadata = $this->metadata;
+        $fieldNames = empty($fieldNames) ? \array_merge($metadata->getFieldNames(), $metadata->getAssociationNames()) : $fieldNames;
+        $fieldNames = \array_flip($fieldNames);
+        $fieldNames = array_index_value($fieldNames);
+        return $fieldNames;
+    }
+
     /**
      * Extract values from an object using a by-value logic (this means that it uses the entity
      * API, in this case, getters)
@@ -194,24 +202,29 @@ class DoctrineObject extends AbstractHydrator
      * @throws RuntimeException
      * @return array
      */
-    protected function extractByValue($object)
+    protected function extractByValue($object,$fieldNames = [])
     {
-        $fieldNames = array_merge($this->metadata->getFieldNames(), $this->metadata->getAssociationNames());
+        $fieldNames = empty($fieldNames) ? $this->getFieldNames() : $fieldNames;
         $methods = get_class_methods($object);
         $filter = $object instanceof FilterProviderInterface
             ? $object->getFilter()
             : $this->filterComposite;
 
         $data = [];
-        foreach ($fieldNames as $fieldName) {
+        foreach ($fieldNames as $fieldName => $value) {
             if ($filter && ! $filter->filter($fieldName)) {
-                continue;
+                //continue;
             }
 
             $getter = 'get' . $this->inflector->classify($fieldName);
             $isser = 'is' . $this->inflector->classify($fieldName);
 
             $dataFieldName = $this->computeExtractFieldName($fieldName);
+            if(is_array($value)){
+                $_object = $object->$getter();
+                $data[$dataFieldName] = $this->extractByValue($_object,$value);
+                continue;
+            };
             if (in_array($getter, $methods)) {
                 $data[$dataFieldName] = $this->extractValue($fieldName, $object->$getter(), $object);
             } elseif (in_array($isser, $methods)) {
@@ -681,5 +694,35 @@ class DoctrineObject extends AbstractHydrator
             $field = $this->getNamingStrategy()->extract($field);
         }
         return $field;
+    }
+}
+
+if(!function_exists("array_index_value")){
+    function array_index_value(array $array = []){
+        $keep = [];
+        foreach ($array as $key => $value) {
+            $keys = explode(".",$key);
+            if($keys && count($keys) > 1){
+                if(count($keys) > 2){
+                    $_keep = array_slice($keys, 1);
+                    $_keep = implode(".",$_keep);
+                    if(!isset($keep[$keys[0]])){
+                        $keep[$keys[0]] = [];
+                    }
+                    $keep[$keys[0]] = array_merge($keep[$keys[0]],[$_keep => $value]);
+                    unset($array[$key]); 
+                    continue;
+                }
+                if(!isset($array[$keys[0]])){
+                    $array[$keys[0]] = [];
+                }
+                $array[$keys[0]][$keys[1]] = $value ;
+                unset($array[$key]); 
+            }
+        }
+        foreach ($keep as $key => $value) {
+            $array[$key] = array_merge($array[$key],array_index_value($value));
+        }
+        return $array;
     }
 }

@@ -572,7 +572,7 @@ class DoctrineObject extends AbstractHydrator
                     return null;
                 }
 
-                if ($value instanceof Datetime) {
+                if ($value instanceof DateTime) {
                     return $value;
                 }
 

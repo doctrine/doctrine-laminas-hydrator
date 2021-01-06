@@ -14,7 +14,7 @@
         "rss": "https://github.com/doctrine/doctrine-laminas-hydrator/releases.atom"
     },
     "require": {
-        "php": "^7.2",
+        "php": "^7.2 || ~8.0.0",
         "ext-ctype": "*",
         "doctrine/collections": "^1.6.5",
         "doctrine/inflector": "^1.4.3 || ^2.0.3",
@@ -41,8 +41,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev",
-            "dev-develop": "2.0.x-dev"
+            "dev-master": "2.x-dev"
         }
     },
     "scripts": {

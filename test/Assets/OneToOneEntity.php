@@ -8,21 +8,14 @@ use DateTime;
 
 class OneToOneEntity
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $id;
 
-    /**
-     * @var ByValueDifferentiatorEntity
-     */
+    /** @var ByValueDifferentiatorEntity */
     protected $toOne;
 
-    /**
-     * @var DateTime
-     */
+    /** @var DateTime */
     protected $createdAt;
-
 
     public function setId($id)
     {
@@ -34,7 +27,7 @@ class OneToOneEntity
         return $this->id;
     }
 
-    public function setToOne(ByValueDifferentiatorEntity $entity = null, $modifyValue = true)
+    public function setToOne(?ByValueDifferentiatorEntity $entity = null, $modifyValue = true)
     {
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue && $entity !== null) {

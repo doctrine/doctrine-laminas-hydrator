@@ -6,16 +6,11 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class OneToOneEntityNotNullable
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $id;
 
-    /**
-     * @var ByValueDifferentiatorEntity
-     */
+    /** @var ByValueDifferentiatorEntity */
     protected $toOne;
-
 
     public function setId($id)
     {

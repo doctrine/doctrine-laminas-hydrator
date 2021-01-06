@@ -8,5 +8,4 @@ use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByValue;
 
 class DifferentAllowRemoveByValue extends AllowRemoveByValue
 {
-
 }

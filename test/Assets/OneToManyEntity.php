@@ -9,16 +9,11 @@ use Doctrine\Common\Collections\Collection;
 
 class OneToManyEntity
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $id;
 
-    /**
-     * @var Collection
-     */
+    /** @var Collection */
     protected $entities;
-
 
     public function __construct()
     {

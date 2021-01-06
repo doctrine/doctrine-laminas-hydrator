@@ -5,38 +5,34 @@ declare(strict_types=1);
 namespace Doctrine\Laminas\Hydrator\Strategy;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
-use Doctrine\Inflector\Inflector;
 use InvalidArgumentException;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 
+use function get_class;
+use function is_object;
+use function method_exists;
+use function spl_object_hash;
+use function sprintf;
+use function strcmp;
+
 abstract class AbstractCollectionStrategy implements StrategyInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $collectionName;
 
-    /**
-     * @var ClassMetadata
-     */
+    /** @var ClassMetadata */
     protected $metadata;
 
-    /**
-     * @var object
-     */
+    /** @var object */
     protected $object;
 
-    /**
-     * @var Inflector
-     */
+    /** @var Inflector */
     protected $inflector;
 
-    /**
-     * @param Inflector|null $inflector
-     */
-    public function __construct(Inflector $inflector = null)
+    public function __construct(?Inflector $inflector = null)
     {
         $this->inflector = $inflector ?? InflectorFactory::create()->build();
     }
@@ -45,7 +41,7 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      * Set the name of the collection
      *
      * @param  string $collectionName
-     * @return AbstractCollectionStrategy
+     * @return $this
      */
     public function setCollectionName($collectionName)
     {
@@ -66,8 +62,7 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
     /**
      * Set the class metadata
      *
-     * @param  ClassMetadata $classMetadata
-     * @return AbstractCollectionStrategy
+     * @return $this
      */
     public function setClassMetadata(ClassMetadata $classMetadata)
     {
@@ -90,13 +85,13 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      *
      * @param  object $object
      * @throws InvalidArgumentException
-     * @return AbstractCollectionStrategy
+     * @return $this
      */
     public function setObject($object)
     {
         if (! is_object($object)) {
             throw new InvalidArgumentException(
-                sprintf('The parameter given to setObject method of %s class is not an object', get_called_class())
+                sprintf('The parameter given to setObject method of %s class is not an object', static::class)
             );
         }
 
@@ -154,15 +149,14 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      */
     protected function getCollectionFromObjectByReference()
     {
-        $object = $this->getObject();
-        $refl = $this->getClassMetadata()->getReflectionClass();
+        $object       = $this->getObject();
+        $refl         = $this->getClassMetadata()->getReflectionClass();
         $reflProperty = $refl->getProperty($this->getCollectionName());
 
         $reflProperty->setAccessible(true);
 
         return $reflProperty->getValue($object);
     }
-
 
     /**
      * This method is used internally by array_udiff to check if two objects are equal, according to their

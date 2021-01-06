@@ -14,12 +14,12 @@ class SimpleEntityWithDateTime
     /** @var DateTime */
     protected $date;
 
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -29,7 +29,7 @@ class SimpleEntityWithDateTime
         $this->date = $date;
     }
 
-    public function getDate()
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }

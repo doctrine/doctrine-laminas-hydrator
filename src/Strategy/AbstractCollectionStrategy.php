@@ -110,7 +110,11 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Converts the given value so that it can be extracted by the hydrator.
+     *
+     * @param  mixed       $value The original value.
+     * @param  null|object $object (optional) The original object for context.
+     * @return mixed       Returns the value that should be extracted.
      */
     public function extract($value, ?object $object = null)
     {

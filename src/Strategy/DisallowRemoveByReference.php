@@ -16,7 +16,11 @@ use function array_udiff;
 class DisallowRemoveByReference extends AbstractCollectionStrategy
 {
     /**
-     * {@inheritDoc}
+     * Converts the given value so that it can be hydrated by the hydrator.
+     *
+     * @param  mixed      $value The original value.
+     * @param  null|array $data The original data for context.
+     * @return mixed      Returns the value that should be hydrated.
      */
     public function hydrate($value, ?array $data)
     {

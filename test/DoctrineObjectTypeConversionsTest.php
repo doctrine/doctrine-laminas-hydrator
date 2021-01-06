@@ -10,12 +10,11 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 use ReflectionClass;
 
 use function is_bool;
 use function is_float;
-use function is_integer;
+use function is_int;
 use function is_string;
 
 class DoctrineObjectTypeConversionsTest extends TestCase
@@ -26,10 +25,10 @@ class DoctrineObjectTypeConversionsTest extends TestCase
     /** @var DoctrineObjectHydrator */
     protected $hydratorByReference;
 
-    /** @var ClassMetadata|PHPUnit_Framework_MockObject_MockObject */
+    /** @var ClassMetadata */
     protected $metadata;
 
-    /** @var ObjectManager|PHPUnit_Framework_MockObject_MockObject */
+    /** @var ObjectManager */
     protected $objectManager;
 
     protected function setUp(): void
@@ -415,7 +414,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
@@ -424,7 +423,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
     }
 
@@ -439,7 +438,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
@@ -448,7 +447,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
     }
 

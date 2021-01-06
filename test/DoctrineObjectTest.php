@@ -15,7 +15,6 @@ use InvalidArgumentException;
 use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 use Prophecy\Argument;
 use ReflectionClass;
 use stdClass;
@@ -34,10 +33,10 @@ class DoctrineObjectTest extends TestCase
     /** @var DoctrineObjectHydrator */
     protected $hydratorByReference;
 
-    /** @var ClassMetadata|PHPUnit_Framework_MockObject_MockObject */
+    /** @var ClassMetadata */
     protected $metadata;
 
-    /** @var ObjectManager|PHPUnit_Framework_MockObject_MockObject */
+    /** @var ObjectManager */
     protected $objectManager;
 
     protected function setUp(): void
@@ -1583,11 +1582,11 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
+        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToManyEntity::class, $entity);
 
-        /** @var Assets\OneToManyEntity $entity */
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
@@ -1646,11 +1645,11 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
+        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToManyEntity::class, $entity);
 
-        /** @var Assets\OneToManyEntity $entity */
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
@@ -1942,11 +1941,11 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
+        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToManyEntityWithEntities::class, $entity);
 
-        /** @var Assets\OneToManyEntity $entity */
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
@@ -2011,11 +2010,11 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
+        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToManyEntityWithEntities::class, $entity);
 
-        /** @var Assets\OneToManyEntity $entity */
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
@@ -2081,11 +2080,11 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
+        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToManyEntityWithEntities::class, $entity);
 
-        /** @var Assets\OneToManyEntity $entity */
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
@@ -2165,11 +2164,11 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
+        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
         $this->assertInstanceOf(Assets\OneToManyEntityWithEntities::class, $entity);
 
-        /** @var Assets\OneToManyEntity $entity */
         $entities = $entity->getEntities(false);
 
         foreach ($entities as $en) {
@@ -2649,11 +2648,17 @@ class DoctrineObjectTest extends TestCase
         $data = ['field' => ['complex', 'value']];
         $this->configureObjectManagerForSimpleEntity();
         $this->hydratorByValue->addStrategy('field', new class implements StrategyInterface {
+            /**
+             * @param mixed $value
+             */
             public function extract($value, ?object $object = null): array
             {
                 return explode(',', $value);
             }
 
+            /**
+             * @param mixed $value
+             */
             public function hydrate($value, ?array $data): string
             {
                 return implode(',', $value);
@@ -2672,11 +2677,17 @@ class DoctrineObjectTest extends TestCase
         $data = ['field' => ['complex', 'value']];
         $this->configureObjectManagerForSimpleEntity();
         $this->hydratorByReference->addStrategy('field', new class implements StrategyInterface {
+            /**
+             * @param mixed $value
+             */
             public function extract($value, ?object $object = null): array
             {
                 return explode(',', $value);
             }
 
+            /**
+             * @param mixed $value
+             */
             public function hydrate($value, ?array $data): string
             {
                 return implode(',', $value);
@@ -2688,7 +2699,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame('complex,value', $entity->getField());
     }
 
-    private function getObjectManagerForNestedHydration()
+    private function getObjectManagerForNestedHydration(): ObjectManager
     {
         $oneToOneMetadata = $this->prophesize(ClassMetadata::class);
         $oneToOneMetadata->getName()->willReturn(Assets\OneToOneEntity::class);

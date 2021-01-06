@@ -33,7 +33,6 @@ use function in_array;
 use function is_array;
 use function is_callable;
 use function is_int;
-use function is_null;
 use function is_object;
 use function is_string;
 use function ltrim;
@@ -268,13 +267,16 @@ class DoctrineObject extends AbstractHydrator
      * Converts a value for hydration
      * Apply strategies first, then the type conversions
      *
-     * @inheritDoc
+     * @param  string     $name  The name of the strategy to use.
+     * @param  mixed      $value The value that should be converted.
+     * @param  null|array $data  The whole data is optionally provided as context.
+     * @return mixed|null
      */
     public function hydrateValue(string $name, $value, ?array $data = null)
     {
         $value = parent::hydrateValue($name, $value, $data);
 
-        if (is_null($value) && $this->isNullable($name)) {
+        if (null === $value && $this->isNullable($name)) {
             return null;
         }
 
@@ -430,7 +432,7 @@ class DoctrineObject extends AbstractHydrator
     {
         $metadata = $this->objectManager->getClassMetadata($target);
 
-        if (is_array($value) && array_keys($value) != $metadata->getIdentifier()) {
+        if (is_array($value) && array_keys($value) !== $metadata->getIdentifier()) {
             // $value is most likely an array of fieldset data
             $identifiers = array_intersect_key(
                 $value,
@@ -492,7 +494,7 @@ class DoctrineObject extends AbstractHydrator
                             }
                             break;
                         case 'array':
-                            if (array_key_exists($field, $value) && $value[$field] != null) {
+                            if (array_key_exists($field, $value) && $value[$field] !== null) {
                                 $find[$field] = $value[$field];
                                 unset($value[$field]); // removed identifier from persistable data
                             }
@@ -537,11 +539,11 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  mixed  $value
      * @param  string $typeOfField
-     * @return DateTime
+     * @return DateTime|null
      */
     protected function handleTypeConversions($value, $typeOfField)
     {
-        if (is_null($value)) {
+        if (null === $value) {
             return null;
         }
 
@@ -641,7 +643,7 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Check the field is nullable
      *
-     * @param $name
+     * @param  string $name
      * @return bool
      */
     private function isNullable($name)

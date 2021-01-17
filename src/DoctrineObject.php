@@ -256,8 +256,11 @@ class DoctrineObject extends AbstractHydrator
             $reflProperty = $refl->getProperty($fieldName);
             $reflProperty->setAccessible(true);
 
-            $dataFieldName        = $this->computeExtractFieldName($fieldName);
-            $data[$dataFieldName] = $this->extractValue($fieldName, $reflProperty->getValue($object), $object);
+            // skip uninitialized properties (available from PHP 7.4)
+            if (PHP_VERSION_ID < 70400 || $reflProperty->isInitialized($object)) {
+                $dataFieldName = $this->computeExtractFieldName($fieldName);
+                $data[$dataFieldName] = $this->extractValue($fieldName, $reflProperty->getValue($object), $object);
+            }
         }
 
         return $data;

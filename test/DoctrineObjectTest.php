@@ -890,6 +890,25 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => 2, 'field' => 'foo'], $data);
     }
 
+    /**
+     * @requires PHP 7.4
+     */
+    public function testDoesNotExtractUninitializedVariables()
+    {
+        // When using extraction by reference, it won't use the public API of entity (getters won't be called)
+        $entity = new Assets\SimpleEntityPhp74();
+        $entity->setId(2);
+
+        $this->configureObjectManagerForSimpleEntity(Assets\SimpleEntityPhp74::class);
+
+        $data = $this->hydratorByReference->extract($entity);
+        $this->assertEquals(['id' => 2], $data);
+
+        $entity->setField('value');
+        $data = $this->hydratorByReference->extract($entity);
+        $this->assertEquals(['id' => 2, 'field' => 'value'], $data);
+    }
+
     public function testCanHydrateSimpleEntityByValue()
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)

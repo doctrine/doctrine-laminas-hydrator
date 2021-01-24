@@ -6,28 +6,23 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class OneToOneEntityNotNullable
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $id;
 
-    /**
-     * @var ByValueDifferentiatorEntity
-     */
+    /** @var ByValueDifferentiatorEntity */
     protected $toOne;
 
-
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setToOne(ByValueDifferentiatorEntity $entity, $modifyValue = true)
+    public function setToOne(ByValueDifferentiatorEntity $entity, bool $modifyValue = true)
     {
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue) {
@@ -37,7 +32,7 @@ class OneToOneEntityNotNullable
         $this->toOne = $entity;
     }
 
-    public function getToOne($modifyValue = true)
+    public function getToOne(bool $modifyValue = true): ?ByValueDifferentiatorEntity
     {
         // Make some modifications to the association so that we can demonstrate difference between
         // by value and by reference

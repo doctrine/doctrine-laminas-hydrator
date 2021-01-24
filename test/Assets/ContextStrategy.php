@@ -8,12 +8,20 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
 
 class ContextStrategy implements StrategyInterface
 {
-    public function extract($value, $object = null)
+    /**
+     * @param  mixed $value
+     * @return mixed
+     */
+    public function extract($value, ?object $object = null)
     {
         return (string) $value . $object->getField();
     }
 
-    public function hydrate($value, $data = null)
+    /**
+     * @param  mixed $value
+     * @return mixed
+     */
+    public function hydrate($value, ?array $data = null)
     {
         return $value . $data['field'];
     }

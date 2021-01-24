@@ -8,5 +8,4 @@ use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByReference;
 
 class DifferentAllowRemoveByReference extends AllowRemoveByReference
 {
-
 }

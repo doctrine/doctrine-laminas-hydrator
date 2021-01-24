@@ -9,33 +9,28 @@ use Doctrine\Common\Collections\Collection;
 
 class OneToManyEntity
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $id;
 
-    /**
-     * @var Collection
-     */
+    /** @var Collection */
     protected $entities;
-
 
     public function __construct()
     {
         $this->entities = new ArrayCollection();
     }
 
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function addEntities(Collection $entities, $modifyValue = true)
+    public function addEntities(Collection $entities, bool $modifyValue = true)
     {
         foreach ($entities as $entity) {
             // Modify the value to illustrate the difference between by value and by reference
@@ -54,7 +49,7 @@ class OneToManyEntity
         }
     }
 
-    public function getEntities($modifyValue = true)
+    public function getEntities(bool $modifyValue = true): Collection
     {
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue) {

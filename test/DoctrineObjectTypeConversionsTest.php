@@ -5,40 +5,37 @@ declare(strict_types=1);
 namespace DoctrineTest\Laminas\Hydrator;
 
 use DateTime;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineObjectHydrator;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
-use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineObjectHydrator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+use function is_bool;
+use function is_float;
+use function is_int;
+use function is_string;
+
 class DoctrineObjectTypeConversionsTest extends TestCase
 {
-    /**
-     * @var DoctrineObjectHydrator
-     */
+    /** @var DoctrineObjectHydrator */
     protected $hydratorByValue;
 
-    /**
-     * @var DoctrineObjectHydrator
-     */
+    /** @var DoctrineObjectHydrator */
     protected $hydratorByReference;
 
-    /**
-     * @var \Doctrine\Persistence\Mapping\ClassMetadata|\PHPUnit_Framework_MockObject_MockObject
-     */
+    /** @var ClassMetadata */
     protected $metadata;
 
-    /**
-     * @var \Doctrine\Persistence\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
-     */
+    /** @var ObjectManager */
     protected $objectManager;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->metadata = $this->createMock(ClassMetadata::class);
+        $this->metadata      = $this->createMock(ClassMetadata::class);
         $this->objectManager = $this->createMock(ObjectManager::class);
 
         $this->objectManager->expects($this->any())
@@ -110,7 +107,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
-        $this->hydratorByValue = new DoctrineObjectHydrator(
+        $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
             true
         );
@@ -150,7 +147,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
                             return Assets\ByValueDifferentiatorEntity::class;
                         }
 
-                        throw new \InvalidArgumentException();
+                        throw new InvalidArgumentException();
                     }
                 )
             );
@@ -169,7 +166,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
                             return true;
                         }
 
-                        throw new \InvalidArgumentException();
+                        throw new InvalidArgumentException();
                     }
                 )
             );
@@ -216,7 +213,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('datetime');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
+        $now    = new DateTime();
         $now->setTimestamp(1522353676);
         $data = ['genericField' => 1522353676];
 
@@ -230,10 +227,9 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertInstanceOf('DateTime', $entity->getGenericField());
         $this->assertEquals($now, $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
-        $data = ['genericField' => $now->format('Y-m-d\TH:i:s\.u')];
+        $now    = new DateTime();
+        $data   = ['genericField' => $now->format('Y-m-d\TH:i:s\.u')];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -245,10 +241,9 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertInstanceOf('DateTime', $entity->getGenericField());
         $this->assertEquals($now, $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
-        $data = ['genericField' => clone $now];
+        $now    = new DateTime();
+        $data   = ['genericField' => clone $now];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -267,7 +262,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('datetimetz');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
+        $now    = new DateTime();
         $now->setTimestamp(1522353676);
         $data = ['genericField' => 1522353676];
 
@@ -281,10 +276,9 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertInstanceOf('DateTime', $entity->getGenericField());
         $this->assertEquals($now, $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
-        $data = ['genericField' => $now->format('Y-m-d\TH:i:s\.u')];
+        $now    = new DateTime();
+        $data   = ['genericField' => $now->format('Y-m-d\TH:i:s\.u')];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -296,10 +290,9 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertInstanceOf('DateTime', $entity->getGenericField());
         $this->assertEquals($now, $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
-        $data = ['genericField' => clone $now];
+        $now    = new DateTime();
+        $data   = ['genericField' => clone $now];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -318,7 +311,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('time');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
+        $now    = new DateTime();
         $now->setTimestamp(1522353676);
         $data = ['genericField' => 1522353676];
 
@@ -332,10 +325,9 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertInstanceOf('DateTime', $entity->getGenericField());
         $this->assertEquals($now, $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
-        $data = ['genericField' => $now->format('Y-m-d\TH:i:s\.u')];
+        $now    = new DateTime();
+        $data   = ['genericField' => $now->format('Y-m-d\TH:i:s\.u')];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -347,10 +339,9 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertInstanceOf('DateTime', $entity->getGenericField());
         $this->assertEquals($now, $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
-        $data = ['genericField' => clone $now];
+        $now    = new DateTime();
+        $data   = ['genericField' => clone $now];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -369,7 +360,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('date');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
+        $now    = new DateTime();
         $now->setTimestamp(1522353676);
         $data = ['genericField' => 1522353676];
 
@@ -383,10 +374,9 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertInstanceOf('DateTime', $entity->getGenericField());
         $this->assertEquals($now, $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
-        $data = ['genericField' => $now->format('Y-m-d\TH:i:s\.u')];
+        $now    = new DateTime();
+        $data   = ['genericField' => $now->format('Y-m-d\TH:i:s\.u')];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -398,10 +388,9 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertInstanceOf('DateTime', $entity->getGenericField());
         $this->assertEquals($now, $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now = new DateTime();
-        $data = ['genericField' => clone $now];
+        $now    = new DateTime();
+        $data   = ['genericField' => clone $now];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -420,21 +409,21 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('integer');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $value = 123465;
-        $data = ['genericField' => '123465'];
+        $value  = 123465;
+        $data   = ['genericField' => '123465'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $value = 123465;
-        $data = ['genericField' => '123465'];
+        $value  = 123465;
+        $data   = ['genericField' => '123465'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
     }
 
@@ -444,21 +433,21 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('smallint');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $value = 123465;
-        $data = ['genericField' => '123465'];
+        $value  = 123465;
+        $data   = ['genericField' => '123465'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $value = 123465;
-        $data = ['genericField' => '123465'];
+        $value  = 123465;
+        $data   = ['genericField' => '123465'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_integer($entity->getGenericField()));
+        $this->assertTrue(is_int($entity->getGenericField()));
         $this->assertEquals($value, $entity->getGenericField());
     }
 
@@ -468,8 +457,8 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('float');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $value = 123.465;
-        $data = ['genericField' => '123.465'];
+        $value  = 123.465;
+        $data   = ['genericField' => '123.465'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -477,8 +466,8 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($value, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $value = 123.465;
-        $data = ['genericField' => '123.465'];
+        $value  = 123.465;
+        $data   = ['genericField' => '123.465'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -492,7 +481,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('boolean');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => true];
+        $data   = ['genericField' => true];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -500,16 +489,15 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals(true, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => true];
+        $data   = ['genericField' => true];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
         $this->assertTrue(is_bool($entity->getGenericField()));
         $this->assertEquals(true, $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 1];
+        $data   = ['genericField' => 1];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -517,7 +505,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals(true, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 1];
+        $data   = ['genericField' => 1];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -531,7 +519,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('string');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -539,16 +527,15 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
         $this->assertTrue(is_string($entity->getGenericField()));
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -556,7 +543,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -564,7 +551,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 12345];
+        $data   = ['genericField' => 12345];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -578,7 +565,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('text');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -586,16 +573,15 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
         $this->assertTrue(is_string($entity->getGenericField()));
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -603,7 +589,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -611,7 +597,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 12345];
+        $data   = ['genericField' => 12345];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -625,7 +611,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('bigint');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -633,16 +619,15 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
         $this->assertTrue(is_string($entity->getGenericField()));
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -650,7 +635,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 'stringvalue'];
+        $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -658,7 +643,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('stringvalue', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 12345];
+        $data   = ['genericField' => 12345];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -672,7 +657,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('decimal');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => '123.45'];
+        $data   = ['genericField' => '123.45'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -680,16 +665,15 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('123.45', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => '123.45'];
+        $data   = ['genericField' => '123.45'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
         $this->assertTrue(is_string($entity->getGenericField()));
         $this->assertEquals('123.45', $entity->getGenericField());
 
-
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => '123.45'];
+        $data   = ['genericField' => '123.45'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -697,7 +681,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('123.45', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => '123.45'];
+        $data   = ['genericField' => '123.45'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -705,7 +689,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('123.45', $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => 12345];
+        $data   = ['genericField' => 12345];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -719,14 +703,14 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField(null);
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => null];
+        $data   = ['genericField' => null];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
         $this->assertNull($entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $data = ['genericField' => null];
+        $data   = ['genericField' => null];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -738,7 +722,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForOneToOneEntity();
 
         $entity = new Assets\OneToOneEntity();
-        $data = ['toOne' => null];
+        $data   = ['toOne' => null];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 

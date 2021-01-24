@@ -6,32 +6,28 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class SimpleIsEntity
 {
-    /**
-     * @var int
-     */
+    /** @var int|string */
     protected $id;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $done;
 
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setDone($done)
+    public function setDone(bool $done)
     {
         $this->done = (bool) $done;
     }
 
-    public function isDone()
+    public function isDone(): bool
     {
         return $this->done;
     }

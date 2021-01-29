@@ -39,6 +39,7 @@ use function ltrim;
 use function method_exists;
 use function property_exists;
 use function sprintf;
+use function strpos;
 use function substr;
 
 use const PHP_VERSION_ID;
@@ -108,6 +109,21 @@ class DoctrineObject extends AbstractHydrator
     {
         $this->defaultByReferenceStrategy = $defaultByReferenceStrategy;
         return $this;
+    }
+
+    /**
+     * Get all field names, this includes direct field names, names of embeddables and
+     * associations. By using a key-based generator, duplicates are effectively removed.
+     */
+    public function getFieldNames(): iterable
+    {
+        $fields = array_merge($this->metadata->getFieldNames(), $this->metadata->getAssociationNames());
+        foreach ($fields as $fieldName) {
+            if ($pos = strpos($fieldName, '.')) {
+                $fieldName = substr($fieldName, 0, $pos);
+            }
+            yield $fieldName => $fieldName;
+        }
     }
 
     /**
@@ -201,7 +217,7 @@ class DoctrineObject extends AbstractHydrator
      */
     protected function extractByValue($object)
     {
-        $fieldNames = array_merge($this->metadata->getFieldNames(), $this->metadata->getAssociationNames());
+        $fieldNames = $this->getFieldNames();
         $methods    = get_class_methods($object);
         $filter     = $object instanceof FilterProviderInterface
             ? $object->getFilter()
@@ -244,7 +260,7 @@ class DoctrineObject extends AbstractHydrator
      */
     protected function extractByReference($object)
     {
-        $fieldNames = array_merge($this->metadata->getFieldNames(), $this->metadata->getAssociationNames());
+        $fieldNames = $this->getFieldNames();
         $refl       = $this->metadata->getReflectionClass();
         $filter     = $object instanceof FilterProviderInterface
             ? $object->getFilter()

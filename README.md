@@ -1,7 +1,7 @@
 # doctrine-laminas-hydrator
 
-[![Build Status](https://travis-ci.org/doctrine/doctrine-laminas-hydrator.svg?branch=master)](https://travis-ci.org/doctrine/doctrine-laminas-hydrator)
-[![Coverage Status](https://coveralls.io/repos/github/doctrine/doctrine-laminas-hydrator/badge.svg?branch=master)](https://coveralls.io/github/doctrine/doctrine-laminas-hydrator?branch=master)
+[![Build Status](https://github.com/doctrine/doctrine-laminas-hydrator/workflows/Continuous%20Integration/badge.svg)](https://github.com/doctrine/doctrine-laminas-hydrator/actions?query=workflow%3A%22Continuous+Integration%22+branch%3A2.1.x)
+[![Coverage Status](https://codecov.io/gh/doctrine/doctrine-laminas-hydrator/branch/4.0.x/graph/badge.svg)](https://codecov.io/gh/doctrine/dbal/branch/2.1.x)
 
 This library provides Doctrine Hydrators for Laminas.
 

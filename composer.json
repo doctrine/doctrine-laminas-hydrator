@@ -39,11 +39,6 @@
     "config": {
         "sort-packages": true
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.x-dev"
-        }
-    },
     "scripts": {
         "check": [
             "@cs-check",

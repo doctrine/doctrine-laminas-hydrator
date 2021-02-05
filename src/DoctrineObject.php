@@ -41,6 +41,8 @@ use function property_exists;
 use function sprintf;
 use function substr;
 
+use const PHP_VERSION_ID;
+
 class DoctrineObject extends AbstractHydrator
 {
     /** @var ObjectManager */
@@ -258,7 +260,7 @@ class DoctrineObject extends AbstractHydrator
 
             // skip uninitialized properties (available from PHP 7.4)
             if (PHP_VERSION_ID < 70400 || $reflProperty->isInitialized($object)) {
-                $dataFieldName = $this->computeExtractFieldName($fieldName);
+                $dataFieldName        = $this->computeExtractFieldName($fieldName);
                 $data[$dataFieldName] = $this->extractValue($fieldName, $reflProperty->getValue($object), $object);
             }
         }

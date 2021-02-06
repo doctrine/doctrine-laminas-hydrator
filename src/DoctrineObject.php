@@ -558,10 +558,12 @@ class DoctrineObject extends AbstractHydrator
                 break;
             case 'string':
             case 'text':
-            case 'bigint':
-            case 'decimal':
                 $value = (string) $value;
                 break;
+            case 'decimal':
+                $value = (float) $value;
+                break;
+            case 'bigint':
             case 'integer':
             case 'smallint':
                 $value = (int) $value;

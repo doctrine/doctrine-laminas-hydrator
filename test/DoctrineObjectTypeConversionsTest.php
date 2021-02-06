@@ -615,40 +615,40 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertTrue(is_string($entity->getGenericField()));
-        $this->assertEquals('stringvalue', $entity->getGenericField());
+        $this->assertTrue(is_int($entity->getGenericField()));
+        $this->assertEquals(0, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_string($entity->getGenericField()));
-        $this->assertEquals('stringvalue', $entity->getGenericField());
+        $this->assertTrue(is_int($entity->getGenericField()));
+        $this->assertEquals(0, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertTrue(is_string($entity->getGenericField()));
-        $this->assertEquals('stringvalue', $entity->getGenericField());
+        $this->assertTrue(is_int($entity->getGenericField()));
+        $this->assertEquals(0, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $data   = ['genericField' => 'stringvalue'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_string($entity->getGenericField()));
-        $this->assertEquals('stringvalue', $entity->getGenericField());
+        $this->assertTrue(is_int($entity->getGenericField()));
+        $this->assertEquals(0, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $data   = ['genericField' => 12345];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_string($entity->getGenericField()));
-        $this->assertEquals('12345', $entity->getGenericField());
+        $this->assertTrue(is_int($entity->getGenericField()));
+        $this->assertEquals(12345, $entity->getGenericField());
     }
 
     public function testHandleTypeConversionsDecimal()
@@ -661,40 +661,40 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertTrue(is_string($entity->getGenericField()));
-        $this->assertEquals('123.45', $entity->getGenericField());
+        $this->assertTrue(is_float($entity->getGenericField()));
+        $this->assertEquals(123.45, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $data   = ['genericField' => '123.45'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_string($entity->getGenericField()));
-        $this->assertEquals('123.45', $entity->getGenericField());
+        $this->assertTrue(is_float($entity->getGenericField()));
+        $this->assertEquals(123.45, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $data   = ['genericField' => '123.45'];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertTrue(is_string($entity->getGenericField()));
-        $this->assertEquals('123.45', $entity->getGenericField());
+        $this->assertTrue(is_float($entity->getGenericField()));
+        $this->assertEquals(123.45, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $data   = ['genericField' => '123.45'];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_string($entity->getGenericField()));
-        $this->assertEquals('123.45', $entity->getGenericField());
+        $this->assertTrue(is_float($entity->getGenericField()));
+        $this->assertEquals(123.45, $entity->getGenericField());
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $data   = ['genericField' => 12345];
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
-        $this->assertTrue(is_string($entity->getGenericField()));
-        $this->assertEquals('12345', $entity->getGenericField());
+        $this->assertTrue(is_float($entity->getGenericField()));
+        $this->assertEquals(12345, $entity->getGenericField());
     }
 
     public function testHandleTypeConversionsNullable()

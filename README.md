@@ -42,7 +42,7 @@ about this distinction, but to be short, it allows the hydrator the change the w
 accessing the public API of your entity (getters/setters) or directly get/set data through reflection, hence bypassing
 any of your custom logic.
 
-#### Example 1 : simple entity with no associations
+#### Example 1: simple entity with no associations
 
 Let's begin by a simple example:
 
@@ -169,7 +169,7 @@ As you can see, the hydrator automatically converted the timestamp to a DateTime
 allowing us to have a nice API in our entity with correct typehint.
 
 
-#### Example 2 : OneToOne/ManyToOne associations
+#### Example 2: OneToOne/ManyToOne associations
 
 Doctrine Hydrator is especially useful when dealing with associations (OneToOne, OneToMany, ManyToOne) and
 integrates nicely with the Form/Fieldset logic ([learn more about this here](https://docs.laminas.dev/laminas-form/collections/)).
@@ -410,7 +410,7 @@ echo $blogPost->getUser()->getPassword(); // prints 2BorN0t2B
 ```
 
 
-#### Example 3 : OneToMany association
+#### Example 3: OneToMany association
 
 Doctrine Hydrator also handles OneToMany relationships (when use `Laminas\Form\Element\Collection` element). Please
 refer to the official [Laminas documentation](https://docs.laminas.dev/laminas-form/collections/) to learn more about Collection.
@@ -559,6 +559,143 @@ But this is very bad, because Doctrine collections should not be swapped, mostly
 an ObjectManager, thus they must not be replaced by a new instance.
 
 Once again, two cases may arise: the tags already exist or they do not.
+
+
+##### Example 4: Embedded Entities
+
+Doctrine provides so-called embeddables as a layer of abstraction which allow reusing partial object accross entities. 
+For example, one might have an entity `Address` which is not only used for a `Person`, but probably for an `Organisation`
+as well. Let's have a look at the entities:
+
+```php
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Address class for embedding in entities.
+ *
+ * @ORM\Embeddable
+ */
+class Tag
+{
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected ?string $postalCode = null;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected ?string $city = null;
+
+    public function getPostalCode(): ?string
+    {
+        return (string) $this->postalCode;
+    }
+
+    public function setPostalCode(?string $postalCode): void
+    {
+        $this->postalCode = $postalCode;
+    }
+
+    public function getCity(): ?string
+    {
+        return (string) $this->city;
+    }
+    
+    public function setCity(?string $city): void
+    {
+        $this->city = $city;
+    }
+}
+```
+
+And a corresponding `Person` entity, where the above embeddable is used:
+
+```php
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class Person 
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue()
+     */
+    protected ?int $id = null;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected ?string $name = null;
+
+    /**
+     * @ORM\Embedded(class="Address")
+     */
+    protected Address $address;
+    
+    public function __construct()
+    {
+        $this->address = new Address();
+    }
+    
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    
+    public function setId(?int $id)
+    {
+        $this->id = $id;
+    }
+    
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+    
+    public function setName(?string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function getAddress(): Address
+    {
+        return $this->address;
+    }
+}
+```
+
+The hydrator provided by this module will require the data for the embeddable to be in a separate array as follows:
+
+```php
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+
+$hydrator = new DoctrineHydrator($entityManager);
+$person = new Person();
+$data = [
+    'name' => 'Mr. Example',
+    'address'  => [
+        [
+            'postalCode' => '48149',
+            'city' => 'Münster',
+        ],
+    ],
+];
+
+$person = $hydrator->hydrate($data, $person);
+
+echo $person->getAddress()->getPostalCode(); // prints "48149"
+echo $person->getAddress()->getCity();       // prints "Münster"
+```
+
 
 ##### Existing entity in the association
 

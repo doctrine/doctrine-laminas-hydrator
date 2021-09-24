@@ -114,6 +114,7 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Get all field names, this includes direct field names, names of embeddables and
      * associations. By using a key-based generator, duplicates are effectively removed.
+     * @return list<string>
      */
     public function getFieldNames(): iterable
     {

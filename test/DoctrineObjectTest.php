@@ -483,19 +483,16 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->will($this->returnValue(false));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifierFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 

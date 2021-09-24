@@ -563,9 +563,9 @@ Once again, two cases may arise: the tags already exist or they do not.
 
 ##### Example 4: Embedded Entities
 
-Doctrine provides so-called embeddables as a layer of abstraction which allow reusing partial object accross entities. 
+Doctrine provides so-called embeddables as a layer of abstraction which allow reusing partial object across entities. 
 For example, one might have an entity `Address` which is not only used for a `Person`, but probably for an `Organisation`
-as well. Let's have a look at the entities:
+as well. Let's have a look at the classes. First we have a `Tag` class, which will be our embeddable:
 
 ```php
 namespace Application\Entity;
@@ -611,7 +611,7 @@ class Tag
 }
 ```
 
-And a corresponding `Person` entity, where the above embeddable is used:
+Then we have a corresponding `Person` entity, where the above embeddable is used:
 
 ```php
 <?php

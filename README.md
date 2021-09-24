@@ -51,21 +51,15 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class City
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
-    /**
-     * @ORM\Column(type="string", length=48)
-     */
+    #[ORM\Column(type: 'string', length: 48)]
     protected $name;
 
     public function getId()
@@ -115,21 +109,15 @@ namespace Application\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Appointment
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     protected $time;
 
     public function getId()
@@ -181,26 +169,18 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class User
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
-    /**
-     * @ORM\Column(type="string", length=48)
-     */
+    #[ORM\Column(type: 'string', length: 48)]
     protected $username;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     protected $password;
 
     public function getId()
@@ -237,26 +217,18 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class BlogPost
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\User")
-     */
+    #[ORM\ManyToOne(targetEntity: 'Application\Entity\User')]
     protected $user;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     protected $title;
 
     public function getId()
@@ -365,16 +337,12 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class BlogPost
 {
     /** .. */
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\User", cascade={"persist"})
-     */
+    #[ORM\ManyToOne(targetEntity: 'Application\Entity\User', cascade: ['persist'])] 
     protected $user;
 
     /** … */
@@ -431,21 +399,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class BlogPost
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Application\Entity\Tag", mappedBy="blogPost")
-     */
+    #[ORM\OneToMany(targetEntity: 'Application\Entity\Tag', mappedBy: 'blogPost')]
     protected $tags;
 
     /**
@@ -491,26 +453,18 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Tag
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\BlogPost", inversedBy="tags")
-     */
+    #[ORM\ManyToOne(targetEntity: 'Application\Entity\BlogPost', inversedBy: 'tags')]
     protected $blogPost;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     protected $name;
 
     public function getId()
@@ -574,19 +528,14 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Address class for embedding in entities.
- *
- * @ORM\Embeddable
  */
+#[ORM\Embeddable]
 class Tag
 {
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $postalCode = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $city = null;
 
     public function getPostalCode(): ?string
@@ -620,25 +569,17 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Person 
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue()
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     protected ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $name = null;
 
-    /**
-     * @ORM\Embedded(class="Address")
-     */
+    #[ORM\Embedded(class: 'Address')]
     protected Address $address;
     
     public function __construct()
@@ -780,16 +721,12 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class BlogPost
 {
     /** .. */
 
-    /**
-     * @ORM\OneToMany(targetEntity="Application\Entity\Tag", mappedBy="blogPost", cascade={"persist"})
-     */
+    #[ORM\OneToMany(targetEntity: 'Application\Entity\Tag', mappedBy: 'blogPost', cascade: ['persist'])]
     protected $tags;
 
     /** … */
@@ -877,14 +814,10 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class SimpleEntity
 {
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     protected $foo;
 
     public function getFoo()
@@ -946,21 +879,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class BlogPost
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Application\Entity\Tag", mappedBy="blogPost", cascade={"persist"})
-     */
+    #[ORM\OneToMany(targetEntity: 'Application\Entity\Tag', mappedBy: 'blogPost', cascade: ['persist'])]
     protected $tags;
 
     /**
@@ -1018,26 +945,18 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Tag
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\BlogPost", inversedBy="tags")
-     */
+    #[ORM\ManyToOne(targetEntity: 'Application\Entity\BlogPost', inversedBy: 'tags')]
     protected $blogPost;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     protected $name;
 
     /**
@@ -1343,27 +1262,18 @@ Imagine the following entity :
 ```php
 namespace Application\Entity;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="Students")
- */
+#[ORM\Entity]
 class User
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
-    /**
-     * @ORM\Column(type="string", length=48)
-     */
+    #[ORM\Column(type: 'string', length=48)]
     protected $name;
 
-    /**
-     * @ORM\OneToOne(targetEntity="City")
-     */
+    #[ORM\OneToOne(targetEntity: 'City')]
     protected $city;
 
     // … getter and setters are defined …

@@ -57,22 +57,22 @@ class City
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 48)]
-    protected $name;
+    protected ?string $name = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -115,22 +115,22 @@ class Appointment
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     #[ORM\Column(type: 'datetime')]
-    protected $time;
+    protected ?DateTime $time = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTime(DateTime $time)
+    public function setTime(DateTime $time): void
     {
         $this->time = $time;
     }
 
-    public function getTime()
+    public function getTime(): ?DateTime
     {
         return $this->time;
     }
@@ -175,35 +175,35 @@ class User
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 48)]
-    protected $username;
+    protected ?string $username = null;
 
     #[ORM\Column(type: 'string')]
-    protected $password;
+    protected ?string $password = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setUsername($username)
+    public function setUsername(string $username): void
     {
         $this->username = $username;
     }
 
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    public function setPassword($password)
+    public function setPassword(string $password): void
     {
         $this->password = $password;
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -223,35 +223,35 @@ class BlogPost
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: 'Application\Entity\User')]
-    protected $user;
+    protected ?User $user = null;
 
     #[ORM\Column(type: 'string')]
-    protected $title;
+    protected ?string $title = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         $this->user = $user;
     }
 
-    public function getUser()
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -330,7 +330,7 @@ echo $blogPost->getUser()->getId(); // prints 2
 ```
 
 For this to work, you must also slightly change your mapping, so that Doctrine can persist new entities on
-associations (note the cascade options on the OneToMany association):
+associations (note the cascade options on the ManyToOne association):
 
 ```php
 namespace Application\Entity;
@@ -343,7 +343,7 @@ class BlogPost
     /** .. */
 
     #[ORM\ManyToOne(targetEntity: 'Application\Entity\User', cascade: ['persist'])] 
-    protected $user;
+    protected ?User $user = null;
 
     /** … */
 }
@@ -405,10 +405,10 @@ class BlogPost
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     #[ORM\OneToMany(targetEntity: 'Application\Entity\Tag', mappedBy: 'blogPost')]
-    protected $tags;
+    protected Collection $tags;
 
     /**
      * Never forget to initialize your collections!
@@ -418,12 +418,12 @@ class BlogPost
         $this->tags = new ArrayCollection();
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function addTags(Collection $tags)
+    public function addTags(Collection $tags): void
     {
         foreach ($tags as $tag) {
             $tag->setBlogPost($this);
@@ -431,7 +431,7 @@ class BlogPost
         }
     }
 
-    public function removeTags(Collection $tags)
+    public function removeTags(Collection $tags): void
     {
         foreach ($tags as $tag) {
             $tag->setBlogPost(null);
@@ -439,7 +439,7 @@ class BlogPost
         }
     }
 
-    public function getTags()
+    public function getTags(): Collection
     {
         return $this->tags;
     }
@@ -459,15 +459,15 @@ class Tag
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: 'Application\Entity\BlogPost', inversedBy: 'tags')]
-    protected $blogPost;
+    protected ?BlogPost $blogPost = null;
 
     #[ORM\Column(type: 'string')]
-    protected $name;
+    protected ?string $name = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -475,22 +475,22 @@ class Tag
     /**
      * Allow null to remove association
      */
-    public function setBlogPost(BlogPost $blogPost = null)
+    public function setBlogPost(?BlogPost $blogPost = null): void
     {
         $this->blogPost = $blogPost;
     }
 
-    public function getBlogPost()
+    public function getBlogPost(): ?BlogPost
     {
         return $this->blogPost;
     }
 
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -503,7 +503,7 @@ You may think this is overkill, and ask why you cannot just define a `setTags` f
 by the new one:
 
 ```php
-public function setTags(Collection $tags)
+public function setTags(Collection $tags): void
 {
     $this->tags = $tags;
 }
@@ -540,7 +540,7 @@ class Tag
 
     public function getPostalCode(): ?string
     {
-        return (string) $this->postalCode;
+        return $this->postalCode;
     }
 
     public function setPostalCode(?string $postalCode): void
@@ -550,7 +550,7 @@ class Tag
 
     public function getCity(): ?string
     {
-        return (string) $this->city;
+        return $this->city;
     }
     
     public function setCity(?string $city): void
@@ -582,6 +582,9 @@ class Person
     #[ORM\Embedded(class: 'Address')]
     protected Address $address;
     
+    /**
+     * Similar to collections you should initialize embeddables in the constructor!
+     */
     public function __construct()
     {
         $this->address = new Address();
@@ -592,17 +595,12 @@ class Person
         return $this->id;
     }
     
-    public function setId(?int $id)
-    {
-        $this->id = $id;
-    }
-    
     public function getName(): ?string
     {
         return $this->name;
     }
     
-    public function setName(?string $name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -720,6 +718,7 @@ associations (note the cascade options on the OneToMany association):
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity]
 class BlogPost
@@ -727,7 +726,7 @@ class BlogPost
     /** .. */
 
     #[ORM\OneToMany(targetEntity: 'Application\Entity\Tag', mappedBy: 'blogPost', cascade: ['persist'])]
-    protected $tags;
+    protected Collection $tags;
 
     /** … */
 }
@@ -818,9 +817,9 @@ use Doctrine\ORM\Mapping as ORM;
 class SimpleEntity
 {
     #[ORM\Column(type: 'string')]
-    protected $foo;
+    protected ?string $foo = null;
 
-    public function getFoo()
+    public function getFoo(): void
     {
         die();
     }
@@ -885,10 +884,10 @@ class BlogPost
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     #[ORM\OneToMany(targetEntity: 'Application\Entity\Tag', mappedBy: 'blogPost', cascade: ['persist'])]
-    protected $tags;
+    protected Collection $tags;
 
     /**
      * Never forget to initialize your collections!
@@ -898,18 +897,12 @@ class BlogPost
         $this->tags = new ArrayCollection();
     }
 
-    /**
-     * @return integer
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param Collection $tags
-     */
-    public function addTags(Collection $tags)
+    public function addTags(Collection $tags): void
     {
         foreach ($tags as $tag) {
             $tag->setBlogPost($this);
@@ -917,10 +910,7 @@ class BlogPost
         }
     }
 
-    /**
-     * @param Collection $tags
-     */
-    public function removeTags(Collection $tags)
+    public function removeTags(Collection $tags): void
     {
         foreach ($tags as $tag) {
             $tag->setBlogPost(null);
@@ -928,10 +918,7 @@ class BlogPost
         }
     }
 
-    /**
-     * @return Collection
-     */
-    public function getTags()
+    public function getTags(): Collection
     {
         return $this->tags;
     }
@@ -951,53 +938,38 @@ class Tag
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: 'Application\Entity\BlogPost', inversedBy: 'tags')]
-    protected $blogPost;
+    protected ?BlogPost $blogPost = null;
 
     #[ORM\Column(type: 'string')]
-    protected $name;
+    protected ?string $name = null;
 
-    /**
-     * Get the id
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
      * Allow null to remove association
-     *
-     * @param BlogPost $blogPost
      */
-    public function setBlogPost(BlogPost $blogPost = null)
+    public function setBlogPost(?BlogPost $blogPost = null): void
     {
         $this->blogPost = $blogPost;
     }
 
-    /**
-     * @return BlogPost
-     */
-    public function getBlogPost()
+    public function getBlogPost(): ?BlogPost
     {
         return $this->blogPost;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -1268,13 +1240,13 @@ class User
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected $id;
+    protected ?int $id = null;
 
     #[ORM\Column(type: 'string', length=48)]
-    protected $name;
+    protected ?string $name = null;
 
     #[ORM\OneToOne(targetEntity: 'City')]
-    protected $city;
+    protected ?City $city = null;
 
     // … getter and setters are defined …
 }

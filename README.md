@@ -225,7 +225,7 @@ class BlogPost
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Application\Entity\User')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     protected ?User $user = null;
 
     #[ORM\Column(type: 'string')]
@@ -342,7 +342,7 @@ class BlogPost
 {
     /** .. */
 
-    #[ORM\ManyToOne(targetEntity: 'Application\Entity\User', cascade: ['persist'])] 
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])] 
     protected ?User $user = null;
 
     /** … */
@@ -359,7 +359,7 @@ be hydrated before it is passed to the BlogPost entity.
 ```php
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
-$hydrator = new DoctrineHydrator($entityManager, 'Application\Entity\BlogPost');
+$hydrator = new DoctrineHydrator($entityManager, BlogPost::class);
 $blogPost = new BlogPost();
 
 $data = [
@@ -407,7 +407,7 @@ class BlogPost
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected ?int $id = null;
 
-    #[ORM\OneToMany(targetEntity: 'Application\Entity\Tag', mappedBy: 'blogPost')]
+    #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost')]
     protected Collection $tags;
 
     /**
@@ -461,7 +461,7 @@ class Tag
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Application\Entity\BlogPost', inversedBy: 'tags')]
+    #[ORM\ManyToOne(targetEntity: BlogPost::class, inversedBy: 'tags')]
     protected ?BlogPost $blogPost = null;
 
     #[ORM\Column(type: 'string')]
@@ -725,7 +725,7 @@ class BlogPost
 {
     /** .. */
 
-    #[ORM\OneToMany(targetEntity: 'Application\Entity\Tag', mappedBy: 'blogPost', cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost', cascade: ['persist'])]
     protected Collection $tags;
 
     /** … */
@@ -886,7 +886,7 @@ class BlogPost
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected ?int $id = null;
 
-    #[ORM\OneToMany(targetEntity: 'Application\Entity\Tag', mappedBy: 'blogPost', cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost', cascade: ['persist'])]
     protected Collection $tags;
 
     /**
@@ -940,7 +940,7 @@ class Tag
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Application\Entity\BlogPost', inversedBy: 'tags')]
+    #[ORM\ManyToOne(targetEntity: BlogPost::class, inversedBy: 'tags')]
     protected ?BlogPost $blogPost = null;
 
     #[ORM\Column(type: 'string')]
@@ -991,8 +991,10 @@ name by modifying an existing Tag entity without creating a new tag (and removin
 namespace Application\Form;
 
 use Application\Entity\Tag;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
+use Laminas\Form\Element\Hidden;
+use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
@@ -1006,12 +1008,12 @@ class TagFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new Tag());
 
         $this->add([
-            'type' => 'Laminas\Form\Element\Hidden',
+            'type' => Hidden::class,
             'name' => 'id',
         ]);
 
         $this->add([
-            'type'    => 'Laminas\Form\Element\Text',
+            'type'    => Text::class,
             'name'    => 'name',
             'options' => [
                 'label' => 'Tag',
@@ -1039,8 +1041,10 @@ And the BlogPost fieldset:
 namespace Application\Form;
 
 use Application\Entity\BlogPost;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
+use Laminas\Form\Element\Collection;
+use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
@@ -1054,13 +1058,13 @@ class BlogPostFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new BlogPost());
 
         $this->add([
-            'type' => 'Laminas\Form\Element\Text',
+            'type' => Text::class,
             'name' => 'title',
         ]);
 
         $tagFieldset = new TagFieldset($objectManager);
         $this->add([
-            'type'    => 'Laminas\Form\Element\Collection',
+            'type'    => Collection::class,
             'name'    => 'tags',
             'options' => [
                 'count'          => 2,
@@ -1095,8 +1099,8 @@ Here is the create form:
 ```php
 namespace Application\Form;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
 use Laminas\Form\Form;
 
 class CreateBlogPostForm extends Form
@@ -1125,8 +1129,8 @@ And the update form:
 ```php
 namespace Application\Form;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
 use Laminas\Form\Form;
 
 class UpdateBlogPostForm extends Form
@@ -1152,11 +1156,52 @@ class UpdateBlogPostForm extends Form
 
 #### The controllers
 
-We now have everything. Let's create the controllers.
+We now have everything. Let's create the controllers. First, you will need to make sure that you inject Doctrine's
+entity manager into your controllers using dependency injection. Your controller should look like this:
+
+```php
+namespace Application\Controller;
+
+use Doctrine\ORM\EntityManager;
+use Laminas\Mvc\Controller\AbstractActionController
+
+class MySampleController extends AbstractActionController
+{
+    protected EntityManager $entityManager;
+    
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+}
+```
+
+You will need to set up a factory for your controller. To get started you may use a 
+[reflection-based factory](https://docs.laminas.dev/laminas-servicemanager/reflection-abstract-factory/), which injects 
+all dependencies automatically. This is what the configuration needs to look like:
+
+```php
+use Application\Controller\MySampleController;
+use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
+
+return [
+    /* … */
+    'controllers' => [
+        'factories' => [
+            MySampleController::class => ReflectionBasedAbstractFactory::class,
+        ],
+    ],
+    /* … */
+```
+
+Later you can - and probably should - generate individual factories automatically using the
+[console tools](https://docs.laminas.dev/laminas-servicemanager/console-tools/) provided by Laminas. This will increase
+your application's performance in production deployments.
+
 
 ##### Creation
 
-If the createAction, we will create a new BlogPost and all the associated tags. As a consequence, the hidden ids
+In the createAction, we will create a new BlogPost and all the associated tags. As a consequence, the hidden ids
 for the tags will by empty (because they have not been persisted yet).
 
 Here is the action for create a new blog post:
@@ -1164,11 +1209,8 @@ Here is the action for create a new blog post:
 ```php
 public function createAction()
 {
-    // Get your ObjectManager from the ServiceManager
-    $objectManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-
-    // Create the form and inject the ObjectManager
-    $form = new CreateBlogPostForm($objectManager);
+    // Create the form and inject the EntityManager
+    $form = new CreateBlogPostForm($this->entityManager);
 
     // Create a new, empty entity and bind it to the form
     $blogPost = new BlogPost();
@@ -1192,11 +1234,8 @@ The update form is similar, instead that we get the blog post from database inst
 ```php
 public function editAction()
 {
-    // Get your ObjectManager from the ServiceManager
-    $objectManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-
-    // Create the form and inject the ObjectManager
-    $form = new UpdateBlogPostForm($objectManager);
+    // Create the form and inject the EntityManager
+    $form = new UpdateBlogPostForm($this->entityManager);
 
     // Fetch the existing BlogPost from storage and bind it to the form.
     // This will pre-fill form field values
@@ -1265,8 +1304,9 @@ First the User fieldset :
 namespace Application\Form;
 
 use Application\Entity\User;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
+use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
@@ -1280,7 +1320,7 @@ class UserFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new User());
 
         $this->add([
-            'type'    => 'Laminas\Form\Element\Text',
+            'type'    => Text::class,
             'name'    => 'name',
             'options' => [
                 'label' => 'Your name',
@@ -1313,8 +1353,9 @@ And then the City fieldset :
 namespace Application\Form;
 
 use Application\Entity\City;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
+use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
@@ -1328,7 +1369,7 @@ class CityFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new City());
 
         $this->add([
-            'type'    => 'Laminas\Form\Element\Text',
+            'type'    => Text::class,
             'name'    => 'name',
             'options' => [
                 'label' => 'Name of your city',
@@ -1339,7 +1380,7 @@ class CityFieldset extends Fieldset implements InputFilterProviderInterface
         ]);
 
         $this->add([
-            'type'    => 'Laminas\Form\Element\Text',
+            'type'    => Text::clas,
             'name'    => 'postCode',
             'options' => [
                 'label' => 'Postcode of your city',
@@ -1371,8 +1412,8 @@ be like this :
 ```php
 namespace Application\Form;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
 use Laminas\Form\Form;
 
 class EditNameForm extends Form
@@ -1411,11 +1452,8 @@ something like this :
 ```php
 public function editNameAction()
 {
-    // Get your ObjectManager from the ServiceManager
-    $objectManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-
-    // Create the form and inject the ObjectManager
-    $form = new EditNameForm($objectManager);
+    // Create the form and inject the Entity Manager
+    $form = new EditNameForm($this->entityManager);
 
     // Get the logged user (for more informations about userIdentity(), please read the Authentication doc)
     $loggedUser = $this->userIdentity();
@@ -1458,8 +1496,8 @@ EditUserForm :
 ```php
 namespace Application\Form;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
 use Laminas\Form\Form;
 
 class EditNameForm extends Form

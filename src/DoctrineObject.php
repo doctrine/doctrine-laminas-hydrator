@@ -114,6 +114,7 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Get all field names, this includes direct field names, names of embeddables and
      * associations. By using a key-based generator, duplicates are effectively removed.
+     *
      * @return list<string>
      */
     public function getFieldNames(): iterable
@@ -123,7 +124,7 @@ class DoctrineObject extends AbstractHydrator
             if ($pos = strpos($fieldName, '.')) {
                 $fieldName = substr($fieldName, 0, $pos);
             }
-            yield $fieldName => $fieldName;
+            yield $fieldName;
         }
     }
 
@@ -218,14 +219,13 @@ class DoctrineObject extends AbstractHydrator
      */
     protected function extractByValue($object)
     {
-        $fieldNames = $this->getFieldNames();
-        $methods    = get_class_methods($object);
-        $filter     = $object instanceof FilterProviderInterface
+        $methods = get_class_methods($object);
+        $filter  = $object instanceof FilterProviderInterface
             ? $object->getFilter()
             : $this->filterComposite;
 
         $data = [];
-        foreach ($fieldNames as $fieldName) {
+        foreach ($this->getFieldNames() as $fieldName) {
             if ($filter && ! $filter->filter($fieldName)) {
                 continue;
             }
@@ -261,14 +261,13 @@ class DoctrineObject extends AbstractHydrator
      */
     protected function extractByReference($object)
     {
-        $fieldNames = $this->getFieldNames();
-        $refl       = $this->metadata->getReflectionClass();
-        $filter     = $object instanceof FilterProviderInterface
+        $refl   = $this->metadata->getReflectionClass();
+        $filter = $object instanceof FilterProviderInterface
             ? $object->getFilter()
             : $this->filterComposite;
 
         $data = [];
-        foreach ($fieldNames as $fieldName) {
+        foreach ($this->getFieldNames() as $fieldName) {
             if ($filter && ! $filter->filter($fieldName)) {
                 continue;
             }

@@ -446,19 +446,16 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue([]));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id', 'embedded.field']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->logicalOr(
                 $this->equalTo('id'),
@@ -467,7 +464,7 @@ class DoctrineObjectTest extends TestCase
             ))
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    function (string $arg): ?string {
                         if ($arg === 'id') {
                             return 'integer';
                         } elseif ($arg === 'embedded.field') {

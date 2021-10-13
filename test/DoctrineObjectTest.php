@@ -440,6 +440,69 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
+    public function configureObjectManagerForSimpleEntityWithEmbeddable()
+    {
+        $refl = new ReflectionClass(Assets\SimpleEntityWithEmbeddable::class);
+
+        $this
+            ->metadata
+            ->method('getAssociationNames')
+            ->will($this->returnValue([]));
+
+        $this
+            ->metadata
+            ->method('getFieldNames')
+            ->will($this->returnValue(['id', 'embedded.field']));
+
+        $this
+            ->metadata
+            ->method('getTypeOfField')
+            ->with($this->logicalOr(
+                $this->equalTo('id'),
+                $this->equalTo('embedded.field'),
+                $this->equalTo('embedded')
+            ))
+            ->will(
+                $this->returnCallback(
+                    function (string $arg): ?string {
+                        if ($arg === 'id') {
+                            return 'integer';
+                        } elseif ($arg === 'embedded.field') {
+                            return 'string';
+                        } elseif ($arg === 'embedded') {
+                            return null;
+                        }
+
+                        throw new InvalidArgumentException();
+                    }
+                )
+            );
+
+        $this
+            ->metadata
+            ->method('hasAssociation')
+            ->will($this->returnValue(false));
+
+        $this
+            ->metadata
+            ->method('getIdentifierFieldNames')
+            ->will($this->returnValue(['id']));
+
+        $this
+            ->metadata
+            ->method('getReflectionClass')
+            ->will($this->returnValue($refl));
+
+        $this->hydratorByValue     = new DoctrineObjectHydrator(
+            $this->objectManager,
+            true
+        );
+        $this->hydratorByReference = new DoctrineObjectHydrator(
+            $this->objectManager,
+            false
+        );
+    }
+
     public function configureObjectManagerForOneToOneEntity()
     {
         $refl = new ReflectionClass(Assets\OneToOneEntity::class);
@@ -1022,6 +1085,64 @@ class DoctrineObjectTest extends TestCase
 
         $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $entity);
         $this->assertEquals('bar', $entity->getField(false));
+    }
+
+    public function testCanExtractSimpleEntityWithEmbeddableByValue()
+    {
+        // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
+        $entity = new Assets\SimpleEntityWithEmbeddable();
+        $entity->setId(2);
+        $entity->getEmbedded()->setField('foo');
+
+        $this->configureObjectManagerForSimpleEntityWithEmbeddable();
+
+        $data = $this->hydratorByValue->extract($entity);
+        $this->assertEquals(['id' => 2, 'embedded' => $entity->getEmbedded()], $data);
+    }
+
+    public function testCanExtractSimpleEntityWithEmbeddableByReference()
+    {
+        // When using extraction by reference, it won't use the public API of entity (getters won't be called)
+        $entity = new Assets\SimpleEntityWithEmbeddable();
+        $entity->setId(2);
+        $entity->getEmbedded()->setField('foo');
+
+        $this->configureObjectManagerForSimpleEntityWithEmbeddable();
+
+        $data = $this->hydratorByReference->extract($entity);
+        $this->assertEquals(['id' => 2, 'embedded' => $entity->getEmbedded()], $data);
+    }
+
+    public function testCanHydrateSimpleEntityWithEmbeddableByValue()
+    {
+        // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
+        $entity = new Assets\SimpleEntityWithEmbeddable();
+
+        $embedded = new Assets\EmbedabbleEntity();
+        $embedded->setField('foo');
+        $data = ['embedded' => $embedded];
+
+        $this->configureObjectManagerForSimpleEntityWithEmbeddable();
+
+        $entity = $this->hydratorByValue->hydrate($data, $entity);
+        $this->assertInstanceOf(Assets\SimpleEntityWithEmbeddable::class, $entity);
+        $this->assertSame($entity->getEmbedded(), $embedded);
+    }
+
+    public function testCanHydrateSimpleEntityWithEmbeddableByReference()
+    {
+        // When using extraction by reference, it won't use the public API of entity (getters won't be called)
+        $entity = new Assets\SimpleEntityWithEmbeddable();
+
+        $embedded = new Assets\EmbedabbleEntity();
+        $embedded->setField('foo');
+        $data = ['embedded' => $embedded];
+
+        $this->configureObjectManagerForSimpleEntityWithEmbeddable();
+
+        $entity = $this->hydratorByReference->hydrate($data, $entity);
+        $this->assertInstanceOf(Assets\SimpleEntityWithEmbeddable::class, $entity);
+        $this->assertSame($entity->getEmbedded(), $embedded);
     }
 
     public function testExtractOneToOneAssociationByValue()

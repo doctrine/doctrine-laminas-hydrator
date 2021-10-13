@@ -57,10 +57,10 @@ class City
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 48)]
-    protected ?string $name = null;
+    private ?string $name = null;
 
     public function getId(): ?int
     {
@@ -115,10 +115,10 @@ class Appointment
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'datetime')]
-    protected ?DateTime $time = null;
+    private ?DateTime $time = null;
 
     public function getId(): ?int
     {
@@ -175,13 +175,13 @@ class User
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 48)]
-    protected ?string $username = null;
+    private ?string $username = null;
 
     #[ORM\Column(type: 'string')]
-    protected ?string $password = null;
+    private ?string $password = null;
 
     public function getId(): ?int
     {
@@ -223,13 +223,13 @@ class BlogPost
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    protected ?User $user = null;
+    private ?User $user = null;
 
     #[ORM\Column(type: 'string')]
-    protected ?string $title = null;
+    private ?string $title = null;
 
     public function getId(): ?int
     {
@@ -343,7 +343,7 @@ class BlogPost
     /** .. */
 
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])] 
-    protected ?User $user = null;
+    private ?User $user = null;
 
     /** … */
 }
@@ -405,10 +405,10 @@ class BlogPost
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    private ?int $id = null;
 
     #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost')]
-    protected Collection $tags;
+    private Collection $tags;
 
     /**
      * Never forget to initialize your collections!
@@ -459,13 +459,13 @@ class Tag
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: BlogPost::class, inversedBy: 'tags')]
-    protected ?BlogPost $blogPost = null;
+    private ?BlogPost $blogPost = null;
 
     #[ORM\Column(type: 'string')]
-    protected ?string $name = null;
+    private ?string $name = null;
 
     public function getId(): ?int
     {
@@ -533,10 +533,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Tag
 {
     #[ORM\Column(type: 'string', nullable: true)]
-    protected ?string $postalCode = null;
+    private ?string $postalCode = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
-    protected ?string $city = null;
+    private ?string $city = null;
 
     public function getPostalCode(): ?string
     {
@@ -574,13 +574,13 @@ class Person
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    protected ?int $id = null;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
-    protected ?string $name = null;
+    private ?string $name = null;
 
     #[ORM\Embedded(class: 'Address')]
-    protected Address $address;
+    private Address $address;
     
     /**
      * Similar to collections you should initialize embeddables in the constructor!
@@ -726,7 +726,7 @@ class BlogPost
     /** .. */
 
     #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost', cascade: ['persist'])]
-    protected Collection $tags;
+    private Collection $tags;
 
     /** … */
 }
@@ -817,7 +817,7 @@ use Doctrine\ORM\Mapping as ORM;
 class SimpleEntity
 {
     #[ORM\Column(type: 'string')]
-    protected ?string $foo = null;
+    private ?string $foo = null;
 
     public function getFoo(): void
     {
@@ -884,10 +884,10 @@ class BlogPost
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    private ?int $id = null;
 
     #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost', cascade: ['persist'])]
-    protected Collection $tags;
+    private Collection $tags;
 
     /**
      * Never forget to initialize your collections!
@@ -938,13 +938,13 @@ class Tag
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: BlogPost::class, inversedBy: 'tags')]
-    protected ?BlogPost $blogPost = null;
+    private ?BlogPost $blogPost = null;
 
     #[ORM\Column(type: 'string')]
-    protected ?string $name = null;
+    private ?string $name = null;
 
     public function getId(): ?int
     {
@@ -1167,7 +1167,7 @@ use Laminas\Mvc\Controller\AbstractActionController
 
 class MySampleController extends AbstractActionController
 {
-    protected EntityManager $entityManager;
+    private EntityManager $entityManager;
     
     public function __construct(EntityManager $entityManager)
     {
@@ -1279,13 +1279,13 @@ class User
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    protected ?int $id = null;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length=48)]
-    protected ?string $name = null;
+    private ?string $name = null;
 
     #[ORM\OneToOne(targetEntity: 'City')]
-    protected ?City $city = null;
+    private ?City $city = null;
 
     // … getter and setters are defined …
 }

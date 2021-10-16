@@ -11,6 +11,7 @@ use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByReference;
 use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByValue;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
+use Generator;
 use InvalidArgumentException;
 use Laminas\Hydrator\AbstractHydrator;
 use Laminas\Hydrator\Filter\FilterProviderInterface;
@@ -115,7 +116,7 @@ class DoctrineObject extends AbstractHydrator
      * Get all field names, this includes direct field names, names of embeddables and
      * associations. By using a key-based generator, duplicates are effectively removed.
      *
-     * @return list<string>
+     * @return Generator<string>
      */
     public function getFieldNames(): iterable
     {
@@ -415,7 +416,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  array  $data The data that may contain identifiers keys
      * @param  object $object
-     * @return object
+     * @return object|null
      */
     protected function tryConvertArrayToObject($data, $object)
     {

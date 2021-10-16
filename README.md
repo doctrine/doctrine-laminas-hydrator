@@ -51,34 +51,28 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class City
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=48)
-     */
-    protected $name;
+    #[ORM\Column(type: 'string', length: 48)]
+    private ?string $name = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -115,34 +109,28 @@ namespace Application\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Appointment
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected $time;
+    #[ORM\Column(type: 'datetime')]
+    private ?DateTime $time = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTime(DateTime $time)
+    public function setTime(DateTime $time): void
     {
         $this->time = $time;
     }
 
-    public function getTime()
+    public function getTime(): ?DateTime
     {
         return $this->time;
     }
@@ -181,49 +169,41 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class User
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=48)
-     */
-    protected $username;
+    #[ORM\Column(type: 'string', length: 48)]
+    private ?string $username = null;
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $password;
+    #[ORM\Column(type: 'string')]
+    private ?string $password = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setUsername($username)
+    public function setUsername(string $username): void
     {
         $this->username = $username;
     }
 
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    public function setPassword($password)
+    public function setPassword(string $password): void
     {
         $this->password = $password;
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -237,49 +217,41 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class BlogPost
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\User")
-     */
-    protected $user;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $user = null;
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $title;
+    #[ORM\Column(type: 'string')]
+    private ?string $title = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         $this->user = $user;
     }
 
-    public function getUser()
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -358,24 +330,20 @@ echo $blogPost->getUser()->getId(); // prints 2
 ```
 
 For this to work, you must also slightly change your mapping, so that Doctrine can persist new entities on
-associations (note the cascade options on the OneToMany association):
+associations (note the cascade options on the ManyToOne association):
 
 ```php
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class BlogPost
 {
     /** .. */
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\User", cascade={"persist"})
-     */
-    protected $user;
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])] 
+    private ?User $user = null;
 
     /** … */
 }
@@ -391,7 +359,7 @@ be hydrated before it is passed to the BlogPost entity.
 ```php
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
-$hydrator = new DoctrineHydrator($entityManager, 'Application\Entity\BlogPost');
+$hydrator = new DoctrineHydrator($entityManager, BlogPost::class);
 $blogPost = new BlogPost();
 
 $data = [
@@ -431,22 +399,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class BlogPost
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Application\Entity\Tag", mappedBy="blogPost")
-     */
-    protected $tags;
+    #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost')]
+    private Collection $tags;
 
     /**
      * Never forget to initialize your collections!
@@ -456,12 +418,12 @@ class BlogPost
         $this->tags = new ArrayCollection();
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function addTags(Collection $tags)
+    public function addTags(Collection $tags): void
     {
         foreach ($tags as $tag) {
             $tag->setBlogPost($this);
@@ -469,7 +431,7 @@ class BlogPost
         }
     }
 
-    public function removeTags(Collection $tags)
+    public function removeTags(Collection $tags): void
     {
         foreach ($tags as $tag) {
             $tag->setBlogPost(null);
@@ -477,7 +439,7 @@ class BlogPost
         }
     }
 
-    public function getTags()
+    public function getTags(): Collection
     {
         return $this->tags;
     }
@@ -491,29 +453,21 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Tag
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\BlogPost", inversedBy="tags")
-     */
-    protected $blogPost;
+    #[ORM\ManyToOne(targetEntity: BlogPost::class, inversedBy: 'tags')]
+    private ?BlogPost $blogPost = null;
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $name;
+    #[ORM\Column(type: 'string')]
+    private ?string $name = null;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -521,22 +475,22 @@ class Tag
     /**
      * Allow null to remove association
      */
-    public function setBlogPost(BlogPost $blogPost = null)
+    public function setBlogPost(?BlogPost $blogPost = null): void
     {
         $this->blogPost = $blogPost;
     }
 
-    public function getBlogPost()
+    public function getBlogPost(): ?BlogPost
     {
         return $this->blogPost;
     }
 
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -549,7 +503,7 @@ You may think this is overkill, and ask why you cannot just define a `setTags` f
 by the new one:
 
 ```php
-public function setTags(Collection $tags)
+public function setTags(Collection $tags): void
 {
     $this->tags = $tags;
 }
@@ -574,24 +528,19 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Address class for embedding in entities.
- *
- * @ORM\Embeddable
  */
+#[ORM\Embeddable]
 class Tag
 {
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    protected ?string $postalCode = null;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $postalCode = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    protected ?string $city = null;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $city = null;
 
     public function getPostalCode(): ?string
     {
-        return (string) $this->postalCode;
+        return $this->postalCode;
     }
 
     public function setPostalCode(?string $postalCode): void
@@ -601,7 +550,7 @@ class Tag
 
     public function getCity(): ?string
     {
-        return (string) $this->city;
+        return $this->city;
     }
     
     public function setCity(?string $city): void
@@ -620,27 +569,22 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Person 
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue()
-     */
-    protected ?int $id = null;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    protected ?string $name = null;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\Embedded(class="Address")
-     */
-    protected Address $address;
+    #[ORM\Embedded(class: 'Address')]
+    private Address $address;
     
+    /**
+     * Similar to collections you should initialize embeddables in the constructor!
+     */
     public function __construct()
     {
         $this->address = new Address();
@@ -651,17 +595,12 @@ class Person
         return $this->id;
     }
     
-    public function setId(?int $id)
-    {
-        $this->id = $id;
-    }
-    
     public function getName(): ?string
     {
         return $this->name;
     }
     
-    public function setName(?string $name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -779,18 +718,15 @@ associations (note the cascade options on the OneToMany association):
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class BlogPost
 {
     /** .. */
 
-    /**
-     * @ORM\OneToMany(targetEntity="Application\Entity\Tag", mappedBy="blogPost", cascade={"persist"})
-     */
-    protected $tags;
+    #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost', cascade: ['persist'])]
+    private Collection $tags;
 
     /** … */
 }
@@ -877,17 +813,13 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class SimpleEntity
 {
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $foo;
+    #[ORM\Column(type: 'string')]
+    private ?string $foo = null;
 
-    public function getFoo()
+    public function getFoo(): void
     {
         die();
     }
@@ -946,22 +878,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class BlogPost
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Application\Entity\Tag", mappedBy="blogPost", cascade={"persist"})
-     */
-    protected $tags;
+    #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost', cascade: ['persist'])]
+    private Collection $tags;
 
     /**
      * Never forget to initialize your collections!
@@ -971,18 +897,12 @@ class BlogPost
         $this->tags = new ArrayCollection();
     }
 
-    /**
-     * @return integer
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param Collection $tags
-     */
-    public function addTags(Collection $tags)
+    public function addTags(Collection $tags): void
     {
         foreach ($tags as $tag) {
             $tag->setBlogPost($this);
@@ -990,10 +910,7 @@ class BlogPost
         }
     }
 
-    /**
-     * @param Collection $tags
-     */
-    public function removeTags(Collection $tags)
+    public function removeTags(Collection $tags): void
     {
         foreach ($tags as $tag) {
             $tag->setBlogPost(null);
@@ -1001,10 +918,7 @@ class BlogPost
         }
     }
 
-    /**
-     * @return Collection
-     */
-    public function getTags()
+    public function getTags(): Collection
     {
         return $this->tags;
     }
@@ -1018,67 +932,44 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Tag
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Application\Entity\BlogPost", inversedBy="tags")
-     */
-    protected $blogPost;
+    #[ORM\ManyToOne(targetEntity: BlogPost::class, inversedBy: 'tags')]
+    private ?BlogPost $blogPost = null;
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $name;
+    #[ORM\Column(type: 'string')]
+    private ?string $name = null;
 
-    /**
-     * Get the id
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
      * Allow null to remove association
-     *
-     * @param BlogPost $blogPost
      */
-    public function setBlogPost(BlogPost $blogPost = null)
+    public function setBlogPost(?BlogPost $blogPost = null): void
     {
         $this->blogPost = $blogPost;
     }
 
-    /**
-     * @return BlogPost
-     */
-    public function getBlogPost()
+    public function getBlogPost(): ?BlogPost
     {
         return $this->blogPost;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -1100,8 +991,10 @@ name by modifying an existing Tag entity without creating a new tag (and removin
 namespace Application\Form;
 
 use Application\Entity\Tag;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
+use Laminas\Form\Element\Hidden;
+use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
@@ -1115,12 +1008,12 @@ class TagFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new Tag());
 
         $this->add([
-            'type' => 'Laminas\Form\Element\Hidden',
+            'type' => Hidden::class,
             'name' => 'id',
         ]);
 
         $this->add([
-            'type'    => 'Laminas\Form\Element\Text',
+            'type'    => Text::class,
             'name'    => 'name',
             'options' => [
                 'label' => 'Tag',
@@ -1148,8 +1041,10 @@ And the BlogPost fieldset:
 namespace Application\Form;
 
 use Application\Entity\BlogPost;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
+use Laminas\Form\Element\Collection;
+use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
@@ -1163,13 +1058,13 @@ class BlogPostFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new BlogPost());
 
         $this->add([
-            'type' => 'Laminas\Form\Element\Text',
+            'type' => Text::class,
             'name' => 'title',
         ]);
 
         $tagFieldset = new TagFieldset($objectManager);
         $this->add([
-            'type'    => 'Laminas\Form\Element\Collection',
+            'type'    => Collection::class,
             'name'    => 'tags',
             'options' => [
                 'count'          => 2,
@@ -1204,8 +1099,8 @@ Here is the create form:
 ```php
 namespace Application\Form;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
 use Laminas\Form\Form;
 
 class CreateBlogPostForm extends Form
@@ -1234,8 +1129,8 @@ And the update form:
 ```php
 namespace Application\Form;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
 use Laminas\Form\Form;
 
 class UpdateBlogPostForm extends Form
@@ -1261,11 +1156,52 @@ class UpdateBlogPostForm extends Form
 
 #### The controllers
 
-We now have everything. Let's create the controllers.
+We now have everything. Let's create the controllers. First, you will need to make sure that you inject Doctrine's
+entity manager into your controllers using dependency injection. Your controller should look like this:
+
+```php
+namespace Application\Controller;
+
+use Doctrine\ORM\EntityManager;
+use Laminas\Mvc\Controller\AbstractActionController
+
+class MySampleController extends AbstractActionController
+{
+    private EntityManager $entityManager;
+    
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+}
+```
+
+You will need to set up a factory for your controller. To get started you may use a 
+[reflection-based factory](https://docs.laminas.dev/laminas-servicemanager/reflection-abstract-factory/), which injects 
+all dependencies automatically. This is what the configuration needs to look like:
+
+```php
+use Application\Controller\MySampleController;
+use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
+
+return [
+    /* … */
+    'controllers' => [
+        'factories' => [
+            MySampleController::class => ReflectionBasedAbstractFactory::class,
+        ],
+    ],
+    /* … */
+```
+
+Later you can - and probably should - generate individual factories automatically using the
+[console tools](https://docs.laminas.dev/laminas-servicemanager/console-tools/) provided by Laminas. This will increase
+your application's performance in production deployments.
+
 
 ##### Creation
 
-If the createAction, we will create a new BlogPost and all the associated tags. As a consequence, the hidden ids
+In the createAction, we will create a new BlogPost and all the associated tags. As a consequence, the hidden ids
 for the tags will by empty (because they have not been persisted yet).
 
 Here is the action for create a new blog post:
@@ -1273,11 +1209,8 @@ Here is the action for create a new blog post:
 ```php
 public function createAction()
 {
-    // Get your ObjectManager from the ServiceManager
-    $objectManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-
-    // Create the form and inject the ObjectManager
-    $form = new CreateBlogPostForm($objectManager);
+    // Create the form and inject the EntityManager
+    $form = new CreateBlogPostForm($this->entityManager);
 
     // Create a new, empty entity and bind it to the form
     $blogPost = new BlogPost();
@@ -1301,11 +1234,8 @@ The update form is similar, instead that we get the blog post from database inst
 ```php
 public function editAction()
 {
-    // Get your ObjectManager from the ServiceManager
-    $objectManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-
-    // Create the form and inject the ObjectManager
-    $form = new UpdateBlogPostForm($objectManager);
+    // Create the form and inject the EntityManager
+    $form = new UpdateBlogPostForm($this->entityManager);
 
     // Fetch the existing BlogPost from storage and bind it to the form.
     // This will pre-fill form field values
@@ -1343,28 +1273,19 @@ Imagine the following entity :
 ```php
 namespace Application\Entity;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="Students")
- */
+#[ORM\Entity]
 class User
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=48)
-     */
-    protected $name;
+    #[ORM\Column(type: 'string', length=48)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity="City")
-     */
-    protected $city;
+    #[ORM\OneToOne(targetEntity: 'City')]
+    private ?City $city = null;
 
     // … getter and setters are defined …
 }
@@ -1383,8 +1304,9 @@ First the User fieldset :
 namespace Application\Form;
 
 use Application\Entity\User;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
+use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
@@ -1398,7 +1320,7 @@ class UserFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new User());
 
         $this->add([
-            'type'    => 'Laminas\Form\Element\Text',
+            'type'    => Text::class,
             'name'    => 'name',
             'options' => [
                 'label' => 'Your name',
@@ -1431,8 +1353,9 @@ And then the City fieldset :
 namespace Application\Form;
 
 use Application\Entity\City;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
+use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
@@ -1446,7 +1369,7 @@ class CityFieldset extends Fieldset implements InputFilterProviderInterface
              ->setObject(new City());
 
         $this->add([
-            'type'    => 'Laminas\Form\Element\Text',
+            'type'    => Text::class,
             'name'    => 'name',
             'options' => [
                 'label' => 'Name of your city',
@@ -1457,7 +1380,7 @@ class CityFieldset extends Fieldset implements InputFilterProviderInterface
         ]);
 
         $this->add([
-            'type'    => 'Laminas\Form\Element\Text',
+            'type'    => Text::clas,
             'name'    => 'postCode',
             'options' => [
                 'label' => 'Postcode of your city',
@@ -1489,8 +1412,8 @@ be like this :
 ```php
 namespace Application\Form;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
 use Laminas\Form\Form;
 
 class EditNameForm extends Form
@@ -1529,11 +1452,8 @@ something like this :
 ```php
 public function editNameAction()
 {
-    // Get your ObjectManager from the ServiceManager
-    $objectManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-
-    // Create the form and inject the ObjectManager
-    $form = new EditNameForm($objectManager);
+    // Create the form and inject the Entity Manager
+    $form = new EditNameForm($this->entityManager);
 
     // Get the logged user (for more informations about userIdentity(), please read the Authentication doc)
     $loggedUser = $this->userIdentity();
@@ -1576,8 +1496,8 @@ EditUserForm :
 ```php
 namespace Application\Form;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\Persistence\ObjectManager;
 use Laminas\Form\Form;
 
 class EditNameForm extends Form

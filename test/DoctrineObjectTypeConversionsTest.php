@@ -9,6 +9,7 @@ use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineObjectHydrator;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -25,10 +26,10 @@ class DoctrineObjectTypeConversionsTest extends TestCase
     /** @var DoctrineObjectHydrator */
     protected $hydratorByReference;
 
-    /** @var ClassMetadata */
+    /** @var ClassMetadata&MockObject */
     protected $metadata;
 
-    /** @var ObjectManager */
+    /** @var ObjectManager&MockObject */
     protected $objectManager;
 
     protected function setUp(): void
@@ -44,7 +45,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
     }
 
     /**
-     * @param string $genericFieldType
+     * @param string|null $genericFieldType
      */
     public function configureObjectManagerForSimpleEntityWithGenericField($genericFieldType)
     {

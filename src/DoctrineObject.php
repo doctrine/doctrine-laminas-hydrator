@@ -420,7 +420,7 @@ class DoctrineObject extends AbstractHydrator
     protected function tryConvertArrayToObject($data, $object)
     {
         $metadata         = $this->metadata;
-        $identifierNames  = $metadata->getIdentifierFieldNames($object);
+        $identifierNames  = $metadata->getIdentifierFieldNames();
         $identifierValues = [];
 
         if (empty($identifierNames)) {
@@ -447,7 +447,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  string $target
      * @param  mixed  $value
-     * @return object
+     * @return object|null
      */
     protected function toOne($target, $value)
     {

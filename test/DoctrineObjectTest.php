@@ -14,6 +14,7 @@ use Doctrine\Persistence\ObjectManager;
 use InvalidArgumentException;
 use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -36,10 +37,10 @@ class DoctrineObjectTest extends TestCase
     /** @var DoctrineObjectHydrator */
     protected $hydratorByReference;
 
-    /** @var ClassMetadata */
+    /** @var ClassMetadata&MockObject */
     protected $metadata;
 
-    /** @var ObjectManager */
+    /** @var ObjectManager&MockObject */
     protected $objectManager;
 
     protected function setUp(): void
@@ -2784,7 +2785,7 @@ class DoctrineObjectTest extends TestCase
         $oneToOneMetadata->getAssociationTargetClass('toOne')->willReturn(Assets\ByValueDifferentiatorEntity::class);
         $oneToOneMetadata->getReflectionClass()->willReturn(new ReflectionClass(Assets\OneToOneEntity::class));
         $oneToOneMetadata->getIdentifier()->willReturn(['id']);
-        $oneToOneMetadata->getIdentifierFieldNames(Argument::type(Assets\OneToOneEntity::class))->willReturn(['id']);
+        $oneToOneMetadata->getIdentifierFieldNames()->willReturn(['id']);
 
         $byValueDifferentiatorEntity = $this->prophesize(ClassMetadata::class);
         $byValueDifferentiatorEntity->getName()->willReturn(Assets\ByValueDifferentiatorEntity::class);
@@ -2794,9 +2795,7 @@ class DoctrineObjectTest extends TestCase
         $byValueDifferentiatorEntity->getTypeOfField('field')->willReturn('string');
         $byValueDifferentiatorEntity->hasAssociation(Argument::any())->willReturn(false);
         $byValueDifferentiatorEntity->getIdentifier()->willReturn(['id']);
-        $byValueDifferentiatorEntity
-            ->getIdentifierFieldNames(Argument::type(Assets\ByValueDifferentiatorEntity::class))
-            ->willReturn(['id']);
+        $byValueDifferentiatorEntity->getIdentifierFieldNames()->willReturn(['id']);
         $byValueDifferentiatorEntity
             ->getReflectionClass()
             ->willReturn(new ReflectionClass(Assets\ByValueDifferentiatorEntity::class));

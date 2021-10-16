@@ -60,24 +60,20 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getName')
             ->will($this->returnValue($className));
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue([]));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id', 'field']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('field')))
             ->will(
@@ -96,19 +92,16 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->will($this->returnValue(false));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifierFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
@@ -133,43 +126,36 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(Assets\NamingStrategyEntity::class));
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue([]));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['camelCase']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->equalTo('camelCase'))
             ->will($this->returnValue('string'));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->will($this->returnValue(false));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifierFieldNames')
             ->will($this->returnValue(['camelCase']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
@@ -189,24 +175,20 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(Assets\SimpleIsEntity::class));
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue([]));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id', 'done']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('done')))
             ->will(
@@ -225,19 +207,16 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->will($this->returnValue(false));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifierFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
@@ -257,24 +236,20 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(Assets\SimpleEntityWithIsBoolean::class));
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue([]));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id', 'isActive']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('isActive')))
             ->will(
@@ -293,19 +268,16 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->will($this->returnValue(false));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifierFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
@@ -325,43 +297,36 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getName')
             ->will($this->returnValue($className));
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue([]));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id', 'field']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('field')))
             ->will($this->returnValue('string'));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->will($this->returnValue(false));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifierFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
@@ -386,19 +351,16 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue([]));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id', 'date']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('date')))
             ->will(
@@ -417,19 +379,16 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->will($this->returnValue(false));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifierFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
@@ -512,19 +471,16 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue(['toOne']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
             ->will(
@@ -543,7 +499,6 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
             ->will(
@@ -562,27 +517,23 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('isSingleValuedAssociation')
             ->with('toOne')
             ->will($this->returnValue(true));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationTargetClass')
             ->with('toOne')
             ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifier')
             ->will($this->returnValue(["id"]));
 
@@ -602,19 +553,16 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue(['toOne']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with(
                 $this->logicalOr(
@@ -641,7 +589,6 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->with(
                 $this->logicalOr(
@@ -666,27 +613,23 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('isSingleValuedAssociation')
             ->with('toOne')
             ->will($this->returnValue(true));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationTargetClass')
             ->with('toOne')
             ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifier')
             ->will($this->returnValue(["id"]));
 
@@ -706,19 +649,16 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue(['entities']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with(
                 $this->logicalOr(
@@ -745,7 +685,6 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('entities'), $this->equalTo('field')))
             ->will(
@@ -766,33 +705,28 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('isSingleValuedAssociation')
             ->with('entities')
             ->will($this->returnValue(false));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('isCollectionValuedAssociation')
             ->with('entities')
             ->will($this->returnValue(true));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationTargetClass')
             ->with('entities')
             ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
         $this->metadata
-            ->expects($this->any())
             ->method('getIdentifier')
             ->will($this->returnValue(["id"]));
 
@@ -812,19 +746,16 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue(['entities']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with(
                 $this->logicalOr(
@@ -851,7 +782,6 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('entities')))
             ->will(
@@ -872,33 +802,28 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('isSingleValuedAssociation')
             ->with('entities')
             ->will($this->returnValue(false));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('isCollectionValuedAssociation')
             ->with('entities')
             ->will($this->returnValue(true));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationTargetClass')
             ->with('entities')
             ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
         $this->metadata
-            ->expects($this->any())
             ->method('getIdentifier')
             ->will($this->returnValue(["id"]));
 

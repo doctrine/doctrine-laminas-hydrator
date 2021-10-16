@@ -52,18 +52,15 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(Assets\SimpleEntityWithGenericField::class));
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue([]));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id', 'genericField']));
 
@@ -91,19 +88,16 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->will($this->returnValue(false));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifierFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
@@ -123,19 +117,16 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['id']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue(['toOne']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
             ->will(
@@ -173,27 +164,23 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('isSingleValuedAssociation')
             ->with('toOne')
             ->will($this->returnValue(true));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationTargetClass')
             ->with('toOne')
             ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifier')
             ->will($this->returnValue(["id"]));
 

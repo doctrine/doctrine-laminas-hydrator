@@ -1,8 +1,9 @@
-/.coveralls.yml export-ignore
 /.gitattributes export-ignore
 /.github/ export-ignore
 /.gitignore export-ignore
 /composer.lock export-ignore
 /phpcs.xml export-ignore
+/phpstan.neon export-ignore
 /phpunit.xml.dist export-ignore
+/psalm.xml export-ignore
 /test/ export-ignore

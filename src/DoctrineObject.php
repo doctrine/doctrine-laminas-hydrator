@@ -11,6 +11,7 @@ use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByReference;
 use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByValue;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
+use Generator;
 use InvalidArgumentException;
 use Laminas\Hydrator\AbstractHydrator;
 use Laminas\Hydrator\Filter\FilterProviderInterface;
@@ -115,7 +116,7 @@ class DoctrineObject extends AbstractHydrator
      * Get all field names, this includes direct field names, names of embeddables and
      * associations. By using a key-based generator, duplicates are effectively removed.
      *
-     * @return list<string>
+     * @return Generator<string>
      */
     public function getFieldNames(): iterable
     {
@@ -145,7 +146,7 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Hydrate $object with the provided $data.
      *
-     * @return object
+     * {@inheritDoc}
      */
     public function hydrate(array $data, object $object)
     {
@@ -309,8 +310,11 @@ class DoctrineObject extends AbstractHydrator
      * case, setters)
      *
      * @param  object $object
-     * @throws RuntimeException
      * @return object
+     * @psalm-param T $object
+     * @psalm-return T
+     * @template T of object
+     * @throws RuntimeException
      */
     protected function hydrateByValue(array $data, $object)
     {
@@ -367,6 +371,9 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  object $object
      * @return object
+     * @psalm-param T $object
+     * @psalm-return T
+     * @template T of object
      */
     protected function hydrateByReference(array $data, $object)
     {
@@ -415,12 +422,15 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  array  $data The data that may contain identifiers keys
      * @param  object $object
-     * @return object
+     * @return object|null
+     * @psalm-param T $object
+     * @psalm-return T|null
+     * @template T of object
      */
     protected function tryConvertArrayToObject($data, $object)
     {
         $metadata         = $this->metadata;
-        $identifierNames  = $metadata->getIdentifierFieldNames($object);
+        $identifierNames  = $metadata->getIdentifierFieldNames();
         $identifierValues = [];
 
         if (empty($identifierNames)) {
@@ -435,7 +445,10 @@ class DoctrineObject extends AbstractHydrator
             $identifierValues[$identifierName] = $data[$identifierName];
         }
 
-        return $this->find($identifierValues, $metadata->getName());
+        /** @var class-string<T> $targetClass */
+        $targetClass = $metadata->getName();
+
+        return $this->find($identifierValues, $targetClass);
     }
 
     /**
@@ -447,7 +460,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  string $target
      * @param  mixed  $value
-     * @return object
+     * @return object|null
      */
     protected function toOne($target, $value)
     {
@@ -485,6 +498,8 @@ class DoctrineObject extends AbstractHydrator
 
         if (! is_array($values) && ! $values instanceof Traversable) {
             $values = (array) $values;
+        } elseif ($values instanceof Traversable) {
+            $values = ArrayUtils::iteratorToArray($values);
         }
 
         $collection = [];
@@ -621,6 +636,9 @@ class DoctrineObject extends AbstractHydrator
      * @param  mixed  $identifiers
      * @param  string $targetClass
      * @return object|null
+     * @psalm-param class-string<T> $targetClass
+     * @psalm-return T|null
+     * @template T of object
      */
     protected function find($identifiers, $targetClass)
     {
@@ -648,6 +666,11 @@ class DoctrineObject extends AbstractHydrator
         }
 
         if ($identifier instanceof Traversable || is_array($identifier)) {
+            // Psalm infers iterable as a union of array|Traversable, but
+            // ArrayUtils::iteratorToArray() doesn't accept iterable, so this
+            // needs to be overwritten manually here.
+            // See https://github.com/vimeo/psalm/issues/6682
+            /** @psalm-var array|Traversable $identifier */
             $nonNullIdentifiers = array_filter(
                 ArrayUtils::iteratorToArray($identifier),
                 function ($value) {

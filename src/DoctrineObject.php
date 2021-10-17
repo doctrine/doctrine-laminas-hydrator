@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Laminas\Hydrator;
 
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByReference;
@@ -575,7 +576,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  mixed  $value
      * @param  string $typeOfField
-     * @return DateTime|null
+     * @return mixed|null
      */
     protected function handleTypeConversions($value, $typeOfField)
     {
@@ -601,25 +602,41 @@ class DoctrineObject extends AbstractHydrator
                 $value = (double) $value;
                 break;
             case 'datetimetz':
+            case 'datetimetz_immutable':
             case 'datetime':
+            case 'datetime_immutable':
             case 'time':
             case 'date':
                 if ($value === '') {
                     return null;
                 }
 
-                if ($value instanceof DateTime) {
+                $isImmutable = substr($typeOfField, -9) === 'immutable';
+
+                // Psalm has troubles with nested conditions, therefore break this into two return statements.
+                // See https://github.com/vimeo/psalm/issues/6683.
+                if ($isImmutable && $value instanceof DateTimeImmutable) {
                     return $value;
+                } elseif (! $isImmutable && $value instanceof DateTime) {
+                    return $value;
+                } elseif ($isImmutable && $value instanceof DateTime) {
+                    return DateTimeImmutable::createFromMutable($value);
+                } elseif (! $isImmutable && $value instanceof DateTimeImmutable) {
+                    return DateTime::createFromImmutable($value);
                 }
 
                 if (is_int($value)) {
-                    $dateTime = new DateTime();
-                    $dateTime->setTimestamp($value);
-                    return $dateTime;
+                    $dateTime = $isImmutable
+                        ? new DateTimeImmutable()
+                        : new DateTime();
+
+                    return $dateTime->setTimestamp($value);
                 }
 
                 if (is_string($value)) {
-                    return new DateTime($value);
+                    return $isImmutable
+                        ? new DateTimeImmutable($value)
+                        : new DateTime($value);
                 }
 
                 break;

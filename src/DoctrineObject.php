@@ -613,10 +613,11 @@ class DoctrineObject extends AbstractHydrator
 
                 $isImmutable = substr($typeOfField, -9) === 'immutable';
 
-                if (
-                    ($isImmutable && $value instanceof DateTimeImmutable)
-                    || (! $isImmutable && $value instanceof DateTime)
-                ) {
+                // Psalm has troubles with nested conditions, therefore break this into two return statements.
+                // See https://github.com/vimeo/psalm/issues/6683.
+                if ($isImmutable && $value instanceof DateTimeImmutable) {
+                    return $value;
+                } elseif (! $isImmutable && $value instanceof DateTime) {
                     return $value;
                 } elseif ($isImmutable && $value instanceof DateTime) {
                     return DateTimeImmutable::createFromMutable($value);

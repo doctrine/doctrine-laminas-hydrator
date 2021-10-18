@@ -1,10 +1,10 @@
-Basic usage
+Basic Usage
 ===========
 
 The library ships with a very powerful hydrator that allow almost any
 use-case.
 
-Create a hydrator
+Create a Hydrator
 -----------------
 
 To create a Doctrine Hydrator, you just need one thing: an object
@@ -24,7 +24,7 @@ it gets/sets data by either accessing the public API of your entity
 (getters/setters) or directly get/set data through reflection, hence
 bypassing any of your custom logic.
 
-Example 1: simple entity with no associations
+Example 1: Simple Entity with no Associations
 ---------------------------------------------
 
 Let’s begin by a simple example:
@@ -82,7 +82,7 @@ Now, let’s use the Doctrine hydrator:
    echo $dataArray['name']; // prints "Paris"
 
 As you can see from this example, in simple cases, the Doctrine Hydrator
-provides nearly no benefits over a simpler hydrator like “ClassMethods”.
+provides nearly no benefits over a simpler hydrator like ``ClassMethods``.
 However, even in those cases, I suggest you to use it, as it performs
 automatic conversions between types. For instance, it can convert
 timestamp to DateTime (which is the type used by Doctrine to represent
@@ -142,7 +142,7 @@ As you can see, the hydrator automatically converted the timestamp to a
 DateTime object during the hydration, hence allowing us to have a nice
 API in our entity with correct typehint.
 
-Example 2: OneToOne/ManyToOne associations
+Example 2: OneToOne/ManyToOne Associations
 ------------------------------------------
 
 Doctrine Hydrator is especially useful when dealing with associations
@@ -252,7 +252,7 @@ the toOne entity (in this case, the User) may already exist (which will
 often be the case with a User and BlogPost example), or it can be
 created. The DoctrineHydrator natively supports both cases.
 
-Existing entity in the association
+Existing Entity in the Association
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When the association’s entity already exists, all you need to do is
@@ -297,7 +297,7 @@ to:
        'user'  => 2,
    ];
 
-Non-existing entity in the association
+Non-existing Entity in the Association
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If the association’s entity does not exist, you just need to give the
@@ -374,7 +374,7 @@ are you?
    echo $blogPost->getUser()->getUsername(); // prints willshakes
    echo $blogPost->getUser()->getPassword(); // prints 2BorN0t2B
 
-Example 3: OneToMany association
+Example 3: OneToMany Association
 --------------------------------
 
 Doctrine Hydrator also handles OneToMany relationships (when use
@@ -649,7 +649,7 @@ embeddable to be in a separate array as follows:
 
 .. _existing-entity-in-the-association-1:
 
-Existing entity in the association
+Existing Entity in the Association
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When the association’s entity already exists, what you need to do is
@@ -697,7 +697,7 @@ can be written:
 
 .. _non-existing-entity-in-the-association-1:
 
-Non-existing entity in the association
+Non-existing Entity in the Association
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If the association’s entity does not exist, you just need to give the
@@ -752,7 +752,7 @@ options on the OneToMany association):
        /** … */
    }
 
-Handling of null values
+Handling of Null Values
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 When a null value is passed to a OneToOne or ManyToOne field, for

@@ -1,4 +1,4 @@
-By value and by reference
+By Value and by Reference
 =========================
 
 By default, Doctrine Hydrator works by value. This means that the

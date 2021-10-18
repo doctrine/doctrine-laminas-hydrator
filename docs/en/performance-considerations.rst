@@ -1,4 +1,4 @@
-Performance considerations
+Performance Considerations
 ==========================
 
 Although using the hydrator is like magical as it abstracts most of the
@@ -6,7 +6,7 @@ tedious task, you have to be aware that it can leads to performance
 issues in some situations. Please carefully read the following
 paragraphs in order to know how to solve (and avoid!) them.
 
-Unwanted side-effects
+Unwanted Side-Effects
 ---------------------
 
 You have to be very careful when you are using Doctrine Hydrator with
@@ -200,7 +200,7 @@ Naively, this form would be like this :
    read the `official documentation about
    that <https://docs.laminas.dev/laminas-form/collections/>`__.
 
-Here, we create a simple form called “EditSimpleForm”. Because we set
+Here, we create a simple form called ``EditSimpleForm``. Because we set
 the validation group, all the inputs related to city (postCode and name
 of the city) won’t be validated, which is exactly what we want. The
 action will look something like this :

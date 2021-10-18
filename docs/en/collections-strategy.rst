@@ -1,4 +1,4 @@
-Collections strategy
+Collections Strategy
 ====================
 
 By default, every collections association has a special strategy
@@ -42,7 +42,7 @@ strategies that end with ByReference, it won’t use the public API of
 your entity (adder and remover) - you don’t even need to define them -
 it will directly add and remove elements directly from the collection.
 
-Changing the strategy
+Changing the Strategy
 ---------------------
 
 Changing the strategy for collections is plain easy.

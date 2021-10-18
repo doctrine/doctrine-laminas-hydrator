@@ -1,12 +1,12 @@
-A complete example using Laminas:raw-latex:`\Form`
-==================================================
+A Complete Example using Laminas\Form
+=====================================
 
 Now that we understand how the hydrator works, let’s see how it
 integrates into the Laminas’ Form component. We are going to use a
 simple example with, once again, a BlogPost and a Tag entities. We will
 see how we can create the blog post, and being able to edit it.
 
-The entities
+The Entities
 ------------
 
 First, let’s define the (simplified) entities, beginning with the
@@ -117,7 +117,7 @@ And then the Tag entity:
        }
    }
 
-The fieldsets
+The Fieldsets
 -------------
 
 We now need to create two fieldsets that will map those entities. With
@@ -234,7 +234,7 @@ Plain and easy. The blog post is just a simple fieldset with an element
 type of ``Laminas\Form\Element\Collection`` that represents the
 ManyToOne association.
 
-The form
+The Form
 --------
 
 Now that we have created our fieldset, we will create two forms: one
@@ -305,7 +305,7 @@ And the update form:
        }
    }
 
-The controllers
+The Controllers
 ---------------
 
 We now have everything. Let’s create the controllers. First, you will

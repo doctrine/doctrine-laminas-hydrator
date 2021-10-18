@@ -18,3 +18,15 @@ Run the following to install this library:
 .. code:: bash
 
    $ composer require doctrine/doctrine-laminas-hydrator
+
+Next Steps
+----------
+
+.. toctree::
+    :caption: Table of Contents
+
+    basic-usage
+    collections-strategy
+    by-value-by-reference
+    laminas-form
+    performance-considerations

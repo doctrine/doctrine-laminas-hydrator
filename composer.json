@@ -23,8 +23,8 @@
         "laminas/laminas-stdlib": "^3.6.0"
     },
     "require-dev": {
+        "doctrine/coding-standard": "^9.0.0",
         "jangregor/phpstan-prophecy": "^0.8.1",
-        "laminas/laminas-coding-standard": "^2.3.0",
         "phpspec/prophecy-phpunit": "^2.0.1",
         "phpstan/phpstan": "^0.12.99",
         "phpunit/phpunit": "^9.5.10",

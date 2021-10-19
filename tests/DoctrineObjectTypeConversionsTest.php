@@ -76,10 +76,12 @@ class DoctrineObjectTypeConversionsTest extends TestCase
                     /**
                      * @param string $arg
                      */
-                    function ($arg) use ($genericFieldType) {
-                        if ('id' === $arg) {
+                    static function ($arg) use ($genericFieldType) {
+                        if ($arg === 'id') {
                             return 'integer';
-                        } elseif ('genericField' === $arg) {
+                        }
+
+                        if ($arg === 'genericField') {
                             return $genericFieldType;
                         }
 
@@ -133,10 +135,12 @@ class DoctrineObjectTypeConversionsTest extends TestCase
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    static function ($arg) {
                         if ($arg === 'id') {
                             return 'integer';
-                        } elseif ($arg === 'toOne') {
+                        }
+
+                        if ($arg === 'toOne') {
                             return Assets\ByValueDifferentiatorEntity::class;
                         }
 
@@ -152,10 +156,12 @@ class DoctrineObjectTypeConversionsTest extends TestCase
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    static function ($arg) {
                         if ($arg === 'id') {
                             return false;
-                        } elseif ($arg === 'toOne') {
+                        }
+
+                        if ($arg === 'toOne') {
                             return true;
                         }
 
@@ -184,7 +190,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this
             ->metadata
             ->method('getIdentifier')
-            ->will($this->returnValue(["id"]));
+            ->will($this->returnValue(['id']));
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,

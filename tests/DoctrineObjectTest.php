@@ -23,6 +23,7 @@ use stdClass;
 
 use function array_keys;
 use function array_shift;
+use function assert;
 use function explode;
 use function implode;
 use function time;
@@ -79,10 +80,12 @@ class DoctrineObjectTest extends TestCase
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('field')))
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
-                        if ('id' === $arg) {
+                    static function ($arg) {
+                        if ($arg === 'id') {
                             return 'integer';
-                        } elseif ('field' === $arg) {
+                        }
+
+                        if ($arg === 'field') {
                             return 'string';
                         }
 
@@ -194,10 +197,12 @@ class DoctrineObjectTest extends TestCase
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('done')))
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
-                        if ('id' === $arg) {
+                    static function ($arg) {
+                        if ($arg === 'id') {
                             return 'integer';
-                        } elseif ('done' === $arg) {
+                        }
+
+                        if ($arg === 'done') {
                             return 'boolean';
                         }
 
@@ -255,10 +260,12 @@ class DoctrineObjectTest extends TestCase
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('isActive')))
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
-                        if ('id' === $arg) {
+                    static function ($arg) {
+                        if ($arg === 'id') {
                             return 'integer';
-                        } elseif ('isActive' === $arg) {
+                        }
+
+                        if ($arg === 'isActive') {
                             return 'boolean';
                         }
 
@@ -366,10 +373,12 @@ class DoctrineObjectTest extends TestCase
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('date')))
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    static function ($arg) {
                         if ($arg === 'id') {
                             return 'integer';
-                        } elseif ($arg === 'date') {
+                        }
+
+                        if ($arg === 'date') {
                             return 'datetime';
                         }
 
@@ -427,12 +436,16 @@ class DoctrineObjectTest extends TestCase
             ))
             ->will(
                 $this->returnCallback(
-                    function (string $arg): ?string {
+                    static function (string $arg): ?string {
                         if ($arg === 'id') {
                             return 'integer';
-                        } elseif ($arg === 'embedded.field') {
+                        }
+
+                        if ($arg === 'embedded.field') {
                             return 'string';
-                        } elseif ($arg === 'embedded') {
+                        }
+
+                        if ($arg === 'embedded') {
                             return null;
                         }
 
@@ -486,10 +499,12 @@ class DoctrineObjectTest extends TestCase
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    static function ($arg) {
                         if ($arg === 'id') {
                             return 'integer';
-                        } elseif ($arg === 'toOne') {
+                        }
+
+                        if ($arg === 'toOne') {
                             return Assets\ByValueDifferentiatorEntity::class;
                         }
 
@@ -504,10 +519,12 @@ class DoctrineObjectTest extends TestCase
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    static function ($arg) {
                         if ($arg === 'id') {
                             return false;
-                        } elseif ($arg === 'toOne') {
+                        }
+
+                        if ($arg === 'toOne') {
                             return true;
                         }
 
@@ -536,7 +553,7 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getIdentifier')
-            ->will($this->returnValue(["id"]));
+            ->will($this->returnValue(['id']));
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -574,12 +591,16 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    static function ($arg) {
                         if ($arg === 'id') {
                             return 'integer';
-                        } elseif ($arg === 'toOne') {
+                        }
+
+                        if ($arg === 'toOne') {
                             return Assets\ByValueDifferentiatorEntity::class;
-                        } elseif ($arg === 'field') {
+                        }
+
+                        if ($arg === 'field') {
                             return 'string';
                         }
 
@@ -600,10 +621,12 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    static function ($arg) {
                         if ($arg === 'id' || $arg === 'field') {
                             return false;
-                        } elseif ($arg === 'toOne') {
+                        }
+
+                        if ($arg === 'toOne') {
                             return true;
                         }
 
@@ -632,7 +655,7 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getIdentifier')
-            ->will($this->returnValue(["id"]));
+            ->will($this->returnValue(['id']));
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -670,12 +693,16 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    static function ($arg) {
                         if ($arg === 'id') {
                             return 'integer';
-                        } elseif ($arg === 'field') {
+                        }
+
+                        if ($arg === 'field') {
                             return 'string';
-                        } elseif ($arg === 'entities') {
+                        }
+
+                        if ($arg === 'entities') {
                             return ArrayCollection::class;
                         }
 
@@ -690,12 +717,16 @@ class DoctrineObjectTest extends TestCase
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('entities'), $this->equalTo('field')))
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    static function ($arg) {
                         if ($arg === 'id') {
                             return false;
-                        } elseif ($arg === 'field') {
+                        }
+
+                        if ($arg === 'field') {
                             return false;
-                        } elseif ($arg === 'entities') {
+                        }
+
+                        if ($arg === 'entities') {
                             return true;
                         }
 
@@ -729,7 +760,7 @@ class DoctrineObjectTest extends TestCase
 
         $this->metadata
             ->method('getIdentifier')
-            ->will($this->returnValue(["id"]));
+            ->will($this->returnValue(['id']));
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -767,12 +798,16 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    static function ($arg) {
                         if ($arg === 'id') {
                             return 'integer';
-                        } elseif ($arg === 'field') {
+                        }
+
+                        if ($arg === 'field') {
                             return 'string';
-                        } elseif ($arg === 'entities') {
+                        }
+
+                        if ($arg === 'entities') {
                             return ArrayCollection::class;
                         }
 
@@ -787,12 +822,16 @@ class DoctrineObjectTest extends TestCase
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('entities')))
             ->will(
                 $this->returnCallback(
-                    function ($arg) {
+                    static function ($arg) {
                         if ($arg === 'id') {
                             return false;
-                        } elseif ($arg === 'field') {
+                        }
+
+                        if ($arg === 'field') {
                             return 'string';
-                        } elseif ($arg === 'entities') {
+                        }
+
+                        if ($arg === 'entities') {
                             return true;
                         }
 
@@ -826,7 +865,7 @@ class DoctrineObjectTest extends TestCase
 
         $this->metadata
             ->method('getIdentifier')
-            ->will($this->returnValue(["id"]));
+            ->will($this->returnValue(['id']));
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -1639,10 +1678,12 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
                         if ($arg['id'] === 2) {
                             return $entityInDatabaseWithIdOfTwo;
-                        } elseif ($arg['id'] === 3) {
+                        }
+
+                        if ($arg['id'] === 3) {
                             return $entityInDatabaseWithIdOfThree;
                         }
 
@@ -1651,8 +1692,8 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
-        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByValue->hydrate($data, $entity);
+        assert($entity instanceof Assets\OneToManyEntity);
 
         $this->assertInstanceOf(Assets\OneToManyEntity::class, $entity);
 
@@ -1702,10 +1743,12 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
                         if ($arg['id'] === 2) {
                             return $entityInDatabaseWithIdOfTwo;
-                        } elseif ($arg['id'] === 3) {
+                        }
+
+                        if ($arg['id'] === 3) {
                             return $entityInDatabaseWithIdOfThree;
                         }
 
@@ -1714,8 +1757,8 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
-        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByValue->hydrate($data, $entity);
+        assert($entity instanceof Assets\OneToManyEntity);
 
         $this->assertInstanceOf(Assets\OneToManyEntity::class, $entity);
 
@@ -1765,10 +1808,12 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
                         if ($arg['id'] === 2) {
                             return $entityInDatabaseWithIdOfTwo;
-                        } elseif ($arg['id'] === 3) {
+                        }
+
+                        if ($arg['id'] === 3) {
                             return $entityInDatabaseWithIdOfThree;
                         }
 
@@ -1824,10 +1869,12 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
                         if ($arg['id'] === 2) {
                             return $entityInDatabaseWithIdOfTwo;
-                        } elseif ($arg['id'] === 3) {
+                        }
+
+                        if ($arg['id'] === 3) {
                             return $entityInDatabaseWithIdOfThree;
                         }
 
@@ -1947,9 +1994,11 @@ class DoctrineObjectTest extends TestCase
             $this->assertIsInt($en->getId());
 
             // Only the third element is new so the adder has not been called on it
-            if ($en === $toMany3) {
-                $this->assertStringNotContainsString('Modified from addEntities adder', $en->getField(false));
+            if ($en !== $toMany3) {
+                continue;
             }
+
+            $this->assertStringNotContainsString('Modified from addEntities adder', $en->getField(false));
         }
 
         $this->assertEquals(2, $entities[0]->getId());
@@ -1998,10 +2047,12 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
                         if ($arg['id'] === 2) {
                             return $entityInDatabaseWithIdOfTwo;
-                        } elseif ($arg['id'] === 3) {
+                        }
+
+                        if ($arg['id'] === 3) {
                             return $entityInDatabaseWithIdOfThree;
                         }
 
@@ -2010,8 +2061,8 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
-        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByValue->hydrate($data, $entity);
+        assert($entity instanceof Assets\OneToManyEntity);
 
         $this->assertInstanceOf(Assets\OneToManyEntityWithEntities::class, $entity);
 
@@ -2067,10 +2118,12 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
                         if ($arg['id'] === 2) {
                             return $entityInDatabaseWithIdOfTwo;
-                        } elseif ($arg['id'] === 3) {
+                        }
+
+                        if ($arg['id'] === 3) {
                             return $entityInDatabaseWithIdOfThree;
                         }
 
@@ -2079,8 +2132,8 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
-        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByValue->hydrate($data, $entity);
+        assert($entity instanceof Assets\OneToManyEntity);
 
         $this->assertInstanceOf(Assets\OneToManyEntityWithEntities::class, $entity);
 
@@ -2137,10 +2190,12 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
                         if ($arg['id'] === 2) {
                             return $entityInDatabaseWithIdOfTwo;
-                        } elseif ($arg['id'] === 3) {
+                        }
+
+                        if ($arg['id'] === 3) {
                             return $entityInDatabaseWithIdOfThree;
                         }
 
@@ -2149,8 +2204,8 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
-        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByValue->hydrate($data, $entity);
+        assert($entity instanceof Assets\OneToManyEntity);
 
         $this->assertInstanceOf(Assets\OneToManyEntityWithEntities::class, $entity);
 
@@ -2204,7 +2259,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnCallback(
-                function () use (&$reflSteps) {
+                static function () use (&$reflSteps) {
                     return array_shift($reflSteps);
                 }
             ));
@@ -2221,10 +2276,12 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
                         if ($arg['id'] === 2) {
                             return $entityInDatabaseWithIdOfTwo;
-                        } elseif ($arg['id'] === 3) {
+                        }
+
+                        if ($arg['id'] === 3) {
                             return $entityInDatabaseWithIdOfThree;
                         }
 
@@ -2233,8 +2290,8 @@ class DoctrineObjectTest extends TestCase
                 )
             );
 
-        /** @var Assets\OneToManyEntity $entity */
         $entity = $this->hydratorByReference->hydrate($data, $entity);
+        assert($entity instanceof Assets\OneToManyEntity);
 
         $this->assertInstanceOf(Assets\OneToManyEntityWithEntities::class, $entity);
 
@@ -2314,7 +2371,7 @@ class DoctrineObjectTest extends TestCase
             )
             ->will(
                 $this->returnCallback(
-                    function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
                         if ($arg['id'] === 2) {
                             return $entityInDatabaseWithIdOfTwo;
                         }
@@ -2337,9 +2394,7 @@ class DoctrineObjectTest extends TestCase
         $this->configureObjectManagerForOneToManyEntity();
 
         $data = [
-            'entities' => [
-                '',
-            ],
+            'entities' => [''],
         ];
 
         $entityInDatabaseWithEmptyId = new Assets\ByValueDifferentiatorEntity();

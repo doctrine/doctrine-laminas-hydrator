@@ -31,7 +31,7 @@ class PropertyName implements FilterInterface
 
     /**
      * @param string|array $properties The properties to exclude or include.
-     * @param bool         $exclude If the method should be excluded
+     * @param bool         $exclude    If the method should be excluded
      */
     public function __construct($properties, $exclude = true)
     {

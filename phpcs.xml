@@ -3,6 +3,6 @@
     <rule ref="./vendor/laminas/laminas-coding-standard/src/LaminasCodingStandard/ruleset.xml"/>
 
     <!-- Paths to check -->
-    <file>src</file>
-    <file>test</file>
+    <file>src/</file>
+    <file>tests/</file>
 </ruleset>

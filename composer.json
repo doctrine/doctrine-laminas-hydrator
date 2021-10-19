@@ -37,7 +37,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "DoctrineTest\\Laminas\\Hydrator\\": "test/"
+            "DoctrineTest\\Laminas\\Hydrator\\": "tests/"
         }
     },
     "config": {

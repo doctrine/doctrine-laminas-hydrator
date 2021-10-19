@@ -2,6 +2,6 @@ parameters:
     level: 5
     paths:
         - src
-        - test
+        - tests
 includes:
 	- vendor/jangregor/phpstan-prophecy/extension.neon

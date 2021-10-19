@@ -18,6 +18,7 @@ use function spl_object_hash;
 use function sprintf;
 use function strcmp;
 
+// phpcs:disable SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming.SuperfluousPrefix
 abstract class AbstractCollectionStrategy implements StrategyInterface
 {
     /** @var string */

@@ -128,7 +128,8 @@ class DoctrineObject extends AbstractHydrator
     {
         $fields = array_merge($this->metadata->getFieldNames(), $this->metadata->getAssociationNames());
         foreach ($fields as $fieldName) {
-            if ($pos = strpos($fieldName, '.')) {
+            $pos = strpos($fieldName, '.');
+            if ($pos !== false) {
                 $fieldName = substr($fieldName, 0, $pos);
             }
 
@@ -572,11 +573,15 @@ class DoctrineObject extends AbstractHydrator
                 }
             }
 
-            if (! empty($find) && $found = $this->find($find, $target)) {
-                $collection[] = is_array($value) ? $this->hydrate($value, $found) : $found;
-            } else {
-                $collection[] = is_array($value) ? $this->hydrate($value, new $target()) : new $target();
+            if (! empty($find)) {
+                $found = $this->find($find, $target);
+                if ($found) {
+                    $collection[] = is_array($value) ? $this->hydrate($value, $found) : $found;
+                    continue;
+                }
             }
+
+            $collection[] = is_array($value) ? $this->hydrate($value, new $target()) : new $target();
         }
 
         $collection = array_filter(

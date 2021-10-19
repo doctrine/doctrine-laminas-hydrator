@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DoctrineTest\Laminas\Hydrator\Assets;
 
+use function sprintf;
+
 class ByValueDifferentiatorEntity
 {
     /** @var string|int */
@@ -32,7 +34,7 @@ class ByValueDifferentiatorEntity
     {
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue) {
-            $this->field = "From setter: $field";
+            $this->field = sprintf('From setter: %s', $field);
         } else {
             $this->field = $field;
         }
@@ -42,7 +44,7 @@ class ByValueDifferentiatorEntity
     {
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue) {
-            return "From getter: $this->field";
+            return sprintf('From getter: %s', $this->field);
         }
 
         return $this->field;

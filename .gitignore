@@ -1,9 +1,6 @@
-/.buildpath
-/.project
-/.idea
 /.phpcs.cache
 /.phpunit.result.cache
-/clover.xml
+/coverage.xml
 /composer.lock
 /phpcs.xml
 /phpunit.xml

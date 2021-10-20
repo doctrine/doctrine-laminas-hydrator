@@ -194,7 +194,7 @@ Naively, this form would be like this :
        }
    }
 
-..
+.. note::
 
    Once again, if you are not familiar with the concepts here, please
    read the `official documentation about

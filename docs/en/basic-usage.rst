@@ -383,7 +383,9 @@ official `Laminas
 documentation <https://docs.laminas.dev/laminas-form/collections/>`__ to
 learn more about Collection.
 
-   Note: internally, for a given collection, if an array contains
+.. note::
+
+   Internally, for a given collection, if an array contains
    identifiers, the hydrator automatically fetches the objects through
    the Doctrine ``find`` function. However, this may cause problems if
    one of the values of the collection is the empty string ’’ (as the

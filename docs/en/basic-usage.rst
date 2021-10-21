@@ -7,8 +7,8 @@ use-case.
 Create a Hydrator
 -----------------
 
-To create a Doctrine Hydrator, you just need one thing: an object
-manager (also called Entity Manager in Doctrine ORM or Document Manager
+To create a Doctrine hydrator, you just need one thing: an object
+manager (also named entity manager in Doctrine ORM or document manager
 in Doctrine ODM):
 
 .. code:: php
@@ -17,17 +17,16 @@ in Doctrine ODM):
 
    $hydrator = new DoctrineHydrator($objectManager);
 
-The hydrator constructor also allows a second parameter, ``byValue``,
-which is true by default. We will come back later about this
-distinction, but to be short, it allows the hydrator the change the way
-it gets/sets data by either accessing the public API of your entity
-(getters/setters) or directly get/set data through reflection, hence
-bypassing any of your custom logic.
+The hydrator constructor has an optional second parameter, ``byValue``,
+which is true by default. We will come back later to this, but in short,
+it allows changing the hydrator's way to get/set data by either accessing
+the public API of your entity (getters/setters) or directly get/set data
+through reflection, hence bypassing any of your custom logic.
 
 Example 1: Simple Entity with no Associations
 ---------------------------------------------
 
-Let’s begin by a simple example:
+Let’s begin with simple example:
 
 .. code:: php
 
@@ -81,12 +80,11 @@ Now, let’s use the Doctrine hydrator:
    $dataArray = $hydrator->extract($city);
    echo $dataArray['name']; // prints "Paris"
 
-As you can see from this example, in simple cases, the Doctrine Hydrator
+As you can see from this example, in simple cases, the Doctrine hydrator
 provides nearly no benefits over a simpler hydrator like ``ClassMethods``.
 However, even in those cases, I suggest you to use it, as it performs
 automatic conversions between types. For instance, it can convert
-timestamp to DateTime (which is the type used by Doctrine to represent
-dates):
+timestamp to ``DateTime`` instances:
 
 .. code:: php
 
@@ -139,13 +137,13 @@ Let’s use the hydrator:
    echo get_class($appointment->getTime()); // prints "DateTime"
 
 As you can see, the hydrator automatically converted the timestamp to a
-DateTime object during the hydration, hence allowing us to have a nice
+DateTime object during the hydration, hence allowing us to have a clean
 API in our entity with correct typehint.
 
 Example 2: OneToOne/ManyToOne Associations
 ------------------------------------------
 
-Doctrine Hydrator is especially useful when dealing with associations
+Doctrine hydrator is especially useful when dealing with associations
 (OneToOne, OneToMany, ManyToOne) and integrates nicely with the
 Form/Fieldset logic (`learn more about this
 here <https://docs.laminas.dev/laminas-form/collections/>`__).
@@ -247,9 +245,9 @@ And the BlogPost entity, with a ManyToOne association:
        }
    }
 
-There are two use cases that can arise when using OneToOne association:
+There are two use cases that can arise when using OneToOne associations:
 the toOne entity (in this case, the User) may already exist (which will
-often be the case with a User and BlogPost example), or it can be
+often be the case with a User and BlogPost example), or it needs to be
 created. The DoctrineHydrator natively supports both cases.
 
 Existing Entity in the Association
@@ -300,8 +298,8 @@ to:
 Non-existing Entity in the Association
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If the association’s entity does not exist, you just need to give the
-object:
+If the association’s entity does not exist, you just need to provide
+the actual object to the hydrator:
 
 .. code:: php
 
@@ -377,11 +375,11 @@ are you?
 Example 3: OneToMany Association
 --------------------------------
 
-Doctrine Hydrator also handles OneToMany relationships (when use
+Doctrine hydrator can also handle OneToMany relationships (when use
 ``Laminas\Form\Element\Collection`` element). Please refer to the
-official `Laminas
-documentation <https://docs.laminas.dev/laminas-form/collections/>`__ to
-learn more about Collection.
+official `Laminas documentation
+<https://docs.laminas.dev/laminas-form/collections/>`__ to learn more
+about Collection.
 
 .. note::
 
@@ -518,8 +516,8 @@ new one:
        $this->tags = $tags;
    }
 
-But this is very bad, because Doctrine collections should not be
-swapped, mostly because collections are managed by an ObjectManager,
+However, this is considered a very bad design, because Doctrine collections
+should not be swapped, mostly because collections are managed by an ObjectManager,
 thus they must not be replaced by a new instance.
 
 Once again, two cases may arise: the tags already exist or they do not.
@@ -649,13 +647,11 @@ embeddable to be in a separate array as follows:
    echo $person->getAddress()->getPostalCode(); // prints "48149"
    echo $person->getAddress()->getCity();       // prints "Münster"
 
-.. _existing-entity-in-the-association-1:
-
 Existing Entity in the Association
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When the association’s entity already exists, what you need to do is
-simply give the identifiers of the entities:
+simply provide the identifiers of these entities:
 
 .. code:: php
 
@@ -697,13 +693,11 @@ can be written:
        'tags'  => [3, 8],
    ];
 
-.. _non-existing-entity-in-the-association-1:
-
 Non-existing Entity in the Association
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If the association’s entity does not exist, you just need to give the
-object:
+If the association’s entity does not exist, you just need to provide
+the actual object:
 
 .. code:: php
 

@@ -1,7 +1,7 @@
 By Value and by Reference
 =========================
 
-By default, Doctrine Hydrator works by value. This means that the
+By default, Doctrine hydrator works by value. This means that the
 hydrator will access and modify your properties through the public API
 of your entities (that is to say, with getters and setters). However,
 you can override this behaviour to work by reference (that is to say
@@ -54,7 +54,7 @@ Let’s now use the hydrator using the default method, by value:
 
    echo $data['foo']; // never executed, because the script was killed when getter was accessed
 
-As we can see here, the hydrator used the public API (here getFoo) to
+As we can see here, the hydrator used the public API (here ``getFoo()``) to
 retrieve the value.
 
 However, if we use it by reference:
@@ -71,5 +71,5 @@ However, if we use it by reference:
 
    echo $data['foo']; // prints 'bar'
 
-It now only prints “bar”, which shows clearly that the getter has not
+It now only prints ``bar``, which shows clearly that the getter has not
 been called.

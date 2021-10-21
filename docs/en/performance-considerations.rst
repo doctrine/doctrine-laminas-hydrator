@@ -9,7 +9,7 @@ paragraphs in order to know how to solve (and avoid!) them.
 Unwanted Side-Effects
 ---------------------
 
-You have to be very careful when you are using Doctrine Hydrator with
+You have to be very careful when you are using Doctrine hydrator with
 complex entities that contain a lot of associations, as a lot of
 unnecessary calls to database can be made if you are not perfectly aware
 of what happen under the hood. To explain this problem, let’s have an
@@ -44,11 +44,13 @@ likely have a fieldset for every entity, so that you have a perfect
 mapping between entities and fieldsets. Here are fieldsets for User and
 and City entities.
 
+.. note::
+
    If you are not comfortable with Fieldsets and how they should work,
    please refer to `this part of Laminas
    documentation <https://docs.laminas.dev/laminas-form/collections/>`__.
 
-First the User fieldset :
+First the User fieldset:
 
 .. code:: php
 
@@ -97,7 +99,7 @@ First the User fieldset :
        }
    }
 
-And then the City fieldset :
+And then the City fieldset:
 
 .. code:: php
 
@@ -158,7 +160,7 @@ And then the City fieldset :
 Now, let’s say that we have one form where a logged user can only change
 his name. This specific form does not allow the user to change this
 city, and the fields of the city are not even rendered in the form.
-Naively, this form would be like this :
+Naively, this form would be like this:
 
 .. code:: php
 
@@ -203,7 +205,7 @@ Naively, this form would be like this :
 Here, we create a simple form called ``EditSimpleForm``. Because we set
 the validation group, all the inputs related to city (postCode and name
 of the city) won’t be validated, which is exactly what we want. The
-action will look something like this :
+action will look something like this:
 
 .. code:: php
 
@@ -263,7 +265,7 @@ OneToMany collections, imagine how many unnecessary calls can be made
 applications was doing 10 unnecessary database calls).
 
 In fact, the fix is ultra simple : if you don’t need specific fieldsets
-in a form, remove them. Here is the fix EditUserForm :
+in a form, remove them. Here is the fix EditUserForm:
 
 .. code:: php
 

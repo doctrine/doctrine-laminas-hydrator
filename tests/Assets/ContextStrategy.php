@@ -10,6 +10,7 @@ class ContextStrategy implements StrategyInterface
 {
     /**
      * @param  mixed $value
+     *
      * @return mixed
      */
     public function extract($value, ?object $object = null)
@@ -19,6 +20,7 @@ class ContextStrategy implements StrategyInterface
 
     /**
      * @param  mixed $value
+     *
      * @return mixed
      */
     public function hydrate($value, ?array $data = null)

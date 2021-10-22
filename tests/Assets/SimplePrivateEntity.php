@@ -9,8 +9,9 @@ use Exception;
 class SimplePrivateEntity
 {
     /**
-     * @phpcsSuppress SlevomatCodingStandard.Classes.UnusedPrivateElements
      * @param         mixed $value
+     *
+     * @phpcsSuppress SlevomatCodingStandard.Classes.UnusedPrivateElements
      */
     private function setPrivate($value)
     {

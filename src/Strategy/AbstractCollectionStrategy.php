@@ -18,6 +18,7 @@ use function spl_object_hash;
 use function sprintf;
 use function strcmp;
 
+// phpcs:disable SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming.SuperfluousPrefix
 abstract class AbstractCollectionStrategy implements StrategyInterface
 {
     /** @var string */
@@ -41,11 +42,13 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      * Set the name of the collection
      *
      * @param  string $collectionName
+     *
      * @return $this
      */
     public function setCollectionName($collectionName)
     {
         $this->collectionName = (string) $collectionName;
+
         return $this;
     }
 
@@ -67,6 +70,7 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
     public function setClassMetadata(ClassMetadata $classMetadata)
     {
         $this->metadata = $classMetadata;
+
         return $this;
     }
 
@@ -84,8 +88,10 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      * Set the object
      *
      * @param  object $object
-     * @throws InvalidArgumentException
+     *
      * @return $this
+     *
+     * @throws InvalidArgumentException
      */
     public function setObject($object)
     {
@@ -96,6 +102,7 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
         }
 
         $this->object = $object;
+
         return $this;
     }
 
@@ -112,8 +119,9 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
     /**
      * Converts the given value so that it can be extracted by the hydrator.
      *
-     * @param  mixed       $value The original value.
-     * @param  null|object $object (optional) The original object for context.
+     * @param  mixed       $value  The original value.
+     * @param object|null $object (optional) The original object for context.
+     *
      * @return mixed       Returns the value that should be extracted.
      */
     public function extract($value, ?object $object = null)
@@ -124,8 +132,9 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
     /**
      * Return the collection by value (using the public API)
      *
-     * @throws InvalidArgumentException
      * @return Collection
+     *
+     * @throws InvalidArgumentException
      */
     protected function getCollectionFromObjectByValue()
     {
@@ -168,6 +177,7 @@ abstract class AbstractCollectionStrategy implements StrategyInterface
      *
      * @param object $a
      * @param object $b
+     *
      * @return int
      */
     protected function compareObjects($a, $b)

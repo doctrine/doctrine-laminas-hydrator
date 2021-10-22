@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<ruleset>
+    <arg name="basepath" value="."/>
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="80"/>
+    <arg name="cache" value=".phpcs.cache"/>
+    <arg name="colors"/>
+
+    <!-- set minimal required PHP version (7.3) -->
+    <config name="php_version" value="70300"/>
+
+    <!-- Ignore warnings, show progress of the run and show sniff names -->
+    <arg value="nps"/>
+
+    <!-- Directories to be checked -->
+    <file>src</file>
+    <file>tests</file>
+
+    <!-- Include full Doctrine Coding Standard -->
+    <rule ref="Doctrine">
+        <!-- This causes BC breaks, as method signatures (return type) change -->
+        <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint"/>
+        <!-- This causes BC breaks, as method signatures (parameter type) change -->
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint"/>
+        <!-- This is simply too noisy for now -->
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingTraversableTypeHintSpecification"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingTraversableTypeHintSpecification"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingTraversableTypeHintSpecification"/>
+    </rule>
+</ruleset>

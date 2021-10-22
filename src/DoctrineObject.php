@@ -26,6 +26,7 @@ use function array_intersect_key;
 use function array_key_exists;
 use function array_keys;
 use function array_merge;
+use function assert;
 use function ctype_upper;
 use function current;
 use function get_class;
@@ -68,7 +69,7 @@ class DoctrineObject extends AbstractHydrator
 
     /**
      * @param ObjectManager $objectManager The ObjectManager to use
-     * @param bool          $byValue If set to true, hydrator will always use entity's public API
+     * @param bool          $byValue       If set to true, hydrator will always use entity's public API
      */
     public function __construct(ObjectManager $objectManager, $byValue = true, ?Inflector $inflector = null)
     {
@@ -87,11 +88,13 @@ class DoctrineObject extends AbstractHydrator
 
     /**
      * @param string $defaultByValueStrategy
+     *
      * @return $this
      */
     public function setDefaultByValueStrategy($defaultByValueStrategy)
     {
         $this->defaultByValueStrategy = $defaultByValueStrategy;
+
         return $this;
     }
 
@@ -105,11 +108,13 @@ class DoctrineObject extends AbstractHydrator
 
     /**
      * @param string $defaultByReferenceStrategy
+     *
      * @return $this
      */
     public function setDefaultByReferenceStrategy($defaultByReferenceStrategy)
     {
         $this->defaultByReferenceStrategy = $defaultByReferenceStrategy;
+
         return $this;
     }
 
@@ -123,9 +128,11 @@ class DoctrineObject extends AbstractHydrator
     {
         $fields = array_merge($this->metadata->getFieldNames(), $this->metadata->getAssociationNames());
         foreach ($fields as $fieldName) {
-            if ($pos = strpos($fieldName, '.')) {
+            $pos = strpos($fieldName, '.');
+            if ($pos !== false) {
                 $fieldName = substr($fieldName, 0, $pos);
             }
+
             yield $fieldName;
         }
     }
@@ -181,33 +188,35 @@ class DoctrineObject extends AbstractHydrator
         $associations = $this->metadata->getAssociationNames();
 
         foreach ($associations as $association) {
-            if ($this->metadata->isCollectionValuedAssociation($association)) {
-                // Add a strategy if the association has none set by user
-                if (! $this->hasStrategy($association)) {
-                    if ($this->byValue) {
-                        $strategyClassName = $this->getDefaultByValueStrategy();
-                    } else {
-                        $strategyClassName = $this->getDefaultByReferenceStrategy();
-                    }
-
-                    $this->addStrategy($association, new $strategyClassName());
-                }
-
-                $strategy = $this->getStrategy($association);
-
-                if (! $strategy instanceof Strategy\AbstractCollectionStrategy) {
-                    throw new InvalidArgumentException(
-                        sprintf(
-                            'Strategies used for collections valued associations must inherit from '
-                            . 'Strategy\AbstractCollectionStrategy, %s given',
-                            get_class($strategy)
-                        )
-                    );
-                }
-
-                $strategy->setCollectionName($association)
-                    ->setClassMetadata($this->metadata);
+            if (! $this->metadata->isCollectionValuedAssociation($association)) {
+                continue;
             }
+
+            // Add a strategy if the association has none set by user
+            if (! $this->hasStrategy($association)) {
+                if ($this->byValue) {
+                    $strategyClassName = $this->getDefaultByValueStrategy();
+                } else {
+                    $strategyClassName = $this->getDefaultByReferenceStrategy();
+                }
+
+                $this->addStrategy($association, new $strategyClassName());
+            }
+
+            $strategy = $this->getStrategy($association);
+
+            if (! $strategy instanceof Strategy\AbstractCollectionStrategy) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Strategies used for collections valued associations must inherit from '
+                        . 'Strategy\AbstractCollectionStrategy, %s given',
+                        get_class($strategy)
+                    )
+                );
+            }
+
+            $strategy->setCollectionName($association)
+                ->setClassMetadata($this->metadata);
         }
     }
 
@@ -216,8 +225,10 @@ class DoctrineObject extends AbstractHydrator
      * API, in this case, getters)
      *
      * @param  object $object
-     * @throws RuntimeException
+     *
      * @return array
+     *
+     * @throws RuntimeException
      */
     protected function extractByValue($object)
     {
@@ -259,6 +270,7 @@ class DoctrineObject extends AbstractHydrator
      * directly fetched without using the public API of the entity, in this case, getters)
      *
      * @param  object $object
+     *
      * @return array
      */
     protected function extractByReference($object)
@@ -273,14 +285,17 @@ class DoctrineObject extends AbstractHydrator
             if ($filter && ! $filter->filter($fieldName)) {
                 continue;
             }
+
             $reflProperty = $refl->getProperty($fieldName);
             $reflProperty->setAccessible(true);
 
             // skip uninitialized properties (available from PHP 7.4)
-            if (PHP_VERSION_ID < 70400 || $reflProperty->isInitialized($object)) {
-                $dataFieldName        = $this->computeExtractFieldName($fieldName);
-                $data[$dataFieldName] = $this->extractValue($fieldName, $reflProperty->getValue($object), $object);
+            if (PHP_VERSION_ID >= 70400 && ! $reflProperty->isInitialized($object)) {
+                continue;
             }
+
+            $dataFieldName        = $this->computeExtractFieldName($fieldName);
+            $data[$dataFieldName] = $this->extractValue($fieldName, $reflProperty->getValue($object), $object);
         }
 
         return $data;
@@ -292,14 +307,15 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  string     $name  The name of the strategy to use.
      * @param  mixed      $value The value that should be converted.
-     * @param  null|array $data  The whole data is optionally provided as context.
+     * @param array|null $data  The whole data is optionally provided as context.
+     *
      * @return mixed|null
      */
     public function hydrateValue(string $name, $value, ?array $data = null)
     {
         $value = parent::hydrateValue($name, $value, $data);
 
-        if (null === $value && $this->isNullable($name)) {
+        if ($value === null && $this->isNullable($name)) {
             return null;
         }
 
@@ -311,11 +327,14 @@ class DoctrineObject extends AbstractHydrator
      * case, setters)
      *
      * @param  object $object
-     * @return object
      * @psalm-param T $object
+     *
+     * @return object
      * @psalm-return T
-     * @template T of object
+     *
      * @throws RuntimeException
+     *
+     * @template T of object
      */
     protected function hydrateByValue(array $data, $object)
     {
@@ -341,7 +360,7 @@ class DoctrineObject extends AbstractHydrator
                     $value = $this->toOne($target, $this->hydrateValue($field, $value, $data));
 
                     if (
-                        null === $value
+                        $value === null
                         && ! current($metadata->getReflectionClass()->getMethod($setter)->getParameters())->allowsNull()
                     ) {
                         continue;
@@ -371,9 +390,11 @@ class DoctrineObject extends AbstractHydrator
      * setters)
      *
      * @param  object $object
-     * @return object
      * @psalm-param T $object
+     *
+     * @return object
      * @psalm-return T
+     *
      * @template T of object
      */
     protected function hydrateByReference(array $data, $object)
@@ -421,11 +442,13 @@ class DoctrineObject extends AbstractHydrator
      * an identifier for the object. This is useful in a context of updating existing entities, without ugly
      * tricks like setting manually the existing id directly into the entity
      *
-     * @param  array  $data The data that may contain identifiers keys
+     * @param  array  $data   The data that may contain identifiers keys
      * @param  object $object
-     * @return object|null
      * @psalm-param T $object
+     *
+     * @return object|null
      * @psalm-return T|null
+     *
      * @template T of object
      */
     protected function tryConvertArrayToObject($data, $object)
@@ -461,6 +484,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  string $target
      * @param  mixed  $value
+     *
      * @return object|null
      */
     protected function toOne($target, $value)
@@ -474,6 +498,7 @@ class DoctrineObject extends AbstractHydrator
                 array_flip($metadata->getIdentifier())
             );
             $object      = $this->find($identifiers, $target) ?: new $target();
+
             return $this->hydrate($value, $object);
         }
 
@@ -490,6 +515,7 @@ class DoctrineObject extends AbstractHydrator
      * @param  mixed  $collectionName
      * @param  string $target
      * @param  mixed  $values
+     *
      * @throws InvalidArgumentException
      */
     protected function toMany($object, $collectionName, $target, $values)
@@ -511,7 +537,9 @@ class DoctrineObject extends AbstractHydrator
                 // assumes modifications have already taken place in object
                 $collection[] = $value;
                 continue;
-            } elseif (empty($value)) {
+            }
+
+            if (empty($value)) {
                 // assumes no id and retrieves new $target
                 $collection[] = $this->find($value, $target);
                 continue;
@@ -529,12 +557,14 @@ class DoctrineObject extends AbstractHydrator
                             } elseif (property_exists($value, $field)) {
                                 $find[$field] = $value->$field;
                             }
+
                             break;
                         case 'array':
                             if (array_key_exists($field, $value) && $value[$field] !== null) {
                                 $find[$field] = $value[$field];
                                 unset($value[$field]); // removed identifier from persistable data
                             }
+
                             break;
                         default:
                             $find[$field] = $value;
@@ -543,24 +573,28 @@ class DoctrineObject extends AbstractHydrator
                 }
             }
 
-            if (! empty($find) && $found = $this->find($find, $target)) {
-                $collection[] = is_array($value) ? $this->hydrate($value, $found) : $found;
-            } else {
-                $collection[] = is_array($value) ? $this->hydrate($value, new $target()) : new $target();
+            if (! empty($find)) {
+                $found = $this->find($find, $target);
+                if ($found) {
+                    $collection[] = is_array($value) ? $this->hydrate($value, $found) : $found;
+                    continue;
+                }
             }
+
+            $collection[] = is_array($value) ? $this->hydrate($value, new $target()) : new $target();
         }
 
         $collection = array_filter(
             $collection,
-            function ($item) {
-                return null !== $item;
+            static function ($item) {
+                return $item !== null;
             }
         );
 
         // Set the object so that the strategy can extract the Collection from it
 
-        /** @var Strategy\AbstractCollectionStrategy $collectionStrategy */
         $collectionStrategy = $this->getStrategy($collectionName);
+        assert($collectionStrategy instanceof Strategy\AbstractCollectionStrategy);
         $collectionStrategy->setObject($object);
 
         // We could directly call hydrate method from the strategy, but if people want to override
@@ -576,11 +610,12 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  mixed  $value
      * @param  string $typeOfField
+     *
      * @return mixed|null
      */
     protected function handleTypeConversions($value, $typeOfField)
     {
-        if (null === $value) {
+        if ($value === null) {
             return null;
         }
 
@@ -599,7 +634,7 @@ class DoctrineObject extends AbstractHydrator
                 $value = (int) $value;
                 break;
             case 'float':
-                $value = (double) $value;
+                $value = (float) $value;
                 break;
             case 'datetimetz':
             case 'datetimetz_immutable':
@@ -617,11 +652,17 @@ class DoctrineObject extends AbstractHydrator
                 // See https://github.com/vimeo/psalm/issues/6683.
                 if ($isImmutable && $value instanceof DateTimeImmutable) {
                     return $value;
-                } elseif (! $isImmutable && $value instanceof DateTime) {
+                }
+
+                if (! $isImmutable && $value instanceof DateTime) {
                     return $value;
-                } elseif ($isImmutable && $value instanceof DateTime) {
+                }
+
+                if ($isImmutable && $value instanceof DateTime) {
                     return DateTimeImmutable::createFromMutable($value);
-                } elseif (! $isImmutable && $value instanceof DateTimeImmutable) {
+                }
+
+                if (! $isImmutable && $value instanceof DateTimeImmutable) {
                     return DateTime::createFromImmutable($value);
                 }
 
@@ -652,9 +693,11 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  mixed  $identifiers
      * @param  string $targetClass
-     * @return object|null
      * @psalm-param class-string<T> $targetClass
+     *
+     * @return object|null
      * @psalm-return T|null
+     *
      * @template T of object
      */
     protected function find($identifiers, $targetClass)
@@ -674,11 +717,12 @@ class DoctrineObject extends AbstractHydrator
      * Verifies if a provided identifier is to be considered null
      *
      * @param  mixed $identifier
+     *
      * @return bool
      */
     private function isNullIdentifier($identifier)
     {
-        if (null === $identifier) {
+        if ($identifier === null) {
             return true;
         }
 
@@ -690,8 +734,8 @@ class DoctrineObject extends AbstractHydrator
             /** @psalm-var array|Traversable $identifier */
             $nonNullIdentifiers = array_filter(
                 ArrayUtils::iteratorToArray($identifier),
-                function ($value) {
-                    return null !== $value;
+                static function ($value) {
+                    return $value !== null;
                 }
             );
 
@@ -705,6 +749,7 @@ class DoctrineObject extends AbstractHydrator
      * Check the field is nullable
      *
      * @param  string $name
+     *
      * @return bool
      */
     private function isNullable($name)
@@ -717,7 +762,7 @@ class DoctrineObject extends AbstractHydrator
         if ($this->metadata->hasAssociation($name) && method_exists($this->metadata, 'getAssociationMapping')) {
             $mapping = $this->metadata->getAssociationMapping($name);
 
-            return false !== $mapping && isset($mapping['nullable']) && $mapping['nullable'];
+            return $mapping !== false && isset($mapping['nullable']) && $mapping['nullable'];
         }
 
         return false;
@@ -727,6 +772,7 @@ class DoctrineObject extends AbstractHydrator
      * Applies the naming strategy if there is one set
      *
      * @param string $field
+     *
      * @return string
      */
     protected function computeHydrateFieldName($field)
@@ -734,6 +780,7 @@ class DoctrineObject extends AbstractHydrator
         if ($this->hasNamingStrategy()) {
             $field = $this->getNamingStrategy()->hydrate($field);
         }
+
         return $field;
     }
 
@@ -741,6 +788,7 @@ class DoctrineObject extends AbstractHydrator
      * Applies the naming strategy if there is one set
      *
      * @param string $field
+     *
      * @return string
      */
     protected function computeExtractFieldName($field)
@@ -748,6 +796,7 @@ class DoctrineObject extends AbstractHydrator
         if ($this->hasNamingStrategy()) {
             $field = $this->getNamingStrategy()->extract($field);
         }
+
         return $field;
     }
 }

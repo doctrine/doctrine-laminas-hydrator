@@ -6,7 +6,7 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class NamingStrategyEntity
 {
-    /** @var null|string */
+    /** @var string|null */
     protected $camelCase;
 
     public function __construct(?string $camelCase = null)

@@ -1,5 +1,5 @@
-A Complete Example using Laminas\Form
-=====================================
+A Complete Example using Laminas\\Form
+======================================
 
 Now that we understand how the hydrator works, let’s see how it
 integrates into the Laminas’ Form component. We are going to use a

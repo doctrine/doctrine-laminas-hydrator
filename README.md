@@ -7,15 +7,16 @@
 
 This library provides Doctrine hydrators for Laminas.
 
-## Documentation
-
-Please check the [`docs` dir](./docs/en)
-for more detailed documentation on the features provided by this component.
-
 ## Installation
 
-Run the following to install this library:
+Run the following to install this library using [Composer](https://getcomposer.org/):
 
 ```bash
 $ composer require doctrine/doctrine-laminas-hydrator
 ```
+
+## Documentation
+
+Please check the [documentation on the Doctrine website](https://www.doctrine-project.org/projects/doctrine-laminas-hydrator.html)
+for more detailed information on features provided by this component. The source files for the documentation can be
+found in the [docs directory](./docs/en).

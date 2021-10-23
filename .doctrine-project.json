@@ -1,7 +1,7 @@
 {
   "active": true,
   "name": "Doctrine Laminas Hydrators",
-  "slug": "doctrine-laminas-hydrators",
+  "slug": "doctrine-laminas-hydrator",
   "versions": [
     {
       "name": "2.2",

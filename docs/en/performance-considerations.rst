@@ -1,21 +1,17 @@
 Performance Considerations
 ==========================
 
-Although using the hydrator is like magical as it abstracts most of the
-tedious task, you have to be aware that it can leads to performance
-issues in some situations. Please carefully read the following
-paragraphs in order to know how to solve (and avoid!) them.
+Using this hydrator abstracts most of the tedious tasks, but be
+aware that it can lead to performance issues in some situations.
 
 Unwanted Side-Effects
 ---------------------
 
-You have to be very careful when you are using Doctrine hydrator with
-complex entities that contain a lot of associations, as a lot of
-unnecessary calls to database can be made if you are not perfectly aware
-of what happen under the hood. To explain this problem, let’s have an
-example.
-
-Imagine the following entity :
+Be careful when using Doctrine hydrator with
+complex entities that contain a lot of associations because a lot of
+unnecessary calls to the database may be made if you are not aware
+of what is happening under the hood. To explain this problem,
+take the following entity:
 
 .. code:: php
 
@@ -39,18 +35,18 @@ Imagine the following entity :
    }
 
 This simple entity contains an id, a string property, and a OneToOne
-relationship. If you are using Laminas forms the correct way, you will
-likely have a fieldset for every entity, so that you have a perfect
-mapping between entities and fieldsets. Here are fieldsets for User and
-and City entities.
+relationship.  When using Laminas forms the correct way, There may be
+a fieldset for every entity; so a 1:1 mapping
+between entities and fieldsets.  Here are fieldsets for User and
+and City entities:
 
 .. note::
 
-   If you are not comfortable with Fieldsets and how they should work,
-   please refer to `this part of Laminas
+   More information on Laminas fieldsets may be found in
+   `the Laminas
    documentation <https://docs.laminas.dev/laminas-form/collections/>`__.
 
-First the User fieldset:
+First, the User fieldset:
 
 .. code:: php
 
@@ -99,7 +95,7 @@ First the User fieldset:
        }
    }
 
-And then the City fieldset:
+And, now, the City fieldset:
 
 .. code:: php
 
@@ -157,10 +153,10 @@ And then the City fieldset:
        }
    }
 
-Now, let’s say that we have one form where a logged user can only change
-his name. This specific form does not allow the user to change this
-city, and the fields of the city are not even rendered in the form.
-Naively, this form would be like this:
+For a form where an authenticated user may only change their name,
+and it does not allow the user to change the city,
+and the fields of the city are not rendered in the form,
+the form would look like this:
 
 .. code:: php
 
@@ -198,11 +194,11 @@ Naively, this form would be like this:
 
 .. note::
 
-   Once again, if you are not familiar with the concepts here, please
-   read the `official documentation about
-   that <https://docs.laminas.dev/laminas-form/collections/>`__.
+   For more information on Laminas Form and collections, please
+   read the `Laminas documentation
+   <https://docs.laminas.dev/laminas-form/collections/>`__.
 
-Here, we create a simple form called ``EditSimpleForm``. Because we set
+Next, we create a simple form called ``EditSimpleForm``. Because we set
 the validation group, all the inputs related to city (postCode and name
 of the city) won’t be validated, which is exactly what we want. The
 action will look something like this:
@@ -231,41 +227,41 @@ action will look something like this:
        }
    }
 
-This looks good, doesn’t it? However, if we check the queries that are
-made (for instance using the awesome
-`Laminas:raw-latex:`\DeveloperTools `module <https://github.com/laminas/laminas-developer-tools>`__,
-we will see that a request is made to fetch data for the City
-relationship of the user, and we hence have a completely useless
-database call, as this information is not rendered by the form.
+This looks good, yes? But, a check for the queries that are
+made (for instance using the
+`Laminas:raw-latex:`\DeveloperTools `module <https://github.com/laminas/laminas-developer-tools>`__
+), shows that a request is made to fetch data for the City
+relationship of the user, and we have an unneeded
+database call because this information is not rendered by the form.
 
-You could ask, “why?” Yes, we set the validation group, BUT the problem
-happens during the extracting phase. Here is how it works : when an
-object is bound to the form, this latter iterates through all its
-fields, and tries to extract the data from the object that is bound. In
-our example, here is how it works:
+You may ask, "Why?" We set the validation group, *but* the problem
+happens during the extracting phase. When an
+object is bound to the form, the form iterates through all its
+fields and tries to extract the data from the object that is bound.
+From this example:
 
-1. It first arrives to the UserFieldset. The input are “name” (which is
-   string field), and a “city” which is another fieldset (in our User
+1. It first arrives at the UserFieldset. The inputs are "name" (which is
+   a string field), and "city" which is another fieldset (in our User
    entity, this is a OneToOne relationship to another entity). The
-   hydrator will extract both the name and the city (which will be a
-   Doctrine 2 Proxy object).
+   hydrator will extract both the name and the city.  The city will be a
+   Doctrine 2 Proxy object.
 2. Because the UserFieldset contains a reference to another Fieldset (in
-   our case, a CityFieldset), it will, in turn, tries to extract the
+   this case, a CityFieldset), it will, in turn, try to extract the
    values of the City to populate the values of the CityFieldset. And
-   here is the problem : City is a Proxy, and hence because the hydrator
+   here is the problem: City is a Proxy, and hence because the hydrator
    tries to extract its values (the name and postcode field), Doctrine
    will automatically fetch the object from the database in order to
    please the hydrator.
 
-This is absolutely normal, this is how ZF forms work and what make them
-nearly magic, but in this specific case, it can leads to disastrous
-consequences. When you have very complex entities with a lot of
-OneToMany collections, imagine how many unnecessary calls can be made
-(actually, after discovering this problem, I’ve realized that my
-applications was doing 10 unnecessary database calls).
+This is absolutely normal; this is how Laminas forms work and what make them
+so useful, but in this specific case it can leads to disastrous
+consequences. When you have complex entities with many
+OneToMany collections, imagine how many unnecessary calls may be made
+(e.g. after discovering this problem, the author realized that their
+application was doing 10 unnecessary database calls).
 
-In fact, the fix is ultra simple : if you don’t need specific fieldsets
-in a form, remove them. Here is the fix EditUserForm:
+The fix is simple: if you don’t need specific fieldsets
+in a form, remove them. Here is a fixed EditUserForm:
 
 .. code:: php
 
@@ -300,8 +296,8 @@ in a form, remove them. Here is the fix EditUserForm:
        }
    }
 
-And boom! Because the UserFieldset does not contain the CityFieldset
-relation anymore it won’t be extracted.
+Because the UserFieldset no longer contains the CityFieldset
+relation, it won’t be extracted.
 
-As a rule of thumb, try to remove any unnecessary fieldset relationship,
+As a rule of thumb, try to remove any unnecessary fieldset relationships,
 and always look at which database calls are made.

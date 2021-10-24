@@ -1,16 +1,14 @@
 A Complete Example using Laminas\\Form
 ======================================
 
-Now that we understand how the hydrator works, let’s see how it
-integrates into the Laminas’ Form component. We are going to use a
-simple example with, once again, a BlogPost and a Tag entities. We will
-see how we can create the blog post, and being able to edit it.
+This documentation covers how the hydrator integrates into the
+Laminas Form component.  This interaction will be exemplified
+using BlogPost and Tag entities.
 
 The Entities
 ------------
 
-First, let’s define the (simplified) entities, beginning with the
-BlogPost entity:
+The BlogPost entity:
 
 .. code:: php
 
@@ -66,7 +64,7 @@ BlogPost entity:
        }
    }
 
-And then the Tag entity:
+The Tag entity:
 
 .. code:: php
 
@@ -117,21 +115,21 @@ And then the Tag entity:
        }
    }
 
-The Fieldsets
--------------
+Fieldsets
+---------
 
-We now need to create two fieldsets that will map those entities. With
-Laminas it’s a good practice to create one fieldset per entity in order
-to reuse them across many forms.
+Fieldsets will be required for each entity.  With Laminas it's a good
+practice to create one fieldset per entity in order to reuse them
+across many forms.
 
-Here is the fieldset for the Tag. Notice that in this example, I added a
-hidden input whose name is “id”. This is needed for editing. Most of the
-time, when you create the Blog Post for the first time, the tags do not
-exist. Therefore, the id will be empty. However, when you edit the blog
-post, all the tags already exist in database (they have been persisted
-and have an id), and hence the hidden “id” input will have a value. This
-allows you to modify a tag name by modifying an existing Tag entity
-without creating a new tag (and removing the old one).
+The Tag Fieldset:
+
+Note in this example the hidden "id" input.  This is needed for editing.
+Usually when a BlogPost is created it will have no tags and this "id"
+will be empty.  But when the BlogPost is edited tags may already exist
+in the database and will be referenced by this "id" input. This
+allows modification of a tag name by modifying an existing Tag entity
+without creating a new tag and removing the old one.
 
 .. code:: php
 
@@ -181,7 +179,7 @@ without creating a new tag (and removing the old one).
        }
    }
 
-And the BlogPost fieldset:
+The BlogPost Fieldset:
 
 .. code:: php
 
@@ -230,22 +228,20 @@ And the BlogPost fieldset:
        }
    }
 
-Plain and easy. The blog post is just a simple fieldset with an element
-type of ``Laminas\Form\Element\Collection`` that represents the
-ManyToOne association.
+The blog post is a simple fieldset with an element
+of type ``Laminas\Form\Element\Collection`` that represents the
+ManyToOne association to tags.
 
-The Form
---------
+Form
+----
 
-Now that we have created our fieldset, we will create two forms: one
-form for creation and one form for updating. The form’s purpose is to be
-the glue between the fieldsets. In this simple example, both forms are
-exactly the same, but in a real application, you may want to change this
-behaviour by changing the validation group (for instance, you may want
-to disallow the user to modify the title of the blog post when
-updating).
+Two forms will be necessary; one for creating and one for updating.
+Forms are the "glue" between fieldsets.  For this example each form
+will be identical, but that is not always the case
+(for instance, you may want to disallow modification of the title
+of the blog post when updating).
 
-Here is the create form:
+The CreateBlogPostForm:
 
 .. code:: php
 
@@ -275,7 +271,7 @@ Here is the create form:
        }
    }
 
-And the update form:
+The UpdateBlogPostForm:
 
 .. code:: php
 
@@ -305,13 +301,11 @@ And the update form:
        }
    }
 
-The Controllers
----------------
+Controller
+----------
 
-We now have everything. Let’s create the controllers. First, you will
-need to make sure that you inject Doctrine’s entity manager into your
-controllers using dependency injection. Your controller should look like
-this:
+Using the ServiceManager, inject your Doctrine object manager into
+a controller.
 
 .. code:: php
 
@@ -323,18 +317,17 @@ this:
    class MySampleController extends AbstractActionController
    {
        private EntityManager $entityManager;
-       
+
        public function __construct(EntityManager $entityManager)
        {
            $this->entityManager = $entityManager;
        }
    }
 
-You will need to set up a factory for your controller. To get started
-you may use a `reflection-based
+For the ServiceManager, you will need a factory for the controller.  This is an
+example of using the `reflection-based
 factory <https://docs.laminas.dev/laminas-servicemanager/reflection-abstract-factory/>`__,
-which injects all dependencies automatically. This is what the
-configuration needs to look like:
+which injects all dependencies automatically.
 
 .. code:: php
 
@@ -350,20 +343,18 @@ configuration needs to look like:
        ],
        /* … */
 
-Later you can - and probably should - generate individual factories
-automatically using the `console
+You may generate individual factories automatically using the `console
 tools <https://docs.laminas.dev/laminas-servicemanager/console-tools/>`__
-provided by Laminas. This will increase your application’s performance
-in production deployments.
+provided by Laminas.
 
 Creation
 ~~~~~~~~
 
-In the createAction, we will create a new BlogPost and all the
+In the controller's createAction, create a new BlogPost and all the
 associated tags. As a consequence, the hidden ids for the tags will by
-empty (because they have not been persisted yet).
+empty because they have not been persisted yet.
 
-Here is the action for create a new blog post:
+The controller createAction:
 
 .. code:: php
 
@@ -388,8 +379,8 @@ Here is the action for create a new blog post:
        return ['form' => $form];
    }
 
-The update form is similar, instead that we get the blog post from
-database instead of creating an empty one:
+The update form is similar but uses an existing blog post
+instead of creating a new one:
 
 .. code:: php
 

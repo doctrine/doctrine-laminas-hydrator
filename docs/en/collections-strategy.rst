@@ -1,7 +1,7 @@
 Collections Strategy
 ====================
 
-By default, every collections association has a special strategy
+By default, every collection association has a strategy
 attached to it that is called during the hydrating and extracting phase.
 All those strategies extend from the class
 ``Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy``.
@@ -9,10 +9,10 @@ All those strategies extend from the class
 The library provides four strategies out of the box:
 
 1. ``Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByValue``: this is
-   the default strategy, it removes old elements that are not in the new
+   the default strategy; it removes old elements that are not in the new
    collection.
 2. ``Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByReference``: this
-   is the default strategy (if set to byReference), it removes old
+   is the default strategy *if set to byReference*; it removes old
    elements that are not in the new collection.
 3. ``Doctrine\Laminas\Hydrator\Strategy\DisallowRemoveByValue``: this
    strategy does not remove old elements even if they are not in the new
@@ -37,15 +37,15 @@ AllowRemove\*    A, B               B, C                 B, C
 DisallowRemove\* A, B               B, C                 A, B, C
 ================ ================== ==================== =======
 
-The difference between ByValue and ByReference is that when using
+The difference between ByValue and ByReference is that, when using
 strategies that end with ByReference, it won’t use the public API of
 your entity (adder and remover) - you don’t even need to define them -
-it will directly add and remove elements directly from the collection.
+it will add and remove elements directly from the collection.
 
 Changing the Strategy
 ---------------------
 
-Changing the strategy for collections is plain easy.
+Changing the strategy for collections is simple:
 
 .. code:: php
 
@@ -55,4 +55,4 @@ Changing the strategy for collections is plain easy.
    $hydrator = new DoctrineHydrator($entityManager);
    $hydrator->addStrategy('tags', new Strategy\DisallowRemoveByValue());
 
-Note that you can also add strategies to simple fields.
+Note that you can also add strategies to non-collection fields.

@@ -1,13 +1,13 @@
 Usage of doctrine-laminas-hydrator
 ==================================
 
-Hydrators convert an array of data to an object (this is called
-“hydrating”) and convert an object back to an array (this is called
-“extracting”). Hydrators are mainly used in the context of Forms, with
+Hydrators insert an array of data into object properties (this is called
+"hydrating") and convert object properties back to an array (this is called
+"extracting"). Hydrators are often used in the context of Forms, with
 the binding functionality of Laminas, but can also be used in any
 hydrating/extracting context (for instance, it can be used in RESTful
-context). If you are not really comfortable with hydrators, please first
-read `Laminas hydrator’s
+context). For an introduction to hydrators, please read
+`Laminas hydrator
 documentation <https://docs.laminas.dev/laminas-hydrator/>`__.
 
 Installation

@@ -2,14 +2,14 @@ By Value and by Reference
 =========================
 
 By default, Doctrine hydrator works by value. This means that the
-hydrator will access and modify your properties through the public API
-of your entities (that is to say, with getters and setters). However,
-you can override this behaviour to work by reference (that is to say
-that the hydrator will access the properties through Reflection API, and
-hence bypass any logic you may include in your setters/getters).
+hydrator will access and modify properties through the public API
+of an entity (that is, with getters and setters).
+You can override this behaviour to work by reference
+(the hydrator will access the properties through the Reflection API and
+bypass your getters and setters).
 
-To change the behaviour, just give the second parameter of the
-constructor to false:
+To change the behaviour from by value to by reference, set the second
+parameter of the constructor to false:
 
 .. code:: php
 
@@ -17,7 +17,7 @@ constructor to false:
 
    $hydrator = new DoctrineHydrator($objectManager, false);
 
-To illustrate the difference between, the two, let’s do an extraction
+To illustrate the difference between the two, consider an extraction
 with the given entity:
 
 .. code:: php
@@ -40,7 +40,7 @@ with the given entity:
        /** ... */
    }
 
-Let’s now use the hydrator using the default method, by value:
+Using the hydrator by value:
 
 .. code:: php
 
@@ -54,10 +54,10 @@ Let’s now use the hydrator using the default method, by value:
 
    echo $data['foo']; // never executed, because the script was killed when getter was accessed
 
-As we can see here, the hydrator used the public API (here ``getFoo()``) to
+The hydrator used the public API ``getFoo()`` to
 retrieve the value.
 
-However, if we use it by reference:
+Using the hydrator by reference:
 
 .. code:: php
 
@@ -71,5 +71,4 @@ However, if we use it by reference:
 
    echo $data['foo']; // prints 'bar'
 
-It now only prints ``bar``, which shows clearly that the getter has not
-been called.
+It prints ``bar``, showing that the getter was not called.

@@ -1,14 +1,13 @@
 Basic Usage
 ===========
 
-The library ships with a very powerful hydrator that allow almost any
-use-case.
+This library ships with a powerful hydrator that allows almost any use-case.
 
 Create a Hydrator
 -----------------
 
-To create a Doctrine hydrator, you just need one thing: an object
-manager (also named entity manager in Doctrine ORM or document manager
+Creating a Doctrine hydrator requires an object manager
+(also named entity manager in Doctrine ORM or document manager
 in Doctrine ODM):
 
 .. code:: php
@@ -18,15 +17,13 @@ in Doctrine ODM):
    $hydrator = new DoctrineHydrator($objectManager);
 
 The hydrator constructor has an optional second parameter, ``byValue``,
-which is true by default. We will come back later to this, but in short,
-it allows changing the hydrator's way to get/set data by either accessing
-the public API of your entity (getters/setters) or directly get/set data
-through reflection, hence bypassing any of your custom logic.
+which is true by default. This allows changing the hydrator's way to
+get/set data by either accessing the public API of your entity
+(getters/setters) or directly get/set data through reflection, hence
+bypassing any of your custom logic.
 
 Example 1: Simple Entity with no Associations
 ---------------------------------------------
-
-Let’s begin with simple example:
 
 .. code:: php
 
@@ -80,11 +77,11 @@ Now, let’s use the Doctrine hydrator:
    $dataArray = $hydrator->extract($city);
    echo $dataArray['name']; // prints "Paris"
 
-As you can see from this example, in simple cases, the Doctrine hydrator
+As shows in this simple example, the Doctrine hydrator
 provides nearly no benefits over a simpler hydrator like ``ClassMethods``.
-However, even in those cases, I suggest you to use it, as it performs
-automatic conversions between types. For instance, it can convert
-timestamp to ``DateTime`` instances:
+However, even in those cases, it provides benefitst such as
+automatic conversion between types. For instance, it can convert
+a timestamp to a ``DateTime`` instance:
 
 .. code:: php
 
@@ -138,7 +135,7 @@ Let’s use the hydrator:
 
 As you can see, the hydrator automatically converted the timestamp to a
 DateTime object during the hydration, hence allowing us to have a clean
-API in our entity with correct typehint.
+API in our entity with a correct typehint.
 
 Example 2: OneToOne/ManyToOne Associations
 ------------------------------------------
@@ -148,7 +145,7 @@ Doctrine hydrator is especially useful when dealing with associations
 Form/Fieldset logic (`learn more about this
 here <https://docs.laminas.dev/laminas-form/collections/>`__).
 
-Let’s take a simple example with a BlogPost and a User entity to
+A simple example with BlogPost and User entities to
 illustrate OneToOne association:
 
 .. code:: php
@@ -248,13 +245,13 @@ And the BlogPost entity, with a ManyToOne association:
 There are two use cases that can arise when using OneToOne associations:
 the toOne entity (in this case, the User) may already exist (which will
 often be the case with a User and BlogPost example), or it needs to be
-created. The DoctrineHydrator natively supports both cases.
+created. The Doctrined hydrator natively supports both cases.
 
 Existing Entity in the Association
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When the association’s entity already exists, all you need to do is
-simply give the identifier of the association:
+give the identifier of the association:
 
 .. code:: php
 
@@ -336,7 +333,7 @@ options on the ManyToOne association):
    {
        /** .. */
 
-       #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])] 
+       #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
        private ?User $user = null;
 
        /** … */
@@ -348,8 +345,9 @@ toOne relation and either attempt to find the existing record or
 instanciate a new target instance which will be hydrated before it is
 passed to the BlogPost entity.
 
-**NOTE** : you’re not really allowing users to be added via a blog post,
-are you?
+.. note::
+
+   Adding users via a blog post is not recommended.
 
 .. code:: php
 
@@ -375,11 +373,11 @@ are you?
 Example 3: OneToMany Association
 --------------------------------
 
-Doctrine hydrator can also handle OneToMany relationships (when use
+Doctrine hydrator can also handle OneToMany relationships (when using a
 ``Laminas\Form\Element\Collection`` element). Please refer to the
-official `Laminas documentation
+`Laminas documentation
 <https://docs.laminas.dev/laminas-form/collections/>`__ to learn more
-about Collection.
+about Collection elements.
 
 .. note::
 
@@ -390,12 +388,12 @@ about Collection.
    ``find`` will most likely fail). In order to solve this problem,
    empty string identifiers are simply ignored during the hydration
    phase. Therefore, if your database contains an empty string value as
-   primary key, the hydrator could not work correctly (the simplest way
+   a primary key, the hydrator may not work correctly (the simplest way
    to avoid that is simply to not have an empty string primary key,
    which should not happen if you use auto-increment primary keys,
    anyway).
 
-Let’s take again a simple example: a BlogPost and Tag entities.
+For example consider, again the BlogPost and Tag entities:
 
 .. code:: php
 
@@ -502,12 +500,11 @@ And the Tag entity:
        }
    }
 
-Please note some interesting things in BlogPost entity. We have defined
+Please note some interesting things in the BlogPost entity. There are defined
 two functions: addTags and removeTags. Those functions must be always
-defined and are called automatically by Doctrine hydrator when dealing
-with collections. You may think this is overkill, and ask why you cannot
-just define a ``setTags`` function to replace the old collection by the
-new one:
+defined and are called automatically by the Doctrine hydrator when dealing
+with collections. This is not overkill and is preferred to just a
+``setTags`` function to replace the old collection with a new one:
 
 .. code:: php
 
@@ -516,20 +513,20 @@ new one:
        $this->tags = $tags;
    }
 
-However, this is considered a very bad design, because Doctrine collections
-should not be swapped, mostly because collections are managed by an ObjectManager,
-thus they must not be replaced by a new instance.
+This is considered a bad design because Doctrine collections
+should not be swapped; mostly because collections are managed by an
+object manager and must not be replaced by a new instance.
 
 Once again, two cases may arise: the tags already exist or they do not.
 
 Example 4: Embedded Entities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Doctrine provides so-called embeddables as a layer of abstraction which
-allow reusing partial object across entities. For example, one might
+Doctrine provides so-called embeddables as a layer of abstraction that
+allows reusing partial objects across entities. For example, one might
 have an entity ``Address`` which is not only used for a ``Person``, but
-probably for an ``Organisation`` as well. Let’s have a look at the
-classes. First we have a ``Tag`` class, which will be our embeddable:
+also for an ``Organization``.
+First, we have a ``Tag`` class, which will be our embeddable:
 
 .. code:: php
 
@@ -563,7 +560,7 @@ classes. First we have a ``Tag`` class, which will be our embeddable:
        {
            return $this->city;
        }
-       
+
        public function setCity(?string $city): void
        {
            $this->city = $city;
@@ -582,7 +579,7 @@ embeddable is used:
    use Doctrine\ORM\Mapping as ORM;
 
    #[ORM\Entity]
-   class Person 
+   class Person
    {
        #[ORM\Id]
        #[ORM\GeneratedValue]
@@ -593,7 +590,7 @@ embeddable is used:
 
        #[ORM\Embedded(class: 'Address')]
        private Address $address;
-       
+
        /**
         * Similar to collections you should initialize embeddables in the constructor!
         */
@@ -601,17 +598,17 @@ embeddable is used:
        {
            $this->address = new Address();
        }
-       
+
        public function getId(): ?int
        {
            return $this->id;
        }
-       
+
        public function getName(): ?string
        {
            return $this->name;
        }
-       
+
        public function setName(?string $name): void
        {
            $this->name = $name;
@@ -624,7 +621,7 @@ embeddable is used:
    }
 
 The hydrator provided by this module will require the data for the
-embeddable to be in a separate array as follows:
+embeddable to be in a separate array, as follows:
 
 .. code:: php
 
@@ -650,8 +647,8 @@ embeddable to be in a separate array as follows:
 Existing Entity in the Association
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When the association’s entity already exists, what you need to do is
-simply provide the identifiers of these entities:
+When the association’s entity already exists, just
+provide the identifiers of these entities:
 
 .. code:: php
 
@@ -672,7 +669,7 @@ simply provide the identifiers of these entities:
    echo $blogPost->getTitle(); // prints "The best blog post in the world!"
    echo count($blogPost->getTags()); // prints 2
 
-**NOTE** : once again, this:
+Note, again, that
 
 .. code:: php
 
@@ -696,7 +693,7 @@ can be written:
 Non-existing Entity in the Association
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If the association’s entity does not exist, you just need to provide
+If the association’s entity does not exist, you need to provide
 the actual object:
 
 .. code:: php
@@ -752,7 +749,7 @@ Handling of Null Values
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 When a null value is passed to a OneToOne or ManyToOne field, for
-example;
+example:
 
 .. code:: php
 

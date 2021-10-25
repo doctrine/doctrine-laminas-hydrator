@@ -12,7 +12,7 @@ This library provides Doctrine hydrators for Laminas.
 Run the following to install this library using [Composer](https://getcomposer.org/):
 
 ```bash
-$ composer require doctrine/doctrine-laminas-hydrator
+composer require doctrine/doctrine-laminas-hydrator
 ```
 
 ## Documentation

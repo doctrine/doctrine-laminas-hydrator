@@ -229,12 +229,12 @@ action will look something like this:
 
 This looks good, yes? But, a check for the queries that are
 made (for instance using the
-`Laminas:raw-latex:`\DeveloperTools `module <https://github.com/laminas/laminas-developer-tools>`__
-), shows that a request is made to fetch data for the City
+`Laminas\\DeveloperTools module <https://github.com/laminas/laminas-developer-tools>`__),
+shows that a request is made to fetch data for the City
 relationship of the user, and we have an unneeded
 database call because this information is not rendered by the form.
 
-You may ask, "Why?" We set the validation group, *but* the problem
+*Why?* We set the validation group, *but* the problem
 happens during the extracting phase. When an
 object is bound to the form, the form iterates through all its
 fields and tries to extract the data from the object that is bound.

@@ -1,5 +1,5 @@
-Usage of doctrine-laminas-hydrator
-==================================
+Introduction
+============
 
 Hydrators insert an array of data into object properties (this is called
 "hydrating") and convert object properties back to an array (this is called

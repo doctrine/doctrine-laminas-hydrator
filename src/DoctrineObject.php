@@ -38,7 +38,6 @@ use function is_callable;
 use function is_int;
 use function is_object;
 use function is_string;
-use function ltrim;
 use function method_exists;
 use function property_exists;
 use function sprintf;
@@ -58,10 +57,10 @@ class DoctrineObject extends AbstractHydrator
     /** @var bool */
     protected $byValue = true;
 
-    /** @var string */
+    /** @var class-string<Strategy\AbstractCollectionStrategy> */
     protected $defaultByValueStrategy = AllowRemoveByValue::class;
 
-    /** @var string */
+    /** @var class-string<Strategy\AbstractCollectionStrategy> */
     protected $defaultByReferenceStrategy = AllowRemoveByReference::class;
 
     /** @var Inflector */
@@ -79,7 +78,7 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
-     * @return string
+     * @return class-string<Strategy\AbstractCollectionStrategy>
      */
     public function getDefaultByValueStrategy()
     {
@@ -87,7 +86,7 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
-     * @param string $defaultByValueStrategy
+     * @param class-string<Strategy\AbstractCollectionStrategy> $defaultByValueStrategy
      *
      * @return $this
      */
@@ -99,7 +98,7 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
-     * @return string
+     * @return class-string<Strategy\AbstractCollectionStrategy>
      */
     public function getDefaultByReferenceStrategy()
     {
@@ -107,7 +106,7 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
-     * @param string $defaultByReferenceStrategy
+     * @param class-string<Strategy\AbstractCollectionStrategy> $defaultByReferenceStrategy
      *
      * @return $this
      */
@@ -351,6 +350,7 @@ class DoctrineObject extends AbstractHydrator
 
             if ($metadata->hasAssociation($field)) {
                 $target = $metadata->getAssociationTargetClass($field);
+                assert($target !== null);
 
                 if ($metadata->isSingleValuedAssociation($field)) {
                     if (! is_callable([$object, $setter])) {
@@ -420,6 +420,7 @@ class DoctrineObject extends AbstractHydrator
 
             if ($metadata->hasAssociation($field)) {
                 $target = $metadata->getAssociationTargetClass($field);
+                assert($target !== null);
 
                 if ($metadata->isSingleValuedAssociation($field)) {
                     $value = $this->toOne($target, $this->hydrateValue($field, $value, $data));
@@ -482,8 +483,8 @@ class DoctrineObject extends AbstractHydrator
      * and a target instance will be initialized and then hydrated. The hydrated
      * target will be returned.
      *
-     * @param  string $target
-     * @param  mixed  $value
+     * @param  class-string $target
+     * @param  mixed        $value
      *
      * @return object|null
      */
@@ -511,16 +512,16 @@ class DoctrineObject extends AbstractHydrator
      * strategies that inherit from AbstractCollectionStrategy class, and that add or remove elements but without
      * changing the collection of the object
      *
-     * @param  object $object
-     * @param  mixed  $collectionName
-     * @param  string $target
-     * @param  mixed  $values
+     * @param  object       $object
+     * @param  mixed        $collectionName
+     * @param  class-string $target
+     * @param  mixed        $values
      *
      * @throws InvalidArgumentException
      */
     protected function toMany($object, $collectionName, $target, $values)
     {
-        $metadata   = $this->objectManager->getClassMetadata(ltrim($target, '\\'));
+        $metadata   = $this->objectManager->getClassMetadata($target);
         $identifier = $metadata->getIdentifier();
 
         if (! is_array($values) && ! $values instanceof Traversable) {
@@ -608,8 +609,8 @@ class DoctrineObject extends AbstractHydrator
      *
      * @link http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/basic-mapping.html#doctrine-mapping-types
      *
-     * @param  mixed  $value
-     * @param  string $typeOfField
+     * @param  mixed   $value
+     * @param  ?string $typeOfField
      *
      * @return mixed|null
      */

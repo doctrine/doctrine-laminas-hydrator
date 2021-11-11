@@ -24,9 +24,9 @@
     },
     "require-dev": {
         "doctrine/coding-standard": "^9.0.0",
-        "jangregor/phpstan-prophecy": "^0.8.1",
+        "jangregor/phpstan-prophecy": "^1.0.0",
         "phpspec/prophecy-phpunit": "^2.0.1",
-        "phpstan/phpstan": "^0.12.99",
+        "phpstan/phpstan": "^1.1.2",
         "phpunit/phpunit": "^9.5.10",
         "vimeo/psalm": "^4.10.0"
     },

@@ -12,6 +12,7 @@ class SimplePrivateEntity
      * @param         mixed $value
      *
      * @phpcsSuppress SlevomatCodingStandard.Classes.UnusedPrivateElements
+     * @phpstan-ignore-next-line
      */
     private function setPrivate($value)
     {
@@ -20,6 +21,7 @@ class SimplePrivateEntity
 
     /**
      * @phpcsSuppress SlevomatCodingStandard.Classes.UnusedPrivateElements
+     * @phpstan-ignore-next-line
      */
     private function getPrivate()
     {

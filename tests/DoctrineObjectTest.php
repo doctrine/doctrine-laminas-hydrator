@@ -1781,6 +1781,22 @@ class DoctrineObjectTest extends TestCase
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\OneToManyEntity();
+
+        $reflSteps = [
+            new ReflectionClass(Assets\OneToManyEntity::class),
+            new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
+            new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
+            new ReflectionClass(Assets\OneToManyEntity::class),
+        ];
+        $this
+            ->metadata
+            ->method('getReflectionClass')
+            ->will($this->returnCallback(
+                static function () use (&$reflSteps) {
+                    return array_shift($reflSteps);
+                }
+            ));
+
         $this->configureObjectManagerForOneToManyEntity();
 
         $data = [

@@ -71,23 +71,21 @@ class DoctrineObjectTypeConversionsTest extends TestCase
             ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('genericField')))
-            ->will(
-                $this->returnCallback(
-                    /**
-                     * @param string $arg
-                     */
-                    static function ($arg) use ($genericFieldType) {
-                        if ($arg === 'id') {
-                            return 'integer';
-                        }
-
-                        if ($arg === 'genericField') {
-                            return $genericFieldType;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                /**
+                 * @param string $arg
+                 */
+                static function ($arg) use ($genericFieldType) {
+                    if ($arg === 'id') {
+                        return 'integer';
                     }
-                )
+
+                    if ($arg === 'genericField') {
+                        return $genericFieldType;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -133,20 +131,18 @@ class DoctrineObjectTypeConversionsTest extends TestCase
             ->metadata
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return 'integer';
-                        }
-
-                        if ($arg === 'toOne') {
-                            return Assets\ByValueDifferentiatorEntity::class;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return 'integer';
                     }
-                )
+
+                    if ($arg === 'toOne') {
+                        return Assets\ByValueDifferentiatorEntity::class;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -154,20 +150,18 @@ class DoctrineObjectTypeConversionsTest extends TestCase
             ->expects($this->any())
             ->method('hasAssociation')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return false;
-                        }
-
-                        if ($arg === 'toOne') {
-                            return true;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return false;
                     }
-                )
+
+                    if ($arg === 'toOne') {
+                        return true;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this

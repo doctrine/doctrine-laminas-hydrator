@@ -78,20 +78,18 @@ class DoctrineObjectTest extends TestCase
             ->metadata
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('field')))
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return 'integer';
-                        }
-
-                        if ($arg === 'field') {
-                            return 'string';
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return 'integer';
                     }
-                )
+
+                    if ($arg === 'field') {
+                        return 'string';
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -195,20 +193,18 @@ class DoctrineObjectTest extends TestCase
             ->metadata
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('done')))
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return 'integer';
-                        }
-
-                        if ($arg === 'done') {
-                            return 'boolean';
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return 'integer';
                     }
-                )
+
+                    if ($arg === 'done') {
+                        return 'boolean';
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -258,20 +254,18 @@ class DoctrineObjectTest extends TestCase
             ->metadata
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('isActive')))
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return 'integer';
-                        }
-
-                        if ($arg === 'isActive') {
-                            return 'boolean';
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return 'integer';
                     }
-                )
+
+                    if ($arg === 'isActive') {
+                        return 'boolean';
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -371,20 +365,18 @@ class DoctrineObjectTest extends TestCase
             ->metadata
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('date')))
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return 'integer';
-                        }
-
-                        if ($arg === 'date') {
-                            return 'datetime';
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return 'integer';
                     }
-                )
+
+                    if ($arg === 'date') {
+                        return 'datetime';
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -434,24 +426,22 @@ class DoctrineObjectTest extends TestCase
                 $this->equalTo('embedded.field'),
                 $this->equalTo('embedded')
             ))
-            ->will(
-                $this->returnCallback(
-                    static function (string $arg): ?string {
-                        if ($arg === 'id') {
-                            return 'integer';
-                        }
-
-                        if ($arg === 'embedded.field') {
-                            return 'string';
-                        }
-
-                        if ($arg === 'embedded') {
-                            return null;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function (string $arg): ?string {
+                    if ($arg === 'id') {
+                        return 'integer';
                     }
-                )
+
+                    if ($arg === 'embedded.field') {
+                        return 'string';
+                    }
+
+                    if ($arg === 'embedded') {
+                        return null;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -497,40 +487,36 @@ class DoctrineObjectTest extends TestCase
             ->metadata
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return 'integer';
-                        }
-
-                        if ($arg === 'toOne') {
-                            return Assets\ByValueDifferentiatorEntity::class;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return 'integer';
                     }
-                )
+
+                    if ($arg === 'toOne') {
+                        return Assets\ByValueDifferentiatorEntity::class;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
             ->metadata
             ->method('hasAssociation')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return false;
-                        }
-
-                        if ($arg === 'toOne') {
-                            return true;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return false;
                     }
-                )
+
+                    if ($arg === 'toOne') {
+                        return true;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -589,24 +575,22 @@ class DoctrineObjectTest extends TestCase
                     $this->equalTo('field')
                 )
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return 'integer';
-                        }
-
-                        if ($arg === 'toOne') {
-                            return Assets\ByValueDifferentiatorEntity::class;
-                        }
-
-                        if ($arg === 'field') {
-                            return 'string';
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return 'integer';
                     }
-                )
+
+                    if ($arg === 'toOne') {
+                        return Assets\ByValueDifferentiatorEntity::class;
+                    }
+
+                    if ($arg === 'field') {
+                        return 'string';
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -619,20 +603,18 @@ class DoctrineObjectTest extends TestCase
                     $this->equalTo('field')
                 )
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id' || $arg === 'field') {
-                            return false;
-                        }
-
-                        if ($arg === 'toOne') {
-                            return true;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id' || $arg === 'field') {
+                        return false;
                     }
-                )
+
+                    if ($arg === 'toOne') {
+                        return true;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -691,48 +673,44 @@ class DoctrineObjectTest extends TestCase
                     $this->equalTo('field')
                 )
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return 'integer';
-                        }
-
-                        if ($arg === 'field') {
-                            return 'string';
-                        }
-
-                        if ($arg === 'entities') {
-                            return ArrayCollection::class;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return 'integer';
                     }
-                )
+
+                    if ($arg === 'field') {
+                        return 'string';
+                    }
+
+                    if ($arg === 'entities') {
+                        return ArrayCollection::class;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
             ->metadata
             ->method('hasAssociation')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('entities'), $this->equalTo('field')))
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return false;
-                        }
-
-                        if ($arg === 'field') {
-                            return false;
-                        }
-
-                        if ($arg === 'entities') {
-                            return true;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return false;
                     }
-                )
+
+                    if ($arg === 'field') {
+                        return false;
+                    }
+
+                    if ($arg === 'entities') {
+                        return true;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -796,48 +774,44 @@ class DoctrineObjectTest extends TestCase
                     $this->equalTo('field')
                 )
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return 'integer';
-                        }
-
-                        if ($arg === 'field') {
-                            return 'string';
-                        }
-
-                        if ($arg === 'entities') {
-                            return ArrayCollection::class;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return 'integer';
                     }
-                )
+
+                    if ($arg === 'field') {
+                        return 'string';
+                    }
+
+                    if ($arg === 'entities') {
+                        return ArrayCollection::class;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
             ->metadata
             ->method('hasAssociation')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('entities')))
-            ->will(
-                $this->returnCallback(
-                    static function ($arg) {
-                        if ($arg === 'id') {
-                            return false;
-                        }
-
-                        if ($arg === 'field') {
-                            return 'string';
-                        }
-
-                        if ($arg === 'entities') {
-                            return true;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return false;
                     }
-                )
+
+                    if ($arg === 'field') {
+                        return 'string';
+                    }
+
+                    if ($arg === 'entities') {
+                        return true;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $this
@@ -1676,20 +1650,18 @@ class DoctrineObjectTest extends TestCase
                 Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
-                        if ($arg['id'] === 2) {
-                            return $entityInDatabaseWithIdOfTwo;
-                        }
-
-                        if ($arg['id'] === 3) {
-                            return $entityInDatabaseWithIdOfThree;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    if ($arg['id'] === 2) {
+                        return $entityInDatabaseWithIdOfTwo;
                     }
-                )
+
+                    if ($arg['id'] === 3) {
+                        return $entityInDatabaseWithIdOfThree;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -1741,20 +1713,18 @@ class DoctrineObjectTest extends TestCase
                 Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
-                        if ($arg['id'] === 2) {
-                            return $entityInDatabaseWithIdOfTwo;
-                        }
-
-                        if ($arg['id'] === 3) {
-                            return $entityInDatabaseWithIdOfThree;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    if ($arg['id'] === 2) {
+                        return $entityInDatabaseWithIdOfTwo;
                     }
-                )
+
+                    if ($arg['id'] === 3) {
+                        return $entityInDatabaseWithIdOfThree;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -1791,11 +1761,11 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 static function () use (&$reflSteps) {
                     return array_shift($reflSteps);
                 }
-            ));
+            );
 
         $this->configureObjectManagerForOneToManyEntity();
 
@@ -1822,20 +1792,18 @@ class DoctrineObjectTest extends TestCase
                 Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
-                        if ($arg['id'] === 2) {
-                            return $entityInDatabaseWithIdOfTwo;
-                        }
-
-                        if ($arg['id'] === 3) {
-                            return $entityInDatabaseWithIdOfThree;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    if ($arg['id'] === 2) {
+                        return $entityInDatabaseWithIdOfTwo;
                     }
-                )
+
+                    if ($arg['id'] === 3) {
+                        return $entityInDatabaseWithIdOfThree;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
@@ -1883,20 +1851,18 @@ class DoctrineObjectTest extends TestCase
                 Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
-                        if ($arg['id'] === 2) {
-                            return $entityInDatabaseWithIdOfTwo;
-                        }
-
-                        if ($arg['id'] === 3) {
-                            return $entityInDatabaseWithIdOfThree;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    if ($arg['id'] === 2) {
+                        return $entityInDatabaseWithIdOfTwo;
                     }
-                )
+
+                    if ($arg['id'] === 3) {
+                        return $entityInDatabaseWithIdOfThree;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
@@ -2061,20 +2027,18 @@ class DoctrineObjectTest extends TestCase
                 Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
-                        if ($arg['id'] === 2) {
-                            return $entityInDatabaseWithIdOfTwo;
-                        }
-
-                        if ($arg['id'] === 3) {
-                            return $entityInDatabaseWithIdOfThree;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    if ($arg['id'] === 2) {
+                        return $entityInDatabaseWithIdOfTwo;
                     }
-                )
+
+                    if ($arg['id'] === 3) {
+                        return $entityInDatabaseWithIdOfThree;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -2132,20 +2096,18 @@ class DoctrineObjectTest extends TestCase
                 Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
-                        if ($arg['id'] === 2) {
-                            return $entityInDatabaseWithIdOfTwo;
-                        }
-
-                        if ($arg['id'] === 3) {
-                            return $entityInDatabaseWithIdOfThree;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    if ($arg['id'] === 2) {
+                        return $entityInDatabaseWithIdOfTwo;
                     }
-                )
+
+                    if ($arg['id'] === 3) {
+                        return $entityInDatabaseWithIdOfThree;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -2204,20 +2166,18 @@ class DoctrineObjectTest extends TestCase
                 Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
-                        if ($arg['id'] === 2) {
-                            return $entityInDatabaseWithIdOfTwo;
-                        }
-
-                        if ($arg['id'] === 3) {
-                            return $entityInDatabaseWithIdOfThree;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    if ($arg['id'] === 2) {
+                        return $entityInDatabaseWithIdOfTwo;
                     }
-                )
+
+                    if ($arg['id'] === 3) {
+                        return $entityInDatabaseWithIdOfThree;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -2274,11 +2234,11 @@ class DoctrineObjectTest extends TestCase
             ->metadata
             ->expects($this->any())
             ->method('getReflectionClass')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 static function () use (&$reflSteps) {
                     return array_shift($reflSteps);
                 }
-            ));
+            );
 
         $this->configureObjectManagerForOneToManyEntity();
 
@@ -2290,20 +2250,18 @@ class DoctrineObjectTest extends TestCase
                 Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
-                        if ($arg['id'] === 2) {
-                            return $entityInDatabaseWithIdOfTwo;
-                        }
-
-                        if ($arg['id'] === 3) {
-                            return $entityInDatabaseWithIdOfThree;
-                        }
-
-                        throw new InvalidArgumentException();
+            ->willReturnCallback(
+                static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    if ($arg['id'] === 2) {
+                        return $entityInDatabaseWithIdOfTwo;
                     }
-                )
+
+                    if ($arg['id'] === 3) {
+                        return $entityInDatabaseWithIdOfThree;
+                    }
+
+                    throw new InvalidArgumentException();
+                }
             );
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
@@ -2385,16 +2343,14 @@ class DoctrineObjectTest extends TestCase
                 Assets\ByValueDifferentiatorEntity::class,
                 $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
             )
-            ->will(
-                $this->returnCallback(
-                    static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
-                        if ($arg['id'] === 2) {
-                            return $entityInDatabaseWithIdOfTwo;
-                        }
-
-                        return $entityInDatabaseWithIdOfThree;
+            ->willReturnCallback(
+                static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
+                    if ($arg['id'] === 2) {
+                        return $entityInDatabaseWithIdOfTwo;
                     }
-                )
+
+                    return $entityInDatabaseWithIdOfThree;
+                }
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);

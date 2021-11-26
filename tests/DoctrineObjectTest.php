@@ -51,7 +51,7 @@ class DoctrineObjectTest extends TestCase
         $this->metadata      = $this->createMock(ClassMetadata::class);
         $this->objectManager = $this->createMock(ObjectManager::class);
 
-        $this->objectManager->expects($this->any())
+        $this->objectManager
             ->method('getClassMetadata')
             ->will($this->returnValue($this->metadata));
     }
@@ -1845,7 +1845,6 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->objectManager
-            ->expects($this->any())
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
@@ -2232,7 +2231,6 @@ class DoctrineObjectTest extends TestCase
         ];
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->willReturnCallback(
                 static function () use (&$reflSteps) {
@@ -2337,7 +2335,6 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->objectManager
-            ->expects($this->any())
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
@@ -2375,7 +2372,6 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->objectManager
-            ->expects($this->any())
             ->method('find')
             ->with(Assets\ByValueDifferentiatorEntity::class, '')
             ->will($this->returnValue($entityInDatabaseWithEmptyId));
@@ -2605,43 +2601,36 @@ class DoctrineObjectTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(Assets\SimplePrivateEntity::class));
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getAssociationNames')
             ->will($this->returnValue([]));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getFieldNames')
             ->will($this->returnValue(['private', 'protected']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('private'), $this->equalTo('protected')))
             ->will($this->returnValue('integer'));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->will($this->returnValue(false));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getIdentifierFieldNames')
             ->will($this->returnValue(['private']));
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getReflectionClass')
             ->will($this->returnValue($refl));
 

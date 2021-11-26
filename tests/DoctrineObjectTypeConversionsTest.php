@@ -40,7 +40,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->metadata      = $this->createMock(ClassMetadata::class);
         $this->objectManager = $this->createMock(ObjectManager::class);
 
-        $this->objectManager->expects($this->any())
+        $this->objectManager
             ->method('getClassMetadata')
             ->will($this->returnValue($this->metadata));
     }
@@ -68,7 +68,6 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('genericField')))
             ->willReturnCallback(
@@ -147,7 +146,6 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $this
             ->metadata
-            ->expects($this->any())
             ->method('hasAssociation')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('toOne')))
             ->willReturnCallback(

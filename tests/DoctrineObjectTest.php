@@ -22,7 +22,6 @@ use ReflectionClass;
 use stdClass;
 
 use function array_keys;
-use function array_shift;
 use function assert;
 use function explode;
 use function implode;
@@ -1752,19 +1751,14 @@ class DoctrineObjectTest extends TestCase
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\OneToManyEntity();
 
-        $reflSteps = [
-            new ReflectionClass(Assets\OneToManyEntity::class),
-            new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
-            new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
-            new ReflectionClass(Assets\OneToManyEntity::class),
-        ];
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->willReturnCallback(
-                static function () use (&$reflSteps) {
-                    return array_shift($reflSteps);
-                }
+            ->willReturnOnConsecutiveCalls(
+                new ReflectionClass(Assets\OneToManyEntity::class),
+                new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
+                new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
+                new ReflectionClass(Assets\OneToManyEntity::class)
             );
 
         $this->configureObjectManagerForOneToManyEntity();
@@ -2223,19 +2217,14 @@ class DoctrineObjectTest extends TestCase
             ])
         );
 
-        $reflSteps = [
-            new ReflectionClass(Assets\OneToManyEntityWithEntities::class),
-            new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
-            new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
-            new ReflectionClass(Assets\OneToManyEntityWithEntities::class),
-        ];
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->willReturnCallback(
-                static function () use (&$reflSteps) {
-                    return array_shift($reflSteps);
-                }
+            ->willReturnOnConsecutiveCalls(
+                new ReflectionClass(Assets\OneToManyEntityWithEntities::class),
+                new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
+                new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
+                new ReflectionClass(Assets\OneToManyEntityWithEntities::class)
             );
 
         $this->configureObjectManagerForOneToManyEntity();

@@ -4,6 +4,15 @@
   "slug": "doctrine-laminas-hydrator",
   "versions": [
     {
+      "name": "3.0",
+      "branchName": "3.0.x",
+      "slug": "3.0",
+      "aliases": [
+        "latest"
+      ],
+      "upcoming": true
+    },
+    {
       "name": "2.2",
       "branchName": "2.2.x",
       "slug": "2.2",

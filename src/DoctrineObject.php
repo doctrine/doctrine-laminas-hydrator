@@ -57,10 +57,10 @@ class DoctrineObject extends AbstractHydrator
     /** @var bool */
     protected $byValue = true;
 
-    /** @var class-string<Strategy\AbstractCollectionStrategy> */
+    /** @var class-string<Strategy\CollectionStrategyInterface> */
     protected $defaultByValueStrategy = AllowRemoveByValue::class;
 
-    /** @var class-string<Strategy\AbstractCollectionStrategy> */
+    /** @var class-string<Strategy\CollectionStrategyInterface> */
     protected $defaultByReferenceStrategy = AllowRemoveByReference::class;
 
     /** @var Inflector */
@@ -78,7 +78,7 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
-     * @return class-string<Strategy\AbstractCollectionStrategy>
+     * @return class-string<Strategy\CollectionStrategyInterface>
      */
     public function getDefaultByValueStrategy()
     {
@@ -86,7 +86,7 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
-     * @param class-string<Strategy\AbstractCollectionStrategy> $defaultByValueStrategy
+     * @param class-string<Strategy\CollectionStrategyInterface> $defaultByValueStrategy
      *
      * @return $this
      */
@@ -98,7 +98,7 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
-     * @return class-string<Strategy\AbstractCollectionStrategy>
+     * @return class-string<Strategy\CollectionStrategyInterface>
      */
     public function getDefaultByReferenceStrategy()
     {
@@ -106,7 +106,7 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
-     * @param class-string<Strategy\AbstractCollectionStrategy> $defaultByReferenceStrategy
+     * @param class-string<Strategy\CollectionStrategyInterface> $defaultByReferenceStrategy
      *
      * @return $this
      */
@@ -204,18 +204,18 @@ class DoctrineObject extends AbstractHydrator
 
             $strategy = $this->getStrategy($association);
 
-            if (! $strategy instanceof Strategy\AbstractCollectionStrategy) {
+            if (! $strategy instanceof Strategy\CollectionStrategyInterface) {
                 throw new InvalidArgumentException(
                     sprintf(
-                        'Strategies used for collections valued associations must inherit from '
-                        . 'Strategy\AbstractCollectionStrategy, %s given',
+                        'Strategies used for collections valued associations must inherit from %s, %s given',
+                        Strategy\CollectionStrategyInterface::class,
                         get_class($strategy)
                     )
                 );
             }
 
-            $strategy->setCollectionName($association)
-                ->setClassMetadata($this->metadata);
+            $strategy->setCollectionName($association);
+            $strategy->setClassMetadata($this->metadata);
         }
     }
 
@@ -509,7 +509,7 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Handle ToMany associations. In proper Doctrine design, Collections should not be swapped, so
      * collections are always handled by reference. Internally, every collection is handled using specials
-     * strategies that inherit from AbstractCollectionStrategy class, and that add or remove elements but without
+     * strategies that inherit from CollectionStrategyInterface class, and that add or remove elements but without
      * changing the collection of the object
      *
      * @param  object       $object
@@ -593,9 +593,8 @@ class DoctrineObject extends AbstractHydrator
         );
 
         // Set the object so that the strategy can extract the Collection from it
-
         $collectionStrategy = $this->getStrategy($collectionName);
-        assert($collectionStrategy instanceof Strategy\AbstractCollectionStrategy);
+        assert($collectionStrategy instanceof Strategy\CollectionStrategyInterface);
         $collectionStrategy->setObject($object);
 
         // We could directly call hydrate method from the strategy, but if people want to override

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Doctrine\Laminas\Hydrator\Strategy;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use LogicException;
 
 use function array_udiff;
@@ -47,10 +46,7 @@ class DisallowRemoveByValue extends AbstractCollectionStrategy
         }
 
         $collection = $this->getCollectionFromObjectByValue();
-
-        if ($collection instanceof Collection) {
-            $collection = $collection->toArray();
-        }
+        $collection = $collection->toArray();
 
         $toAdd = new ArrayCollection(array_udiff($value, $collection, [$this, 'compareObjects']));
 

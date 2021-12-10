@@ -563,7 +563,6 @@ class DoctrineObject extends AbstractHydrator
                         case 'array':
                             if (array_key_exists($field, $value) && $value[$field] !== null) {
                                 $find[$field] = $value[$field];
-                                unset($value[$field]); // removed identifier from persistable data
                             }
 
                             break;

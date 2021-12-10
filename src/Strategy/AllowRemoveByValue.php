@@ -19,7 +19,7 @@ use function sprintf;
  * final collection will contain elements B and C (while element A will be asked to be removed).
  * This strategy is by value, this means it will use the public API (in this case, adder and remover)
  */
-class AllowRemoveByValue extends AbstractCollectionStrategy
+final class AllowRemoveByValue extends AbstractCollectionStrategy
 {
     /**
      * Converts the given value so that it can be hydrated by the hydrator.

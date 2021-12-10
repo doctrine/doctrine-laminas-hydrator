@@ -6,11 +6,9 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class SimpleEntityWithEmbeddable
 {
-    /** @var int */
-    protected $id;
+    protected int $id;
 
-    /** @var EmbedabbleEntity */
-    protected $embedded;
+    protected EmbedabbleEntity $embedded;
 
     public function __construct()
     {

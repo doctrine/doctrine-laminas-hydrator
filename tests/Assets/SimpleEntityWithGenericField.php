@@ -6,8 +6,7 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class SimpleEntityWithGenericField
 {
-    /** @var int */
-    protected $id;
+    protected int $id;
 
     /** @var mixed */
     protected $genericField;

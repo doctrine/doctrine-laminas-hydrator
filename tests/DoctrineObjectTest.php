@@ -31,11 +31,9 @@ class DoctrineObjectTest extends TestCase
 {
     use ProphecyTrait;
 
-    /** @var DoctrineObjectHydrator */
-    protected $hydratorByValue;
+    protected DoctrineObjectHydrator $hydratorByValue;
 
-    /** @var DoctrineObjectHydrator */
-    protected $hydratorByReference;
+    protected DoctrineObjectHydrator $hydratorByReference;
 
     /** @var ClassMetadata&MockObject */
     protected $metadata;

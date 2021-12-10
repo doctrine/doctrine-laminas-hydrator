@@ -15,19 +15,9 @@ use function is_array;
  */
 final class PropertyName implements FilterInterface
 {
-    /**
-     * The properties to exclude.
-     *
-     * @var array
-     */
-    protected $properties = [];
+    protected array $properties = [];
 
-    /**
-     * Either an exclude or an include.
-     *
-     * @var bool
-     */
-    protected $exclude;
+    protected bool $exclude;
 
     /**
      * @param string|array $properties The properties to exclude or include.

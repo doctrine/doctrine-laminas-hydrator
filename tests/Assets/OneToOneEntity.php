@@ -8,14 +8,11 @@ use DateTime;
 
 class OneToOneEntity
 {
-    /** @var int */
-    protected $id;
+    protected int $id;
 
-    /** @var ByValueDifferentiatorEntity */
-    protected $toOne;
+    protected ?ByValueDifferentiatorEntity $toOne;
 
-    /** @var DateTime */
-    protected $createdAt;
+    protected DateTime $createdAt;
 
     public function setId(int $id)
     {

@@ -11,8 +11,7 @@ class ByValueDifferentiatorEntity
     /** @var string|int */
     protected $id;
 
-    /** @var string */
-    protected $field;
+    protected string $field;
 
     /**
      * @param string|int $id

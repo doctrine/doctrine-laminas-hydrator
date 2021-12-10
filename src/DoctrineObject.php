@@ -48,23 +48,19 @@ use const PHP_VERSION_ID;
 
 class DoctrineObject extends AbstractHydrator
 {
-    /** @var ObjectManager */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
-    /** @var ClassMetadata */
-    protected $metadata;
+    protected ClassMetadata $metadata;
 
-    /** @var bool */
-    protected $byValue = true;
+    protected bool $byValue = true;
 
     /** @var class-string<Strategy\CollectionStrategyInterface> */
-    protected $defaultByValueStrategy = AllowRemoveByValue::class;
+    protected string $defaultByValueStrategy = AllowRemoveByValue::class;
 
     /** @var class-string<Strategy\CollectionStrategyInterface> */
-    protected $defaultByReferenceStrategy = AllowRemoveByReference::class;
+    protected string $defaultByReferenceStrategy = AllowRemoveByReference::class;
 
-    /** @var Inflector */
-    private $inflector;
+    private Inflector $inflector;
 
     /**
      * @param ObjectManager $objectManager The ObjectManager to use

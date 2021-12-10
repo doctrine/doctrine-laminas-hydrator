@@ -2810,8 +2810,8 @@ class DoctrineObjectTest extends TestCase
         $objectManager
             ->getClassMetadata(Assets\ByValueDifferentiatorEntity::class)
             ->will([$byValueDifferentiatorEntity, 'reveal']);
-        $objectManager->find(Assets\OneToOneEntity::class, ['id' => 12])->willReturn(false);
-        $objectManager->find(Assets\ByValueDifferentiatorEntity::class, ['id' => 13])->willReturn(false);
+        $objectManager->find(Assets\OneToOneEntity::class, ['id' => 12])->willReturn(null);
+        $objectManager->find(Assets\ByValueDifferentiatorEntity::class, ['id' => 13])->willReturn(null);
 
         return $objectManager->reveal();
     }

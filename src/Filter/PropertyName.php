@@ -13,7 +13,7 @@ use function is_array;
  * Provides a filter to restrict returned fields by whitelisting or
  * blacklisting property names.
  */
-class PropertyName implements FilterInterface
+final class PropertyName implements FilterInterface
 {
     /**
      * The properties to exclude.

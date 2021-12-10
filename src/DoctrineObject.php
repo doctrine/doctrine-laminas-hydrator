@@ -508,8 +508,8 @@ class DoctrineObject extends AbstractHydrator
 
     /**
      * Handle ToMany associations. In proper Doctrine design, Collections should not be swapped, so
-     * collections are always handled by reference. Internally, every collection is handled using specials
-     * strategies that inherit from CollectionStrategyInterface class, and that add or remove elements but without
+     * collections are always handled by reference. Internally, every collection is handled using
+     * strategies that implement CollectionStrategyInterface, and that add or remove elements but without
      * changing the collection of the object
      *
      * @param  object       $object

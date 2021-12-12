@@ -11,7 +11,6 @@ class OneToManyEntity
 {
     protected int $id;
 
-    /** @var Collection */
     protected Collection $entities;
 
     public function __construct()

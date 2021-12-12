@@ -251,8 +251,6 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Extract values from an object using a by-reference logic (this means that values are
      * directly fetched without using the public API of the entity, in this case, getters)
-     *
-     * @return array
      */
     protected function extractByReference(object $object): array
     {

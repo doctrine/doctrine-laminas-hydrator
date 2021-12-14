@@ -44,8 +44,6 @@ use function sprintf;
 use function strpos;
 use function substr;
 
-use const PHP_VERSION_ID;
-
 class DoctrineObject extends AbstractHydrator
 {
     protected ObjectManager $objectManager;
@@ -269,7 +267,7 @@ class DoctrineObject extends AbstractHydrator
             $reflProperty->setAccessible(true);
 
             // skip uninitialized properties (available from PHP 7.4)
-            if (PHP_VERSION_ID >= 70400 && ! $reflProperty->isInitialized($object)) {
+            if (! $reflProperty->isInitialized($object)) {
                 continue;
             }
 

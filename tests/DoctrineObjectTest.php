@@ -892,9 +892,6 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => 2, 'field' => 'foo'], $data);
     }
 
-    /**
-     * @requires PHP 7.4
-     */
     public function testDoesNotExtractUninitializedVariables()
     {
         // When using extraction by reference, it won't use the public API of entity (getters won't be called)

@@ -8,11 +8,9 @@ use DateTime;
 
 class SimpleEntityWithDateTime
 {
-    /** @var int */
-    protected $id;
+    protected int $id;
 
-    /** @var DateTime */
-    protected $date;
+    protected ?DateTime $date;
 
     public function setId(int $id)
     {

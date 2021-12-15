@@ -9,8 +9,7 @@ class SimpleIsEntity
     /** @var int|string */
     protected $id;
 
-    /** @var bool */
-    protected $done;
+    protected bool $done;
 
     public function setId(int $id)
     {

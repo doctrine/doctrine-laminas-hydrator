@@ -9,11 +9,9 @@ use Doctrine\Common\Collections\Collection;
 
 class OneToManyArrayEntity
 {
-    /** @var int */
-    protected $id;
+    protected int $id;
 
-    /** @var Collection */
-    protected $entities;
+    protected Collection $entities;
 
     public function __construct()
     {

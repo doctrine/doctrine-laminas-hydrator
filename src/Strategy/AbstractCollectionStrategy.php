@@ -23,17 +23,13 @@ use function sprintf;
  */
 abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
 {
-    /** @var string */
-    protected $collectionName;
+    protected string $collectionName;
 
-    /** @var ClassMetadata */
-    protected $metadata;
+    protected ClassMetadata $metadata;
 
-    /** @var object */
-    protected $object;
+    protected object $object;
 
-    /** @var Inflector */
-    protected $inflector;
+    protected Inflector $inflector;
 
     public function __construct(?Inflector $inflector = null)
     {

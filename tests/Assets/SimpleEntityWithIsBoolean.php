@@ -6,11 +6,9 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class SimpleEntityWithIsBoolean
 {
-    /** @var int */
-    protected $id;
+    protected int $id;
 
-    /** @var bool */
-    protected $isActive;
+    protected bool $isActive;
 
     public function setId(int $id)
     {

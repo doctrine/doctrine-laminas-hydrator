@@ -21,11 +21,9 @@ use function is_string;
 
 class DoctrineObjectTypeConversionsTest extends TestCase
 {
-    /** @var DoctrineObjectHydrator */
-    protected $hydratorByValue;
+    protected DoctrineObjectHydrator $hydratorByValue;
 
-    /** @var DoctrineObjectHydrator */
-    protected $hydratorByReference;
+    protected DoctrineObjectHydrator $hydratorByReference;
 
     /** @var ClassMetadata&MockObject */
     protected $metadata;

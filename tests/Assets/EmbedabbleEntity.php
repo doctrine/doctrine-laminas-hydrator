@@ -6,8 +6,7 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class EmbedabbleEntity
 {
-    /** @var string */
-    protected $field;
+    protected string $field;
 
     public function setField(string $field)
     {

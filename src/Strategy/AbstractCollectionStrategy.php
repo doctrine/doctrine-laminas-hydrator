@@ -10,6 +10,7 @@ use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use InvalidArgumentException;
+use LogicException;
 use ReflectionException;
 
 use function get_class;
@@ -23,13 +24,13 @@ use function sprintf;
  */
 abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
 {
-    protected string $collectionName;
+    private ?string $collectionName = null;
 
-    protected ClassMetadata $metadata;
+    private ?ClassMetadata $metadata = null;
 
-    protected object $object;
+    private ?object $object = null;
 
-    protected Inflector $inflector;
+    private Inflector $inflector;
 
     public function __construct(?Inflector $inflector = null)
     {
@@ -43,6 +44,10 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
 
     public function getCollectionName(): string
     {
+        if ($this->collectionName === null) {
+            throw new LogicException('Collection name has not been set.');
+        }
+
         return $this->collectionName;
     }
 
@@ -53,6 +58,10 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
 
     public function getClassMetadata(): ClassMetadata
     {
+        if ($this->metadata === null) {
+            throw new LogicException('Class metadata has not been set.');
+        }
+
         return $this->metadata;
     }
 
@@ -63,6 +72,10 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
 
     public function getObject(): object
     {
+        if ($this->object === null) {
+            throw new LogicException('Object has not been set.');
+        }
+
         return $this->object;
     }
 
@@ -79,6 +92,11 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
         return $value;
     }
 
+    protected function getInflector(): Inflector
+    {
+        return $this->inflector;
+    }
+
     /**
      * Return the collection by value (using the public API)
      *
@@ -87,7 +105,7 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
     protected function getCollectionFromObjectByValue(): Collection
     {
         $object = $this->getObject();
-        $getter = 'get' . $this->inflector->classify($this->getCollectionName());
+        $getter = 'get' . $this->getInflector()->classify($this->getCollectionName());
 
         if (! method_exists($object, $getter)) {
             throw new InvalidArgumentException(

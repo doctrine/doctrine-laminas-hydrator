@@ -32,15 +32,16 @@ final class DisallowRemoveByValue extends AbstractCollectionStrategy
     public function hydrate($value, ?array $data)
     {
         // AllowRemove strategy need "adder"
-        $adder = 'add' . $this->inflector->classify($this->collectionName);
+        $adder  = 'add' . $this->getInflector()->classify($this->getCollectionName());
+        $object = $this->getObject();
 
-        if (! method_exists($this->object, $adder)) {
+        if (! method_exists($object, $adder)) {
             throw new LogicException(
                 sprintf(
                     'DisallowRemove strategy for DoctrineModule hydrator requires %s to
                      be defined in %s entity domain code, but it seems to be missing',
                     $adder,
-                    get_class($this->object)
+                    get_class($object)
                 )
             );
         }
@@ -50,7 +51,7 @@ final class DisallowRemoveByValue extends AbstractCollectionStrategy
 
         $toAdd = new ArrayCollection(array_udiff($value, $collection, [$this, 'compareObjects']));
 
-        $this->object->$adder($toAdd);
+        $object->$adder($toAdd);
 
         return $collection;
     }

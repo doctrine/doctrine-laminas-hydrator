@@ -24,17 +24,18 @@ class DifferentAllowRemoveByValue extends AbstractCollectionStrategy
     public function hydrate($value, ?array $data)
     {
         // AllowRemove strategy need "adder" and "remover"
-        $adder   = 'add' . $this->inflector->classify($this->collectionName);
-        $remover = 'remove' . $this->inflector->classify($this->collectionName);
+        $adder   = 'add' . $this->getInflector()->classify($this->getCollectionName());
+        $remover = 'remove' . $this->getInflector()->classify($this->getCollectionName());
+        $object  = $this->getObject();
 
-        if (! method_exists($this->object, $adder) || ! method_exists($this->object, $remover)) {
+        if (! method_exists($object, $adder) || ! method_exists($object, $remover)) {
             throw new LogicException(
                 sprintf(
                     'AllowRemove strategy for DoctrineModule hydrator requires both %s and %s to be defined in %s
                      entity domain code, but one or both seem to be missing',
                     $adder,
                     $remover,
-                    get_class($this->object)
+                    get_class($object)
                 )
             );
         }
@@ -45,8 +46,8 @@ class DifferentAllowRemoveByValue extends AbstractCollectionStrategy
         $toAdd    = new ArrayCollection(array_udiff($value, $collection, [$this, 'compareObjects']));
         $toRemove = new ArrayCollection(array_udiff($collection, $value, [$this, 'compareObjects']));
 
-        $this->object->$adder($toAdd);
-        $this->object->$remover($toRemove);
+        $object->$adder($toAdd);
+        $object->$remover($toRemove);
 
         return $collection;
     }

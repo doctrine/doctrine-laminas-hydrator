@@ -8,9 +8,9 @@ use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
 use Doctrine\Persistence\Mapping\ClassMetadata;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
-use RuntimeException;
 use stdClass;
 
 class AbstractCollectionStrategyTest extends TestCase
@@ -40,7 +40,7 @@ class AbstractCollectionStrategyTest extends TestCase
     public function testUninitializedCollectionNameThrowsException(): void
     {
         $strategy = $this->getMockForAbstractClass(AbstractCollectionStrategy::class);
-        $this->expectException(RuntimeException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Collection name has not been set.');
 
         $strategy->getCollectionName();
@@ -49,7 +49,7 @@ class AbstractCollectionStrategyTest extends TestCase
     public function testUninitializedClassMetadataThrowsException(): void
     {
         $strategy = $this->getMockForAbstractClass(AbstractCollectionStrategy::class);
-        $this->expectException(RuntimeException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Class metadata has not been set.');
 
         $strategy->getClassMetadata();
@@ -58,7 +58,7 @@ class AbstractCollectionStrategyTest extends TestCase
     public function testUninitializedObjectThrowsException(): void
     {
         $strategy = $this->getMockForAbstractClass(AbstractCollectionStrategy::class);
-        $this->expectException(RuntimeException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Object has not been set.');
 
         $strategy->getObject();

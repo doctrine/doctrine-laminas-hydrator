@@ -10,8 +10,8 @@ use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use InvalidArgumentException;
+use LogicException;
 use ReflectionException;
-use RuntimeException;
 
 use function get_class;
 use function is_array;
@@ -45,7 +45,7 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
     public function getCollectionName(): string
     {
         if ($this->collectionName === null) {
-            throw new RuntimeException('Collection name has not been set.');
+            throw new LogicException('Collection name has not been set.');
         }
 
         return $this->collectionName;
@@ -59,7 +59,7 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
     public function getClassMetadata(): ClassMetadata
     {
         if ($this->metadata === null) {
-            throw new RuntimeException('Class metadata has not been set.');
+            throw new LogicException('Class metadata has not been set.');
         }
 
         return $this->metadata;
@@ -73,7 +73,7 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
     public function getObject(): object
     {
         if ($this->object === null) {
-            throw new RuntimeException('Object has not been set.');
+            throw new LogicException('Object has not been set.');
         }
 
         return $this->object;

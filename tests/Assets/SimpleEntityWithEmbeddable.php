@@ -15,7 +15,7 @@ class SimpleEntityWithEmbeddable
         $this->embedded = new EmbedabbleEntity();
     }
 
-    public function setId(int $id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -25,7 +25,7 @@ class SimpleEntityWithEmbeddable
         return $this->id;
     }
 
-    public function setEmbedded(EmbedabbleEntity $embedded)
+    public function setEmbedded(EmbedabbleEntity $embedded): void
     {
         $this->embedded = $embedded;
     }

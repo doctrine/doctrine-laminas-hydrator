@@ -16,7 +16,7 @@ class ByValueDifferentiatorEntity
     /**
      * @param string|int $id
      */
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
@@ -29,7 +29,7 @@ class ByValueDifferentiatorEntity
         return $this->id;
     }
 
-    public function setField(string $field, bool $modifyValue = true)
+    public function setField(string $field, bool $modifyValue = true): void
     {
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue) {

@@ -10,7 +10,7 @@ class SimpleEntityWithIsBoolean
 
     protected bool $isActive;
 
-    public function setId(int $id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -20,9 +20,9 @@ class SimpleEntityWithIsBoolean
         return $this->id;
     }
 
-    public function setIsActive(bool $isActive)
+    public function setIsActive(bool $isActive): void
     {
-        $this->isActive = (bool) $isActive;
+        $this->isActive = $isActive;
     }
 
     public function isActive(): bool

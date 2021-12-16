@@ -15,13 +15,14 @@ use function is_array;
  */
 final class PropertyName implements FilterInterface
 {
+    /** @var string[] */
     private array $properties = [];
 
     private bool $exclude;
 
     /**
-     * @param string|array $properties The properties to exclude or include.
-     * @param bool         $exclude    If the method should be excluded
+     * @param string|string[] $properties The properties to exclude or include.
+     * @param bool            $exclude    If the method should be excluded
      */
     public function __construct($properties, bool $exclude = true)
     {

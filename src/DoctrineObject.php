@@ -221,6 +221,8 @@ class DoctrineObject extends AbstractHydrator
      * Extract values from an object using a by-value logic (this means that it uses the entity
      * API, in this case, getters)
      *
+     * @return array<string,mixed>
+     *
      * @throws RuntimeException
      */
     protected function extractByValue(object $object): array
@@ -261,6 +263,8 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Extract values from an object using a by-reference logic (this means that values are
      * directly fetched without using the public API of the entity, in this case, getters)
+     *
+     * @return array<string,mixed>
      */
     protected function extractByReference(object $object): array
     {
@@ -294,9 +298,9 @@ class DoctrineObject extends AbstractHydrator
      * Converts a value for hydration
      * Apply strategies first, then the type conversions
      *
-     * @param string     $name  The name of the strategy to use.
-     * @param mixed      $value The value that should be converted.
-     * @param array|null $data  The whole data is optionally provided as context.
+     * @param string                       $name  The name of the strategy to use.
+     * @param mixed                        $value The value that should be converted.
+     * @param array<array-key, mixed>|null $data  The whole data is optionally provided as context.
      *
      * @return mixed|null
      */
@@ -315,6 +319,7 @@ class DoctrineObject extends AbstractHydrator
      * Hydrate the object using a by-value logic (this means that it uses the entity API, in this
      * case, setters)
      *
+     * @param array<string,mixed> $data
      * @psalm-param T $object
      *
      * @psalm-return T
@@ -377,6 +382,7 @@ class DoctrineObject extends AbstractHydrator
      * using the public API, in this case setters, and hence override any logic that could be done in those
      * setters)
      *
+     * @param array<string,mixed> $data
      * @psalm-param T $object
      *
      * @psalm-return T
@@ -429,7 +435,7 @@ class DoctrineObject extends AbstractHydrator
      * an identifier for the object. This is useful in a context of updating existing entities, without ugly
      * tricks like setting manually the existing id directly into the entity
      *
-     * @param  array $data The data that may contain identifiers keys
+     * @param array<string,mixed> $data The data that may contain identifiers keys
      * @psalm-param T $object
      *
      * @psalm-return T|null
@@ -690,7 +696,7 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Verifies if a provided identifier is to be considered null
      *
-     * @param  mixed $identifier
+     * @param array<string|null>|mixed $identifier
      */
     private function isNullIdentifier($identifier): bool
     {
@@ -699,11 +705,6 @@ class DoctrineObject extends AbstractHydrator
         }
 
         if ($identifier instanceof Traversable || is_array($identifier)) {
-            // Psalm infers iterable as a union of array|Traversable, but
-            // ArrayUtils::iteratorToArray() doesn't accept iterable, so this
-            // needs to be overwritten manually here.
-            // See https://github.com/vimeo/psalm/issues/6682
-            /** @psalm-var array|Traversable $identifier */
             $nonNullIdentifiers = array_filter(
                 ArrayUtils::iteratorToArray($identifier),
                 static function ($value) {

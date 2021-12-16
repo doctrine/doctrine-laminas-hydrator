@@ -64,10 +64,10 @@ class DoctrineObject extends AbstractHydrator
      * @param ObjectManager $objectManager The ObjectManager to use
      * @param bool          $byValue       If set to true, hydrator will always use entity's public API
      */
-    public function __construct(ObjectManager $objectManager, $byValue = true, ?Inflector $inflector = null)
+    public function __construct(ObjectManager $objectManager, bool $byValue = true, ?Inflector $inflector = null)
     {
         $this->objectManager = $objectManager;
-        $this->byValue       = (bool) $byValue;
+        $this->byValue       = $byValue;
         $this->inflector     = $inflector ?? InflectorFactory::create()->build();
     }
 
@@ -157,7 +157,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  object $object
      */
-    protected function prepare($object): void
+    protected function prepare(object $object): void
     {
         $this->metadata = $this->objectManager->getClassMetadata(get_class($object));
         $this->prepareStrategies();
@@ -282,8 +282,8 @@ class DoctrineObject extends AbstractHydrator
      * Converts a value for hydration
      * Apply strategies first, then the type conversions
      *
-     * @param  string     $name  The name of the strategy to use.
-     * @param  mixed      $value The value that should be converted.
+     * @param string     $name  The name of the strategy to use.
+     * @param mixed      $value The value that should be converted.
      * @param array|null $data  The whole data is optionally provided as context.
      *
      * @return mixed|null
@@ -458,7 +458,7 @@ class DoctrineObject extends AbstractHydrator
      * @param  class-string $target
      * @param  mixed        $value
      */
-    protected function toOne($target, $value): ?object
+    protected function toOne(string $target, $value): ?object
     {
         $metadata = $this->objectManager->getClassMetadata($target);
 
@@ -487,7 +487,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @throws InvalidArgumentException
      */
-    protected function toMany(object $object, string $collectionName, string $target, $values)
+    protected function toMany(object $object, string $collectionName, string $target, $values): void
     {
         $metadata   = $this->objectManager->getClassMetadata($target);
         $identifier = $metadata->getIdentifier();

@@ -17,6 +17,7 @@ use InvalidArgumentException;
 use Laminas\Hydrator\AbstractHydrator;
 use Laminas\Hydrator\Filter\FilterProviderInterface;
 use Laminas\Stdlib\ArrayUtils;
+use LogicException;
 use RuntimeException;
 use Traversable;
 
@@ -48,7 +49,7 @@ class DoctrineObject extends AbstractHydrator
 {
     protected ObjectManager $objectManager;
 
-    protected ClassMetadata $metadata;
+    protected ?ClassMetadata $metadata = null;
 
     protected bool $byValue = true;
 
@@ -58,7 +59,7 @@ class DoctrineObject extends AbstractHydrator
     /** @var class-string<Strategy\CollectionStrategyInterface> */
     protected string $defaultByReferenceStrategy = AllowRemoveByReference::class;
 
-    private Inflector $inflector;
+    protected Inflector $inflector;
 
     /**
      * @param ObjectManager $objectManager The ObjectManager to use
@@ -69,6 +70,15 @@ class DoctrineObject extends AbstractHydrator
         $this->objectManager = $objectManager;
         $this->byValue       = $byValue;
         $this->inflector     = $inflector ?? InflectorFactory::create()->build();
+    }
+
+    protected function getClassMetadata(): ClassMetadata
+    {
+        if ($this->metadata === null) {
+            throw new LogicException('Class metadata is not set, call prepare().');
+        }
+
+        return $this->metadata;
     }
 
     /**
@@ -111,7 +121,11 @@ class DoctrineObject extends AbstractHydrator
      */
     public function getFieldNames(): iterable
     {
-        $fields = array_merge($this->metadata->getFieldNames(), $this->metadata->getAssociationNames());
+        $fields = array_merge(
+            $this->getClassMetadata()->getFieldNames(),
+            $this->getClassMetadata()->getAssociationNames()
+        );
+
         foreach ($fields as $fieldName) {
             $pos = strpos($fieldName, '.');
             if ($pos !== false) {
@@ -154,8 +168,6 @@ class DoctrineObject extends AbstractHydrator
 
     /**
      * Prepare the hydrator by adding strategies to every collection valued associations
-     *
-     * @param  object $object
      */
     protected function prepare(object $object): void
     {
@@ -170,10 +182,10 @@ class DoctrineObject extends AbstractHydrator
      */
     protected function prepareStrategies(): void
     {
-        $associations = $this->metadata->getAssociationNames();
+        $associations = $this->getClassMetadata()->getAssociationNames();
 
         foreach ($associations as $association) {
-            if (! $this->metadata->isCollectionValuedAssociation($association)) {
+            if (! $this->getClassMetadata()->isCollectionValuedAssociation($association)) {
                 continue;
             }
 
@@ -201,7 +213,7 @@ class DoctrineObject extends AbstractHydrator
             }
 
             $strategy->setCollectionName($association);
-            $strategy->setClassMetadata($this->metadata);
+            $strategy->setClassMetadata($this->getClassMetadata());
         }
     }
 
@@ -252,7 +264,7 @@ class DoctrineObject extends AbstractHydrator
      */
     protected function extractByReference(object $object): array
     {
-        $refl   = $this->metadata->getReflectionClass();
+        $refl   = $this->getClassMetadata()->getReflectionClass();
         $filter = $object instanceof FilterProviderInterface
             ? $object->getFilter()
             : $this->filterComposite;
@@ -296,7 +308,7 @@ class DoctrineObject extends AbstractHydrator
             return null;
         }
 
-        return $this->handleTypeConversions($value, $this->metadata->getTypeOfField($name));
+        return $this->handleTypeConversions($value, $this->getClassMetadata()->getTypeOfField($name));
     }
 
     /**
@@ -314,7 +326,7 @@ class DoctrineObject extends AbstractHydrator
     protected function hydrateByValue(array $data, ?object $object): object
     {
         $tryObject = $this->tryConvertArrayToObject($data, $object);
-        $metadata  = $this->metadata;
+        $metadata  = $this->getClassMetadata();
 
         if (is_object($tryObject)) {
             $object = $tryObject;
@@ -374,7 +386,7 @@ class DoctrineObject extends AbstractHydrator
     protected function hydrateByReference(array $data, ?object $object): object
     {
         $tryObject = $this->tryConvertArrayToObject($data, $object);
-        $metadata  = $this->metadata;
+        $metadata  = $this->getClassMetadata();
         $refl      = $metadata->getReflectionClass();
 
         if (is_object($tryObject)) {
@@ -426,7 +438,7 @@ class DoctrineObject extends AbstractHydrator
      */
     protected function tryConvertArrayToObject(array $data, object $object): ?object
     {
-        $metadata         = $this->metadata;
+        $metadata         = $this->getClassMetadata();
         $identifierNames  = $metadata->getIdentifierFieldNames();
         $identifierValues = [];
 
@@ -515,29 +527,27 @@ class DoctrineObject extends AbstractHydrator
             }
 
             $find = [];
-            if (is_array($identifier)) {
-                foreach ($identifier as $field) {
-                    switch (gettype($value)) {
-                        case 'object':
-                            $getter = 'get' . $this->inflector->classify($field);
+            foreach ($identifier as $field) {
+                switch (gettype($value)) {
+                    case 'object':
+                        $getter = 'get' . $this->inflector->classify($field);
 
-                            if (is_callable([$value, $getter])) {
-                                $find[$field] = $value->$getter();
-                            } elseif (property_exists($value, $field)) {
-                                $find[$field] = $value->$field;
-                            }
+                        if (is_callable([$value, $getter])) {
+                            $find[$field] = $value->$getter();
+                        } elseif (property_exists($value, $field)) {
+                            $find[$field] = $value->$field;
+                        }
 
-                            break;
-                        case 'array':
-                            if (array_key_exists($field, $value) && $value[$field] !== null) {
-                                $find[$field] = $value[$field];
-                            }
+                        break;
+                    case 'array':
+                        if (array_key_exists($field, $value) && $value[$field] !== null) {
+                            $find[$field] = $value[$field];
+                        }
 
-                            break;
-                        default:
-                            $find[$field] = $value;
-                            break;
-                    }
+                        break;
+                    default:
+                        $find[$field] = $value;
+                        break;
                 }
             }
 
@@ -712,13 +722,15 @@ class DoctrineObject extends AbstractHydrator
      */
     private function isNullable(string $name): bool
     {
+        $metadata = $this->getClassMetadata();
+
         //TODO: need update after updating isNullable method of Doctrine\ORM\Mapping\ClassMetadata
-        if ($this->metadata->hasField($name)) {
-            return method_exists($this->metadata, 'isNullable') && $this->metadata->isNullable($name);
+        if ($metadata->hasField($name)) {
+            return method_exists($metadata, 'isNullable') && $metadata->isNullable($name);
         }
 
-        if ($this->metadata->hasAssociation($name) && method_exists($this->metadata, 'getAssociationMapping')) {
-            $mapping = $this->metadata->getAssociationMapping($name);
+        if ($metadata->hasAssociation($name) && method_exists($metadata, 'getAssociationMapping')) {
+            $mapping = $metadata->getAssociationMapping($name);
 
             return $mapping !== false && isset($mapping['nullable']) && $mapping['nullable'];
         }

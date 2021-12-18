@@ -13,7 +13,7 @@ class NamingStrategyEntity
         $this->camelCase = $camelCase;
     }
 
-    public function setCamelCase(?string $camelCase)
+    public function setCamelCase(?string $camelCase): void
     {
         $this->camelCase = $camelCase;
     }

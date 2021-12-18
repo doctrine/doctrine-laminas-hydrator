@@ -14,7 +14,7 @@ class SimpleEntity
     /**
      * @param string|int $id
      */
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
@@ -27,7 +27,7 @@ class SimpleEntity
         return $this->id;
     }
 
-    public function setField(string $field)
+    public function setField(string $field): void
     {
         $this->field = $field;
     }

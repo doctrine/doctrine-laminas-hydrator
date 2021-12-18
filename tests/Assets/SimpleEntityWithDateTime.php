@@ -12,7 +12,7 @@ class SimpleEntityWithDateTime
 
     protected ?DateTime $date;
 
-    public function setId(int $id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -22,7 +22,7 @@ class SimpleEntityWithDateTime
         return $this->id;
     }
 
-    public function setDate(?DateTime $date = null)
+    public function setDate(?DateTime $date = null): void
     {
         $this->date = $date;
     }

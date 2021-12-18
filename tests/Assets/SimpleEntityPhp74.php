@@ -10,7 +10,7 @@ class SimpleEntityPhp74
 
     protected ?string $field;
 
-    public function setId(int $id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -20,7 +20,7 @@ class SimpleEntityPhp74
         return $this->id;
     }
 
-    public function setField(string $field)
+    public function setField(string $field): void
     {
         $this->field = $field;
     }

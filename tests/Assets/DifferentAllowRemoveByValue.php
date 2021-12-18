@@ -16,8 +16,8 @@ use function sprintf;
 class DifferentAllowRemoveByValue extends AbstractCollectionStrategy
 {
     /**
-     * @param mixed      $value
-     * @param array|null $data
+     * @param mixed                        $value
+     * @param array<array-key, mixed>|null $data
      *
      * @return array|mixed|mixed[]
      */

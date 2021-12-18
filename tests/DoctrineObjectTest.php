@@ -53,7 +53,7 @@ class DoctrineObjectTest extends TestCase
             ->will($this->returnValue($this->metadata));
     }
 
-    public function configureObjectManagerForSimpleEntity(string $className = Assets\SimpleEntity::class)
+    public function configureObjectManagerForSimpleEntity(string $className = Assets\SimpleEntity::class): void
     {
         $refl = new ReflectionClass($className);
 
@@ -114,12 +114,12 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForByValueDifferentiatorEntity()
+    public function configureObjectManagerForByValueDifferentiatorEntity(): void
     {
         $this->configureObjectManagerForSimpleEntity(Assets\ByValueDifferentiatorEntity::class);
     }
 
-    public function configureObjectManagerForNamingStrategyEntity()
+    public function configureObjectManagerForNamingStrategyEntity(): void
     {
         $refl = new ReflectionClass(Assets\NamingStrategyEntity::class);
 
@@ -168,7 +168,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForSimpleIsEntity()
+    public function configureObjectManagerForSimpleIsEntity(): void
     {
         $refl = new ReflectionClass(Assets\SimpleIsEntity::class);
 
@@ -229,7 +229,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForSimpleEntityWithIsBoolean()
+    public function configureObjectManagerForSimpleEntityWithIsBoolean(): void
     {
         $refl = new ReflectionClass(Assets\SimpleEntityWithIsBoolean::class);
 
@@ -290,7 +290,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForSimpleEntityWithStringId(string $className = Assets\SimpleEntity::class)
+    public function configureObjectManagerForSimpleEntityWithStringId(string $className = Assets\SimpleEntity::class): void
     {
         $refl = new ReflectionClass($className);
 
@@ -339,12 +339,12 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForByValueDifferentiatorEntityWithStringId()
+    public function configureObjectManagerForByValueDifferentiatorEntityWithStringId(): void
     {
         $this->configureObjectManagerForSimpleEntityWithStringId(Assets\ByValueDifferentiatorEntity::class);
     }
 
-    public function configureObjectManagerForSimpleEntityWithDateTime()
+    public function configureObjectManagerForSimpleEntityWithDateTime(): void
     {
         $refl = new ReflectionClass(Assets\SimpleEntityWithDateTime::class);
 
@@ -401,7 +401,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForSimpleEntityWithEmbeddable()
+    public function configureObjectManagerForSimpleEntityWithEmbeddable(): void
     {
         $refl = new ReflectionClass(Assets\SimpleEntityWithEmbeddable::class);
 
@@ -466,7 +466,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForOneToOneEntity()
+    public function configureObjectManagerForOneToOneEntity(): void
     {
         $refl = new ReflectionClass(Assets\OneToOneEntity::class);
 
@@ -548,7 +548,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForOneToOneEntityNotNullable()
+    public function configureObjectManagerForOneToOneEntityNotNullable(): void
     {
         $refl = new ReflectionClass(Assets\OneToOneEntityNotNullable::class);
 
@@ -646,7 +646,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForOneToManyEntity()
+    public function configureObjectManagerForOneToManyEntity(): void
     {
         $refl = new ReflectionClass(Assets\OneToManyEntity::class);
 
@@ -747,7 +747,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForOneToManyArrayEntity()
+    public function configureObjectManagerForOneToManyArrayEntity(): void
     {
         $refl = new ReflectionClass(Assets\OneToManyArrayEntity::class);
 
@@ -848,7 +848,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function testObjectIsPassedForContextToStrategies()
+    public function testObjectIsPassedForContextToStrategies(): void
     {
         $entity = new Assets\SimpleEntity();
         $entity->setId(2);
@@ -866,7 +866,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => '3barbar', 'field' => 'bar'], $hydrator->extract($entity));
     }
 
-    public function testCanExtractSimpleEntityByValue()
+    public function testCanExtractSimpleEntityByValue(): void
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
         $entity = new Assets\ByValueDifferentiatorEntity();
@@ -879,7 +879,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => 2, 'field' => 'From getter: foo'], $data);
     }
 
-    public function testCanExtractSimpleEntityByReference()
+    public function testCanExtractSimpleEntityByReference(): void
     {
         // When using extraction by reference, it won't use the public API of entity (getters won't be called)
         $entity = new Assets\ByValueDifferentiatorEntity();
@@ -892,7 +892,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => 2, 'field' => 'foo'], $data);
     }
 
-    public function testDoesNotExtractUninitializedVariables()
+    public function testDoesNotExtractUninitializedVariables(): void
     {
         // When using extraction by reference, it won't use the public API of entity (getters won't be called)
         $entity = new Assets\SimpleEntityPhp74();
@@ -908,7 +908,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => 2, 'field' => 'value'], $data);
     }
 
-    public function testCanHydrateSimpleEntityByValue()
+    public function testCanHydrateSimpleEntityByValue(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\ByValueDifferentiatorEntity();
@@ -926,7 +926,7 @@ class DoctrineObjectTest extends TestCase
      *
      * @covers \Doctrine\Laminas\Hydrator\DoctrineObject::hydrateByValue
      */
-    public function testCanHydrateSimpleEntityWithStringIdByValue()
+    public function testCanHydrateSimpleEntityWithStringIdByValue(): void
     {
         $entity = new Assets\ByValueDifferentiatorEntity();
         $data   = ['id' => 'bar', 'field' => 'foo'];
@@ -939,7 +939,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals('From setter: foo', $entity->getField(false));
     }
 
-    public function testCanHydrateSimpleEntityByReference()
+    public function testCanHydrateSimpleEntityByReference(): void
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
         $entity = new Assets\ByValueDifferentiatorEntity();
@@ -957,7 +957,7 @@ class DoctrineObjectTest extends TestCase
      *
      * @covers \Doctrine\Laminas\Hydrator\DoctrineObject::hydrateByReference
      */
-    public function testCanHydrateSimpleEntityWithStringIdByReference()
+    public function testCanHydrateSimpleEntityWithStringIdByReference(): void
     {
         $entity = new Assets\ByValueDifferentiatorEntity();
         $data   = ['id' => 'bar', 'field' => 'foo'];
@@ -970,7 +970,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals('foo', $entity->getField(false));
     }
 
-    public function testReuseExistingEntityIfDataArrayContainsIdentifier()
+    public function testReuseExistingEntityIfDataArrayContainsIdentifier(): void
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
         $entity = new Assets\ByValueDifferentiatorEntity();
@@ -998,7 +998,7 @@ class DoctrineObjectTest extends TestCase
     /**
      * Test for https://github.com/doctrine/DoctrineModule/issues/456
      */
-    public function testReuseExistingEntityIfDataArrayContainsIdentifierWithZeroIdentifier()
+    public function testReuseExistingEntityIfDataArrayContainsIdentifierWithZeroIdentifier(): void
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
         $entity = new Assets\ByValueDifferentiatorEntity();
@@ -1023,7 +1023,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals('bar', $entity->getField(false));
     }
 
-    public function testCanExtractSimpleEntityWithEmbeddableByValue()
+    public function testCanExtractSimpleEntityWithEmbeddableByValue(): void
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
         $entity = new Assets\SimpleEntityWithEmbeddable();
@@ -1036,7 +1036,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => 2, 'embedded' => $entity->getEmbedded()], $data);
     }
 
-    public function testCanExtractSimpleEntityWithEmbeddableByReference()
+    public function testCanExtractSimpleEntityWithEmbeddableByReference(): void
     {
         // When using extraction by reference, it won't use the public API of entity (getters won't be called)
         $entity = new Assets\SimpleEntityWithEmbeddable();
@@ -1049,7 +1049,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => 2, 'embedded' => $entity->getEmbedded()], $data);
     }
 
-    public function testCanHydrateSimpleEntityWithEmbeddableByValue()
+    public function testCanHydrateSimpleEntityWithEmbeddableByValue(): void
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
         $entity = new Assets\SimpleEntityWithEmbeddable();
@@ -1065,7 +1065,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entity->getEmbedded(), $embedded);
     }
 
-    public function testCanHydrateSimpleEntityWithEmbeddableByReference()
+    public function testCanHydrateSimpleEntityWithEmbeddableByReference(): void
     {
         // When using extraction by reference, it won't use the public API of entity (getters won't be called)
         $entity = new Assets\SimpleEntityWithEmbeddable();
@@ -1081,7 +1081,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entity->getEmbedded(), $embedded);
     }
 
-    public function testExtractOneToOneAssociationByValue()
+    public function testExtractOneToOneAssociationByValue(): void
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
         $toOne = new Assets\ByValueDifferentiatorEntity();
@@ -1102,7 +1102,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toOne, $data['toOne']);
     }
 
-    public function testExtractOneToOneAssociationByReference()
+    public function testExtractOneToOneAssociationByReference(): void
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
         $toOne = new Assets\ByValueDifferentiatorEntity();
@@ -1123,7 +1123,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toOne, $data['toOne']);
     }
 
-    public function testHydrateOneToOneAssociationByValue()
+    public function testHydrateOneToOneAssociationByValue(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $toOne = new Assets\ByValueDifferentiatorEntity();
@@ -1142,7 +1142,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals('Modified from setToOne setter', $entity->getToOne(false)->getField(false));
     }
 
-    public function testHydrateOneToOneAssociationByReference()
+    public function testHydrateOneToOneAssociationByReference(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $toOne = new Assets\ByValueDifferentiatorEntity();
@@ -1161,7 +1161,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals('foo', $entity->getToOne(false)->getField(false));
     }
 
-    public function testHydrateOneToOneAssociationByValueUsingIdentifierForRelation()
+    public function testHydrateOneToOneAssociationByValueUsingIdentifierForRelation(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\OneToOneEntity();
@@ -1188,7 +1188,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfOne, $entity->getToOne(false));
     }
 
-    public function testHydrateOneToOneAssociationByReferenceUsingIdentifierForRelation()
+    public function testHydrateOneToOneAssociationByReferenceUsingIdentifierForRelation(): void
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
         $entity = new Assets\OneToOneEntity();
@@ -1215,7 +1215,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfOne, $entity->getToOne(false));
     }
 
-    public function testHydrateOneToOneAssociationByValueUsingIdentifierArrayForRelation()
+    public function testHydrateOneToOneAssociationByValueUsingIdentifierArrayForRelation(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\OneToOneEntity();
@@ -1242,7 +1242,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfOne, $entity->getToOne(false));
     }
 
-    public function testHydrateOneToOneAssociationByValueUsingFullArrayForRelation()
+    public function testHydrateOneToOneAssociationByValueUsingFullArrayForRelation(): void
     {
         $entity = new Assets\OneToOneEntityNotNullable();
         $this->configureObjectManagerForOneToOneEntityNotNullable();
@@ -1281,7 +1281,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function testHydrateOneToOneAssociationByReferenceUsingIdentifierArrayForRelation()
+    public function testHydrateOneToOneAssociationByReferenceUsingIdentifierArrayForRelation(): void
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
         $entity = new Assets\OneToOneEntity();
@@ -1308,7 +1308,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfOne, $entity->getToOne(false));
     }
 
-    public function testCanHydrateOneToOneAssociationByValueWithNullableRelation()
+    public function testCanHydrateOneToOneAssociationByValueWithNullableRelation(): void
     {
         // When using hydration by value, it will use the public API of the entity to retrieve values (setters)
         $entity = new Assets\OneToOneEntity();
@@ -1323,7 +1323,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertNull($object->getToOne(false));
     }
 
-    public function testCanHydrateOneToOneAssociationByReferenceWithNullableRelation()
+    public function testCanHydrateOneToOneAssociationByReferenceWithNullableRelation(): void
     {
         // When using hydration by reference, it won't use the public API of the entity to retrieve values (setters)
         $entity = new Assets\OneToOneEntity();
@@ -1338,7 +1338,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertNull($object->getToOne(false));
     }
 
-    public function testExtractOneToManyAssociationByValue()
+    public function testExtractOneToManyAssociationByValue(): void
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
         $toMany1 = new Assets\ByValueDifferentiatorEntity();
@@ -1371,7 +1371,7 @@ class DoctrineObjectTest extends TestCase
     /**
      * @depends testExtractOneToManyAssociationByValue
      */
-    public function testExtractOneToManyByValueWithArray()
+    public function testExtractOneToManyByValueWithArray(): void
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
         $toMany1 = new Assets\ByValueDifferentiatorEntity();
@@ -1401,7 +1401,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $data['entities'][1]);
     }
 
-    public function testExtractOneToManyAssociationByReference()
+    public function testExtractOneToManyAssociationByReference(): void
     {
         // When using extraction by reference, it won't use the public API of the entity to retrieve values (getters)
         $toMany1 = new Assets\ByValueDifferentiatorEntity();
@@ -1434,7 +1434,7 @@ class DoctrineObjectTest extends TestCase
     /**
      * @depends testExtractOneToManyAssociationByReference
      */
-    public function testExtractOneToManyArrayByReference()
+    public function testExtractOneToManyArrayByReference(): void
     {
         // When using extraction by reference, it won't use the public API of the entity to retrieve values (getters)
         $toMany1 = new Assets\ByValueDifferentiatorEntity();
@@ -1464,7 +1464,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $data['entities'][1]);
     }
 
-    public function testHydrateOneToManyAssociationByValue()
+    public function testHydrateOneToManyAssociationByValue(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $toMany1 = new Assets\ByValueDifferentiatorEntity();
@@ -1504,7 +1504,7 @@ class DoctrineObjectTest extends TestCase
     /**
      * @depends testHydrateOneToManyAssociationByValue
      */
-    public function testHydrateOneToManyArrayByValue()
+    public function testHydrateOneToManyArrayByValue(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $toMany1 = new Assets\ByValueDifferentiatorEntity();
@@ -1541,7 +1541,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $entities[1]);
     }
 
-    public function testHydrateOneToManyAssociationByReference()
+    public function testHydrateOneToManyAssociationByReference(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $toMany1 = new Assets\ByValueDifferentiatorEntity();
@@ -1581,7 +1581,7 @@ class DoctrineObjectTest extends TestCase
     /**
      * @depends testHydrateOneToManyAssociationByReference
      */
-    public function testHydrateOneToManyArrayByReference()
+    public function testHydrateOneToManyArrayByReference(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $toMany1 = new Assets\ByValueDifferentiatorEntity();
@@ -1618,7 +1618,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $entities[1]);
     }
 
-    public function testHydrateOneToManyAssociationByValueUsingIdentifiersForRelations()
+    public function testHydrateOneToManyAssociationByValueUsingIdentifiersForRelations(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\OneToManyEntity();
@@ -1678,7 +1678,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfThree, $entities[1]);
     }
 
-    public function testHydrateOneToManyAssociationByValueUsingIdentifiersArrayForRelations()
+    public function testHydrateOneToManyAssociationByValueUsingIdentifiersArrayForRelations(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\OneToManyEntity();
@@ -1741,7 +1741,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfThree, $entities[1]);
     }
 
-    public function testHydrateOneToManyAssociationByReferenceUsingIdentifiersArrayForRelations()
+    public function testHydrateOneToManyAssociationByReferenceUsingIdentifiersArrayForRelations(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\OneToManyEntity();
@@ -1814,7 +1814,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfThree, $entities[1]);
     }
 
-    public function testHydrateOneToManyAssociationByReferenceUsingIdentifiersForRelations()
+    public function testHydrateOneToManyAssociationByReferenceUsingIdentifiersForRelations(): void
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
         $entity = new Assets\OneToManyEntity();
@@ -1872,7 +1872,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfThree, $entities[1]);
     }
 
-    public function testHydrateOneToManyAssociationByValueUsingDisallowRemoveStrategy()
+    public function testHydrateOneToManyAssociationByValueUsingDisallowRemoveStrategy(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $toMany1 = new Assets\ByValueDifferentiatorEntity();
@@ -1923,7 +1923,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany3, $entities[2]);
     }
 
-    public function testHydrateOneToManyAssociationByReferenceUsingDisallowRemoveStrategy()
+    public function testHydrateOneToManyAssociationByReferenceUsingDisallowRemoveStrategy(): void
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
         $toMany1 = new Assets\ByValueDifferentiatorEntity();
@@ -1981,7 +1981,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany3, $entities[2]);
     }
 
-    public function testHydrateOneToManyAssociationByValueWithArrayCausingDataModifications()
+    public function testHydrateOneToManyAssociationByValueWithArrayCausingDataModifications(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $data = [
@@ -2050,7 +2050,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfThree, $entities[1]);
     }
 
-    public function testHydrateOneToManyAssociationByValueWithTraversableCausingDataModifications()
+    public function testHydrateOneToManyAssociationByValueWithTraversableCausingDataModifications(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $data = [
@@ -2119,7 +2119,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfThree, $entities[1]);
     }
 
-    public function testHydrateOneToManyAssociationByValueWithStdClass()
+    public function testHydrateOneToManyAssociationByValueWithStdClass(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $stdClass1     = new stdClass();
@@ -2187,7 +2187,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfThree, $entities[1]);
     }
 
-    public function testHydrateOneToManyAssociationByReferenceWithArrayCausingDataModifications()
+    public function testHydrateOneToManyAssociationByReferenceWithArrayCausingDataModifications(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $data = [
@@ -2267,7 +2267,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithIdOfThree, $entities[1]);
     }
 
-    public function testAssertCollectionsAreNotSwappedDuringHydration()
+    public function testAssertCollectionsAreNotSwappedDuringHydration(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\OneToManyEntity();
@@ -2295,7 +2295,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($initialCollection, $modifiedCollection);
     }
 
-    public function testAssertCollectionsAreNotSwappedDuringHydrationUsingIdentifiersForRelations()
+    public function testAssertCollectionsAreNotSwappedDuringHydrationUsingIdentifiersForRelations(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\OneToManyEntity();
@@ -2340,7 +2340,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($initialCollection, $modifiedCollection);
     }
 
-    public function testCanLookupsForEmptyIdentifiers()
+    public function testCanLookupsForEmptyIdentifiers(): void
     {
         // When using hydration by reference, it won't use the public API of the entity to set values (setters)
         $entity = new Assets\OneToManyEntity();
@@ -2373,7 +2373,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($entityInDatabaseWithEmptyId, $entity);
     }
 
-    public function testHandleDateTimeConversionUsingByValue()
+    public function testHandleDateTimeConversionUsingByValue(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\SimpleEntityWithDateTime();
@@ -2388,7 +2388,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals($now, $entity->getDate()->getTimestamp());
     }
 
-    public function testEmptyStringIsNotConvertedToDateTime()
+    public function testEmptyStringIsNotConvertedToDateTime(): void
     {
         $entity = new Assets\SimpleEntityWithDateTime();
         $this->configureObjectManagerForSimpleEntityWithDateTime();
@@ -2400,7 +2400,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertNull($entity->getDate());
     }
 
-    public function testAssertNullValueHydratedForOneToOneWithOptionalMethodSignature()
+    public function testAssertNullValueHydratedForOneToOneWithOptionalMethodSignature(): void
     {
         $entity = new Assets\OneToOneEntity();
 
@@ -2413,7 +2413,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertNull($object->getToOne(false));
     }
 
-    public function testAssertNullValueNotUsedAsIdentifierForOneToOneWithNonOptionalMethodSignature()
+    public function testAssertNullValueNotUsedAsIdentifierForOneToOneWithNonOptionalMethodSignature(): void
     {
         $entity = new Assets\OneToOneEntityNotNullable();
 
@@ -2427,7 +2427,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertInstanceOf(Assets\ByValueDifferentiatorEntity::class, $object->getToOne(false));
     }
 
-    public function testUsesStrategyOnSimpleFieldsWhenHydratingByValue()
+    public function testUsesStrategyOnSimpleFieldsWhenHydratingByValue(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\ByValueDifferentiatorEntity();
@@ -2441,7 +2441,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals('From setter: modified while hydrating', $entity->getField(false));
     }
 
-    public function testUsesStrategyOnSimpleFieldsWhenHydratingByReference()
+    public function testUsesStrategyOnSimpleFieldsWhenHydratingByReference(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\ByValueDifferentiatorEntity();
@@ -2455,7 +2455,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals('modified while hydrating', $entity->getField(false));
     }
 
-    public function testUsesStrategyOnSimpleFieldsWhenExtractingByValue()
+    public function testUsesStrategyOnSimpleFieldsWhenExtractingByValue(): void
     {
         $entity = new Assets\ByValueDifferentiatorEntity();
         $entity->setId(2);
@@ -2469,7 +2469,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => 2, 'field' => 'modified while extracting'], $data);
     }
 
-    public function testUsesStrategyOnSimpleFieldsWhenExtractingByReference()
+    public function testUsesStrategyOnSimpleFieldsWhenExtractingByReference(): void
     {
         $entity = new Assets\ByValueDifferentiatorEntity();
         $entity->setId(2);
@@ -2483,7 +2483,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => 2, 'field' => 'modified while extracting'], $data);
     }
 
-    public function testCanExtractIsserByValue()
+    public function testCanExtractIsserByValue(): void
     {
         $entity = new Assets\SimpleIsEntity();
         $entity->setId(2);
@@ -2496,7 +2496,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => 2, 'done' => true], $data);
     }
 
-    public function testCanExtractIsserThatStartsWithIsByValue()
+    public function testCanExtractIsserThatStartsWithIsByValue(): void
     {
         $entity = new Assets\SimpleEntityWithIsBoolean();
         $entity->setId(2);
@@ -2509,7 +2509,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id' => 2, 'isActive' => true], $data);
     }
 
-    public function testExtractWithPropertyNameFilterByValue()
+    public function testExtractWithPropertyNameFilterByValue(): void
     {
         $entity = new Assets\ByValueDifferentiatorEntity();
         $entity->setId(2);
@@ -2526,7 +2526,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id'], array_keys($data), 'Only the "id" field should have been extracted.');
     }
 
-    public function testExtractWithPropertyNameFilterByReference()
+    public function testExtractWithPropertyNameFilterByReference(): void
     {
         $entity = new Assets\ByValueDifferentiatorEntity();
         $entity->setId(2);
@@ -2543,7 +2543,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['id'], array_keys($data), 'Only the "id" field should have been extracted.');
     }
 
-    public function testExtractByReferenceUsesNamingStrategy()
+    public function testExtractByReferenceUsesNamingStrategy(): void
     {
         $this->configureObjectManagerForNamingStrategyEntity();
         $name = 'Foo';
@@ -2552,7 +2552,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals($name, $data['camel_case']);
     }
 
-    public function testExtractByValueUsesNamingStrategy()
+    public function testExtractByValueUsesNamingStrategy(): void
     {
         $this->configureObjectManagerForNamingStrategyEntity();
         $name = 'Bar';
@@ -2561,7 +2561,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals($name, $data['camel_case']);
     }
 
-    public function testHydrateByReferenceUsesNamingStrategy()
+    public function testHydrateByReferenceUsesNamingStrategy(): void
     {
         $this->configureObjectManagerForNamingStrategyEntity();
         $name = 'Baz';
@@ -2570,7 +2570,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals($name, $entity->getCamelCase());
     }
 
-    public function testHydrateByValueUsesNamingStrategy()
+    public function testHydrateByValueUsesNamingStrategy(): void
     {
         $this->configureObjectManagerForNamingStrategyEntity();
         $name = 'Qux';
@@ -2579,7 +2579,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals($name, $entity->getCamelCase());
     }
 
-    public function configureObjectManagerForSimplePrivateEntity()
+    public function configureObjectManagerForSimplePrivateEntity(): void
     {
         $refl = new ReflectionClass(Assets\SimplePrivateEntity::class);
 
@@ -2628,7 +2628,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    public function testCannotHydratePrivateByValue()
+    public function testCannotHydratePrivateByValue(): void
     {
         $entity = new Assets\SimplePrivateEntity();
         $this->configureObjectManagerForSimplePrivateEntity();
@@ -2639,7 +2639,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertInstanceOf(Assets\SimplePrivateEntity::class, $entity);
     }
 
-    public function testDefaultStrategy()
+    public function testDefaultStrategy(): void
     {
         $this->configureObjectManagerForOneToManyEntity();
 
@@ -2673,7 +2673,7 @@ class DoctrineObjectTest extends TestCase
     /**
      * @depends testDefaultStrategy
      */
-    public function testOverrideDefaultStrategy()
+    public function testOverrideDefaultStrategy(): void
     {
         $this->configureObjectManagerForOneToManyEntity();
 
@@ -2710,7 +2710,7 @@ class DoctrineObjectTest extends TestCase
     /**
      * https://github.com/doctrine/DoctrineModule/issues/639
      */
-    public function testStrategyWithArrayByValue()
+    public function testStrategyWithArrayByValue(): void
     {
         $entity = new Assets\SimpleEntity();
 
@@ -2719,6 +2719,8 @@ class DoctrineObjectTest extends TestCase
         $this->hydratorByValue->addStrategy('field', new class implements StrategyInterface {
             /**
              * @param mixed $value
+             *
+             * @return string[]
              */
             public function extract($value, ?object $object = null): array
             {
@@ -2726,7 +2728,8 @@ class DoctrineObjectTest extends TestCase
             }
 
             /**
-             * @param mixed $value
+             * @param mixed    $value
+             * @param string[] $data
              */
             public function hydrate($value, ?array $data): string
             {
@@ -2739,7 +2742,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals('complex,value', $entity->getField());
     }
 
-    public function testStrategyWithArrayByReference()
+    public function testStrategyWithArrayByReference(): void
     {
         $entity = new Assets\SimpleEntity();
 
@@ -2748,6 +2751,8 @@ class DoctrineObjectTest extends TestCase
         $this->hydratorByReference->addStrategy('field', new class implements StrategyInterface {
             /**
              * @param mixed $value
+             *
+             * @return string[]
              */
             public function extract($value, ?object $object = null): array
             {
@@ -2755,7 +2760,8 @@ class DoctrineObjectTest extends TestCase
             }
 
             /**
-             * @param mixed $value
+             * @param mixed    $value
+             * @param string[] $data
              */
             public function hydrate($value, ?array $data): string
             {
@@ -2813,7 +2819,7 @@ class DoctrineObjectTest extends TestCase
         return $objectManager->reveal();
     }
 
-    public function testNestedHydrationByValue()
+    public function testNestedHydrationByValue(): void
     {
         $objectManager = $this->getObjectManagerForNestedHydration();
         $hydrator      = new DoctrineObjectHydrator($objectManager, true);
@@ -2837,7 +2843,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame('2019-01-24 12:00:00', $entity->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
-    public function testNestedHydrationByReference()
+    public function testNestedHydrationByReference(): void
     {
         $objectManager = $this->getObjectManagerForNestedHydration();
         $hydrator      = new DoctrineObjectHydrator($objectManager, false);

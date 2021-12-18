@@ -46,7 +46,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
     /**
      * @param string|null $genericFieldType
      */
-    public function configureObjectManagerForSimpleEntityWithGenericField($genericFieldType)
+    public function configureObjectManagerForSimpleEntityWithGenericField($genericFieldType): void
     {
         $refl = new ReflectionClass(Assets\SimpleEntityWithGenericField::class);
 
@@ -110,7 +110,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         );
     }
 
-    public function configureObjectManagerForOneToOneEntity()
+    public function configureObjectManagerForOneToOneEntity(): void
     {
         $refl = new ReflectionClass(Assets\OneToOneEntity::class);
 
@@ -192,7 +192,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         );
     }
 
-    public function testHandleTypeConversionsDatetime()
+    public function testHandleTypeConversionsDatetime(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('datetime');
@@ -241,7 +241,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($now, $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsDatetimeImmutable()
+    public function testHandleTypeConversionsDatetimeImmutable(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('datetime_immutable');
@@ -289,7 +289,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($now, $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsDatetimetz()
+    public function testHandleTypeConversionsDatetimetz(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('datetimetz');
@@ -338,7 +338,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($now, $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsDatetimetzImmutable()
+    public function testHandleTypeConversionsDatetimetzImmutable(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('datetimetz_immutable');
@@ -386,7 +386,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($now, $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsTime()
+    public function testHandleTypeConversionsTime(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('time');
@@ -435,7 +435,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($now, $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsDate()
+    public function testHandleTypeConversionsDate(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('date');
@@ -484,7 +484,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($now, $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsInteger()
+    public function testHandleTypeConversionsInteger(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('integer');
@@ -508,7 +508,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($value, $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsSmallint()
+    public function testHandleTypeConversionsSmallint(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('smallint');
@@ -532,7 +532,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($value, $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsFloat()
+    public function testHandleTypeConversionsFloat(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('float');
@@ -556,7 +556,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($value, $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsBoolean()
+    public function testHandleTypeConversionsBoolean(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('boolean');
@@ -594,7 +594,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals(true, $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsString()
+    public function testHandleTypeConversionsString(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('string');
@@ -640,7 +640,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('12345', $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsText()
+    public function testHandleTypeConversionsText(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('text');
@@ -686,7 +686,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('12345', $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsBigint()
+    public function testHandleTypeConversionsBigint(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('bigint');
@@ -732,7 +732,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('12345', $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsDecimal()
+    public function testHandleTypeConversionsDecimal(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField('decimal');
@@ -778,7 +778,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals('12345', $entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsNullable()
+    public function testHandleTypeConversionsNullable(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $this->configureObjectManagerForSimpleEntityWithGenericField(null);
@@ -798,7 +798,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertNull($entity->getGenericField());
     }
 
-    public function testHandleTypeConversionsNullableForAssociatedFields()
+    public function testHandleTypeConversionsNullableForAssociatedFields(): void
     {
         $this->configureObjectManagerForOneToOneEntity();
 

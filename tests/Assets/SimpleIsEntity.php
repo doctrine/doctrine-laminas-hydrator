@@ -11,7 +11,7 @@ class SimpleIsEntity
 
     protected bool $done;
 
-    public function setId(int $id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -21,9 +21,9 @@ class SimpleIsEntity
         return $this->id;
     }
 
-    public function setDone(bool $done)
+    public function setDone(bool $done): void
     {
-        $this->done = (bool) $done;
+        $this->done = $done;
     }
 
     public function isDone(): bool

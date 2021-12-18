@@ -13,8 +13,8 @@ use function array_udiff;
 class DifferentAllowRemoveByReference extends AbstractCollectionStrategy
 {
     /**
-     * @param mixed      $value
-     * @param array|null $data
+     * @param mixed                        $value
+     * @param array<array-key, mixed>|null $data
      *
      * @return Collection|mixed
      *

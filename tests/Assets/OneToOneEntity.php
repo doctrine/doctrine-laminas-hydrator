@@ -14,7 +14,7 @@ class OneToOneEntity
 
     protected DateTime $createdAt;
 
-    public function setId(int $id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -24,7 +24,7 @@ class OneToOneEntity
         return $this->id;
     }
 
-    public function setToOne(?ByValueDifferentiatorEntity $entity = null, bool $modifyValue = true)
+    public function setToOne(?ByValueDifferentiatorEntity $entity = null, bool $modifyValue = true): void
     {
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue && $entity !== null) {
@@ -45,7 +45,7 @@ class OneToOneEntity
         return $this->toOne;
     }
 
-    public function setCreatedAt(DateTime $createdAt)
+    public function setCreatedAt(DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }

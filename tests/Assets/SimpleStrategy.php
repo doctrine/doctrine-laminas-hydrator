@@ -19,7 +19,8 @@ class SimpleStrategy implements StrategyInterface
     }
 
     /**
-     * @param  mixed $value
+     * @param mixed                        $value
+     * @param array<array-key, mixed>|null $data
      *
      * @return mixed
      */

@@ -18,7 +18,7 @@ class OneToManyEntity
         $this->entities = new ArrayCollection();
     }
 
-    public function setId(int $id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -28,7 +28,7 @@ class OneToManyEntity
         return $this->id;
     }
 
-    public function addEntities(Collection $entities, bool $modifyValue = true)
+    public function addEntities(Collection $entities, bool $modifyValue = true): void
     {
         foreach ($entities as $entity) {
             // Modify the value to illustrate the difference between by value and by reference
@@ -40,7 +40,7 @@ class OneToManyEntity
         }
     }
 
-    public function removeEntities(Collection $entities)
+    public function removeEntities(Collection $entities): void
     {
         foreach ($entities as $entity) {
             $this->entities->removeElement($entity);

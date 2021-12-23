@@ -13,14 +13,14 @@ use function array_udiff;
 class DifferentAllowRemoveByReference extends AbstractCollectionStrategy
 {
     /**
-     * @param mixed                        $value
-     * @param array<array-key, mixed>|null $data
+     * @param mixed                       $value
+     * @param array<array-key,mixed>|null $data
      *
-     * @return Collection|mixed
+     * @return Collection<array-key,mixed>
      *
      * @throws ReflectionException
      */
-    public function hydrate($value, ?array $data)
+    public function hydrate($value, ?array $data): Collection
     {
         $collection      = $this->getCollectionFromObjectByReference();
         $collectionArray = $collection->toArray();

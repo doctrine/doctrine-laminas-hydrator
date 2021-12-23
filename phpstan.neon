@@ -4,5 +4,9 @@ parameters:
     paths:
         - src
         - tests
+    ignoreErrors:
+        -
+          message: '#expects .*Collection<\(int\|string\), object>, .*ArrayCollection<int, Doctrine.*Entity> given#'
+          path: tests/DoctrineObjectTest.php
 includes:
 	- vendor/jangregor/phpstan-prophecy/extension.neon

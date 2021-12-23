@@ -138,6 +138,8 @@ class DoctrineObject extends AbstractHydrator
 
     /**
      * Extract values from an object
+     *
+     * @return array<array-key,mixed>
      */
     public function extract(object $object): array
     {

@@ -100,6 +100,8 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
     /**
      * Return the collection by value (using the public API)
      *
+     * @return Collection<array-key,object>
+     *
      * @throws InvalidArgumentException
      */
     protected function getCollectionFromObjectByValue(): Collection
@@ -129,6 +131,8 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
 
     /**
      * Return the collection by reference (not using the public API)
+     *
+     * @return Collection<array-key,object>
      *
      * @throws InvalidArgumentException|ReflectionException
      */

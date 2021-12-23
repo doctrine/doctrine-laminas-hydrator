@@ -11,6 +11,7 @@ class OneToManyEntity
 {
     protected int $id;
 
+    /** @var Collection<array-key,object> */
     protected Collection $entities;
 
     public function __construct()
@@ -28,6 +29,9 @@ class OneToManyEntity
         return $this->id;
     }
 
+    /**
+     * @param Collection<array-key,object> $entities
+     */
     public function addEntities(Collection $entities, bool $modifyValue = true): void
     {
         foreach ($entities as $entity) {
@@ -40,6 +44,9 @@ class OneToManyEntity
         }
     }
 
+    /**
+     * @param Collection<array-key,object> $entities
+     */
     public function removeEntities(Collection $entities): void
     {
         foreach ($entities as $entity) {
@@ -47,6 +54,9 @@ class OneToManyEntity
         }
     }
 
+    /**
+     * @return Collection<array-key,object>
+     */
     public function getEntities(bool $modifyValue = true): Collection
     {
         // Modify the value to illustrate the difference between by value and by reference

@@ -14,6 +14,9 @@ class OneToManyEntityWithEntities extends OneToManyEntity
         $this->entities = $entities;
     }
 
+    /**
+     * @return Collection<array-key,object>
+     */
     public function getEntities(bool $modifyValue = true): Collection
     {
         return $this->entities;

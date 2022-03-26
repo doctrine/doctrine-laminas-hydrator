@@ -11,6 +11,7 @@ use Doctrine\Laminas\Hydrator\Filter;
 use Doctrine\Laminas\Hydrator\Strategy;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
+use DoctrineTest\Laminas\Hydrator\Assets\SimpleEnum;
 use InvalidArgumentException;
 use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
@@ -20,6 +21,7 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionClass;
 use stdClass;
+use TypeError;
 
 use function array_keys;
 use function assert;
@@ -837,6 +839,63 @@ class DoctrineObjectTest extends TestCase
         $this->metadata
             ->method('getIdentifier')
             ->will($this->returnValue(['id']));
+
+        $this->hydratorByValue     = new DoctrineObjectHydrator(
+            $this->objectManager,
+            true
+        );
+        $this->hydratorByReference = new DoctrineObjectHydrator(
+            $this->objectManager,
+            false
+        );
+    }
+
+    public function configureObjectManagerForSimpleEntityWithEnum(): void
+    {
+        $refl = new ReflectionClass(Assets\SimpleEntityWithEnum::class);
+
+        $this
+            ->metadata
+            ->method('getAssociationNames')
+            ->will($this->returnValue([]));
+
+        $this
+            ->metadata
+            ->method('getFieldNames')
+            ->will($this->returnValue(['id', 'enum']));
+
+        $this
+            ->metadata
+            ->method('getTypeOfField')
+            ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('enum')))
+            ->willReturnCallback(
+                static function ($arg) {
+                    if ($arg === 'id') {
+                        return 'integer';
+                    }
+
+                    if ($arg === 'enum') {
+                        return 'enum';
+                    }
+
+                    throw new InvalidArgumentException();
+                }
+            );
+
+        $this
+            ->metadata
+            ->method('hasAssociation')
+            ->will($this->returnValue(false));
+
+        $this
+            ->metadata
+            ->method('getIdentifierFieldNames')
+            ->will($this->returnValue(['id']));
+
+        $this
+            ->metadata
+            ->method('getReflectionClass')
+            ->will($this->returnValue($refl));
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -2865,5 +2924,47 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame(13, $entity->getToOne(false)->getId());
         $this->assertSame('value', $entity->getToOne(false)->getField(false));
         $this->assertSame('2019-01-24 12:00:00', $entity->getCreatedAt()->format('Y-m-d H:i:s'));
+    }
+
+    public function testHandleEnumConversionUsingByValue(): void
+    {
+        // When using hydration by value, it will use the public API of the entity to set values (setters)
+        $entity = new Assets\SimpleEntityWithEnum();
+        $this->configureObjectManagerForSimpleEntityWithEnum();
+
+        $value = 1;
+        $data  = ['enum' => $value];
+
+        $this->hydratorByValue->addStrategy('enum', new Assets\SimpleEnumStrategy());
+        $entity = $this->hydratorByValue->hydrate($data, $entity);
+
+        $this->assertInstanceOf(SimpleEnum::class, $entity->getEnum());
+        $this->assertEquals(SimpleEnum::tryFrom($value), $entity->getEnum());
+    }
+
+    public function testNullValueIsNotConvertedToEnum(): void
+    {
+        $entity = new Assets\SimpleEntityWithEnum();
+        $this->configureObjectManagerForSimpleEntityWithEnum();
+
+        $data = ['enum' => null];
+
+        $this->hydratorByValue->addStrategy('enum', new Assets\SimpleEnumStrategy());
+        $entity = $this->hydratorByValue->hydrate($data, $entity);
+
+        $this->assertNull($entity->getEnum());
+    }
+
+    public function testWrongEnumBackedValueThrowsException(): void
+    {
+        $entity = new Assets\SimpleEntityWithEnum();
+        $this->configureObjectManagerForSimpleEntityWithEnum();
+
+        $data = ['enum' => 'string'];
+
+        $this->expectException(TypeError::class);
+
+        $this->hydratorByValue->addStrategy('enum', new Assets\SimpleEnumStrategy());
+        $this->hydratorByValue->hydrate($data, $entity);
     }
 }

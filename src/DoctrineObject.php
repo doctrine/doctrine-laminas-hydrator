@@ -35,7 +35,6 @@ use function get_class;
 use function get_class_methods;
 use function gettype;
 use function in_array;
-use function interface_exists;
 use function is_array;
 use function is_callable;
 use function is_int;
@@ -316,7 +315,7 @@ class DoctrineObject extends AbstractHydrator
             return null;
         }
 
-        if (interface_exists('BackedEnum') && $value instanceof BackedEnum) {
+        if (PHP_VERSION_ID >= 80100 && $value instanceof BackedEnum) {
             return $value;
         }
 

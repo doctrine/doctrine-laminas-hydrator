@@ -10,8 +10,10 @@ class SimpleEnumStrategy implements StrategyInterface
 {
     /**
      * @param  mixed $value
+     *
+     * @return int|null
      */
-    public function extract($value, ?object $object = null): int|null
+    public function extract($value, ?object $object = null)
     {
         if ($value === null) {
             return null;
@@ -21,10 +23,12 @@ class SimpleEnumStrategy implements StrategyInterface
     }
 
     /**
-     * @param mixed                        $value
-     * @param array<array-key, mixed>|null $data
+     * @param  mixed                        $value
+     * @param  array<array-key, mixed>|null $data
+     *
+     * @return int|null
      */
-    public function hydrate($value, ?array $data): SimpleEnum|null
+    public function hydrate($value, ?array $data)
     {
         if ($value === null) {
             return null;

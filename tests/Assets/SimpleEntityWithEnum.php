@@ -6,9 +6,11 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class SimpleEntityWithEnum
 {
-    protected int $id;
+    /** @var int */
+    protected $id;
 
-    protected ?SimpleEnum $enum;
+    /** @var SimpleEnum|null */
+    protected $enum;
 
     public function setId(int $id): void
     {

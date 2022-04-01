@@ -29,6 +29,8 @@ use function explode;
 use function implode;
 use function time;
 
+use const PHP_VERSION_ID;
+
 class DoctrineObjectTest extends TestCase
 {
     use ProphecyTrait;
@@ -2927,6 +2929,10 @@ class DoctrineObjectTest extends TestCase
 
     public function testHandleEnumConversionUsingByValue(): void
     {
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('PHP 8.1 required for enum compatibility');
+        }
+
         // When using hydration by value, it will use the public API of the entity to set values (setters)
         $entity = new Assets\SimpleEntityWithEnum();
         $this->configureObjectManagerForSimpleEntityWithEnum();
@@ -2943,6 +2949,10 @@ class DoctrineObjectTest extends TestCase
 
     public function testNullValueIsNotConvertedToEnum(): void
     {
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('PHP 8.1 required for enum compatibility');
+        }
+
         $entity = new Assets\SimpleEntityWithEnum();
         $this->configureObjectManagerForSimpleEntityWithEnum();
 
@@ -2956,6 +2966,10 @@ class DoctrineObjectTest extends TestCase
 
     public function testWrongEnumBackedValueThrowsException(): void
     {
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('PHP 8.1 required for enum compatibility');
+        }
+
         $entity = new Assets\SimpleEntityWithEnum();
         $this->configureObjectManagerForSimpleEntityWithEnum();
 

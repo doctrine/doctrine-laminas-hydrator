@@ -321,6 +321,8 @@ class DoctrineObject extends AbstractHydrator
      * Hydrate the object using a by-value logic (this means that it uses the entity API, in this
      * case, setters)
      *
+     * Caution: Parameter $object should not be null, signature will be changed to not-nullable in next major
+     *
      * @param array<string,mixed> $data
      * @psalm-param T $object
      *
@@ -383,6 +385,8 @@ class DoctrineObject extends AbstractHydrator
      * Hydrate the object using a by-reference logic (this means that values are modified directly without
      * using the public API, in this case setters, and hence override any logic that could be done in those
      * setters)
+     *
+     * Caution: Parameter $object should not be null, signature will be changed to not-nullable in next major
      *
      * @param array<string,mixed> $data
      * @psalm-param T $object

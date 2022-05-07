@@ -6,34 +6,36 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 use Laminas\Hydrator\Strategy\StrategyInterface;
 
-class SimpleEnumStrategy implements StrategyInterface
-{
-    /**
-     * @param  mixed $value
-     *
-     * @return int|null
-     */
-    public function extract($value, ?object $object = null)
+if (PHP_VERSION_ID >= 80100) {
+    class SimpleEnumStrategy implements StrategyInterface
     {
-        if ($value === null) {
-            return null;
+        /**
+         * @param mixed $value
+         *
+         * @return int|null
+         */
+        public function extract($value, ?object $object = null)
+        {
+            if ($value === null) {
+                return null;
+            }
+
+            return SimpleEnum::tryFrom($value)->value;
         }
 
-        return SimpleEnum::tryFrom($value)->value;
-    }
+        /**
+         * @param mixed                        $value
+         * @param array<array-key, mixed>|null $data
+         *
+         * @return SimpleEnum|null
+         */
+        public function hydrate($value, ?array $data)
+        {
+            if ($value === null) {
+                return null;
+            }
 
-    /**
-     * @param  mixed                        $value
-     * @param  array<array-key, mixed>|null $data
-     *
-     * @return int|null
-     */
-    public function hydrate($value, ?array $data)
-    {
-        if ($value === null) {
-            return null;
+            return SimpleEnum::tryFrom($value);
         }
-
-        return SimpleEnum::tryFrom($value);
     }
 }

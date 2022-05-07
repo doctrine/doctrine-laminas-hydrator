@@ -40,6 +40,7 @@ use function is_callable;
 use function is_int;
 use function is_object;
 use function is_string;
+use function interface_exists;
 use function method_exists;
 use function property_exists;
 use function sprintf;
@@ -315,7 +316,7 @@ class DoctrineObject extends AbstractHydrator
             return null;
         }
 
-        if (PHP_VERSION_ID >= 80100 && $value instanceof BackedEnum) {
+        if (PHP_VERSION_ID >= 80100 && interface_exists(BackedEnum::class) && $value instanceof BackedEnum) {
             return $value;
         }
 

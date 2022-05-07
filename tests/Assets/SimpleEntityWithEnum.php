@@ -4,31 +4,35 @@ declare(strict_types=1);
 
 namespace DoctrineTest\Laminas\Hydrator\Assets;
 
-class SimpleEntityWithEnum
-{
-    /** @var int */
-    protected $id;
+use const PHP_VERSION_ID;
 
-    /** @var SimpleEnum|null */
-    protected $enum;
-
-    public function setId(int $id): void
+if (PHP_VERSION_ID >= 80100) {
+    class SimpleEntityWithEnum
     {
-        $this->id = $id;
-    }
+        /** @var int */
+        protected $id;
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
+        /** @var SimpleEnum|null */
+        protected $enum;
 
-    public function setEnum(?SimpleEnum $enum = null): void
-    {
-        $this->enum = $enum;
-    }
+        public function setId(int $id): void
+        {
+            $this->id = $id;
+        }
 
-    public function getEnum(): ?SimpleEnum
-    {
-        return $this->enum;
+        public function getId(): int
+        {
+            return $this->id;
+        }
+
+        public function setEnum(?SimpleEnum $enum = null): void
+        {
+            $this->enum = $enum;
+        }
+
+        public function getEnum(): ?SimpleEnum
+        {
+            return $this->enum;
+        }
     }
 }

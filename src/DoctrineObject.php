@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Laminas\Hydrator;
 
+use BackedEnum;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\Inflector\Inflector;
@@ -312,6 +313,11 @@ class DoctrineObject extends AbstractHydrator
 
         if ($value === null && $this->isNullable($name)) {
             return null;
+        }
+
+        // BackedEnum is available from PHP 8.1 on
+        if ($value instanceof BackedEnum) {
+            return $value;
         }
 
         return $this->handleTypeConversions($value, $this->getClassMetadata()->getTypeOfField($name));

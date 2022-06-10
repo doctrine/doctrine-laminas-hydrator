@@ -11,7 +11,7 @@ use Doctrine\Laminas\Hydrator\Filter;
 use Doctrine\Laminas\Hydrator\Strategy;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
-use DoctrineTest\Laminas\Hydrator\Assets\SimpleEnum;
+use DoctrineTest\Laminas\Hydrator\Assets\SimpleEnumPhp81;
 use InvalidArgumentException;
 use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
@@ -28,8 +28,6 @@ use function assert;
 use function explode;
 use function implode;
 use function time;
-
-use const PHP_VERSION_ID;
 
 class DoctrineObjectTest extends TestCase
 {
@@ -854,7 +852,7 @@ class DoctrineObjectTest extends TestCase
 
     public function configureObjectManagerForSimpleEntityWithEnum(): void
     {
-        $refl = new ReflectionClass(Assets\SimpleEntityWithEnum::class);
+        $refl = new ReflectionClass(Assets\SimpleEntityWithEnumPhp81::class);
 
         $this
             ->metadata
@@ -2928,57 +2926,54 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame('2019-01-24 12:00:00', $entity->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
+    /**
+     * @requires PHP 8.1
+     */
     public function testHandleEnumConversionUsingByValue(): void
     {
-        if (PHP_VERSION_ID < 80100) {
-            $this->markTestSkipped('PHP 8.1 required for enum compatibility');
-        }
-
         // When using hydration by value, it will use the public API of the entity to set values (setters)
-        $entity = new Assets\SimpleEntityWithEnum();
+        $entity = new Assets\SimpleEntityWithEnumPhp81();
         $this->configureObjectManagerForSimpleEntityWithEnum();
 
         $value = 1;
         $data  = ['enum' => $value];
 
-        $this->hydratorByValue->addStrategy('enum', new Assets\SimpleEnumStrategy());
+        $this->hydratorByValue->addStrategy('enum', new Assets\SimpleEnumStrategyPhp81());
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
-        $this->assertInstanceOf(SimpleEnum::class, $entity->getEnum());
-        $this->assertEquals(SimpleEnum::tryFrom($value), $entity->getEnum());
+        $this->assertInstanceOf(SimpleEnumPhp81::class, $entity->getEnum());
+        $this->assertEquals(SimpleEnumPhp81::tryFrom($value), $entity->getEnum());
     }
 
+    /**
+     * @requires PHP 8.1
+     */
     public function testNullValueIsNotConvertedToEnum(): void
     {
-        if (PHP_VERSION_ID < 80100) {
-            $this->markTestSkipped('PHP 8.1 required for enum compatibility');
-        }
-
-        $entity = new Assets\SimpleEntityWithEnum();
+        $entity = new Assets\SimpleEntityWithEnumPhp81();
         $this->configureObjectManagerForSimpleEntityWithEnum();
 
         $data = ['enum' => null];
 
-        $this->hydratorByValue->addStrategy('enum', new Assets\SimpleEnumStrategy());
+        $this->hydratorByValue->addStrategy('enum', new Assets\SimpleEnumStrategyPhp81());
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
         $this->assertNull($entity->getEnum());
     }
 
+    /**
+     * @requires PHP 8.1
+     */
     public function testWrongEnumBackedValueThrowsException(): void
     {
-        if (PHP_VERSION_ID < 80100) {
-            $this->markTestSkipped('PHP 8.1 required for enum compatibility');
-        }
-
-        $entity = new Assets\SimpleEntityWithEnum();
+        $entity = new Assets\SimpleEntityWithEnumPhp81();
         $this->configureObjectManagerForSimpleEntityWithEnum();
 
         $data = ['enum' => 'string'];
 
         $this->expectException(TypeError::class);
 
-        $this->hydratorByValue->addStrategy('enum', new Assets\SimpleEnumStrategy());
+        $this->hydratorByValue->addStrategy('enum', new Assets\SimpleEnumStrategyPhp81());
         $this->hydratorByValue->hydrate($data, $entity);
     }
 }

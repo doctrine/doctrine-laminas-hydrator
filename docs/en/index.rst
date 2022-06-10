@@ -29,4 +29,5 @@ Next Steps
     collections-strategy
     by-value-by-reference
     laminas-form
+    enum-strategy
     performance-considerations

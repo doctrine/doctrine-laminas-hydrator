@@ -17,7 +17,6 @@ use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionClass;
 use stdClass;
@@ -2835,47 +2834,53 @@ class DoctrineObjectTest extends TestCase
 
     private function getObjectManagerForNestedHydration(): ObjectManager
     {
-        $oneToOneMetadata = $this->prophesize(ClassMetadata::class);
-        $oneToOneMetadata->getName()->willReturn(Assets\OneToOneEntity::class);
-        $oneToOneMetadata->getFieldNames()->willReturn(['id', 'toOne', 'createdAt']);
-        $oneToOneMetadata->getAssociationNames()->willReturn(['toOne']);
-        $oneToOneMetadata->getTypeOfField('id')->willReturn('integer');
-        $oneToOneMetadata->getTypeOfField('toOne')->willReturn(Assets\ByValueDifferentiatorEntity::class);
-        $oneToOneMetadata->getTypeOfField('createdAt')->willReturn('datetime');
-        $oneToOneMetadata->hasAssociation('id')->willReturn(false);
-        $oneToOneMetadata->hasAssociation('toOne')->willReturn(true);
-        $oneToOneMetadata->hasAssociation('createdAt')->willReturn(false);
-        $oneToOneMetadata->isSingleValuedAssociation('toOne')->willReturn(true);
-        $oneToOneMetadata->isCollectionValuedAssociation('toOne')->willReturn(false);
-        $oneToOneMetadata->getAssociationTargetClass('toOne')->willReturn(Assets\ByValueDifferentiatorEntity::class);
-        $oneToOneMetadata->getReflectionClass()->willReturn(new ReflectionClass(Assets\OneToOneEntity::class));
-        $oneToOneMetadata->getIdentifier()->willReturn(['id']);
-        $oneToOneMetadata->getIdentifierFieldNames()->willReturn(['id']);
+        $oneToOneMetadata = $this->createStub(ClassMetadata::class);
+        $oneToOneMetadata->method('getName')->willReturn(Assets\OneToOneEntity::class);
+        $oneToOneMetadata->method('getFieldNames')->willReturn(['id', 'toOne', 'createdAt']);
+        $oneToOneMetadata->method('getAssociationNames')->willReturn(['toOne']);
+        $oneToOneMetadata->method('getTypeOfField')->willReturnMap([
+            ['id', 'integer'],
+            ['toOne', Assets\ByValueDifferentiatorEntity::class],
+            ['createdAt', 'datetime'],
+        ]);
+        $oneToOneMetadata->method('hasAssociation')->willReturnMap([
+            ['id', false],
+            ['toOne', true],
+            ['createdAt', false],
+        ]);
+        $oneToOneMetadata->method('isSingleValuedAssociation')->willReturnMap([['toOne', true]]);
+        $oneToOneMetadata->method('isCollectionValuedAssociation')->willReturnMap([['toOne', false]]);
+        $oneToOneMetadata->method('getAssociationTargetClass')->willReturnMap([
+            ['toOne', Assets\ByValueDifferentiatorEntity::class],
+        ]);
+        $oneToOneMetadata->method('getReflectionClass')->willReturn(new ReflectionClass(Assets\OneToOneEntity::class));
+        $oneToOneMetadata->method('getIdentifier')->willReturn(['id']);
+        $oneToOneMetadata->method('getIdentifierFieldNames')->willReturn(['id']);
 
-        $byValueDifferentiatorEntity = $this->prophesize(ClassMetadata::class);
-        $byValueDifferentiatorEntity->getName()->willReturn(Assets\ByValueDifferentiatorEntity::class);
-        $byValueDifferentiatorEntity->getAssociationNames()->willReturn([]);
-        $byValueDifferentiatorEntity->getFieldNames()->willReturn(['id', 'field']);
-        $byValueDifferentiatorEntity->getTypeOfField('id')->willReturn('integer');
-        $byValueDifferentiatorEntity->getTypeOfField('field')->willReturn('string');
-        $byValueDifferentiatorEntity->hasAssociation(Argument::any())->willReturn(false);
-        $byValueDifferentiatorEntity->getIdentifier()->willReturn(['id']);
-        $byValueDifferentiatorEntity->getIdentifierFieldNames()->willReturn(['id']);
-        $byValueDifferentiatorEntity
-            ->getReflectionClass()
-            ->willReturn(new ReflectionClass(Assets\ByValueDifferentiatorEntity::class));
+        $byValueDifferentiatorMetadata = $this->createStub(ClassMetadata::class);
+        $byValueDifferentiatorMetadata->method('getName')->willReturn(Assets\ByValueDifferentiatorEntity::class);
+        $byValueDifferentiatorMetadata->method('getAssociationNames')->willReturn([]);
+        $byValueDifferentiatorMetadata->method('getFieldNames')->willReturn(['id', 'field']);
+        $byValueDifferentiatorMetadata->method('getTypeOfField')->willReturnMap([
+            ['id', 'integer'],
+            ['field', 'string'],
+        ]);
+        $byValueDifferentiatorMetadata->method('hasAssociation')->willReturn(false);
+        $byValueDifferentiatorMetadata->method('getIdentifier')->willReturn(['id']);
+        $byValueDifferentiatorMetadata->method('getIdentifierFieldNames')->willReturn(['id']);
+        $byValueDifferentiatorMetadata->method('getReflectionClass')->willReturn(new ReflectionClass(Assets\ByValueDifferentiatorEntity::class));
 
-        $objectManager = $this->prophesize(ObjectManager::class);
-        $objectManager
-            ->getClassMetadata(Assets\OneToOneEntity::class)
-            ->will([$oneToOneMetadata, 'reveal']);
-        $objectManager
-            ->getClassMetadata(Assets\ByValueDifferentiatorEntity::class)
-            ->will([$byValueDifferentiatorEntity, 'reveal']);
-        $objectManager->find(Assets\OneToOneEntity::class, ['id' => 12])->willReturn(null);
-        $objectManager->find(Assets\ByValueDifferentiatorEntity::class, ['id' => 13])->willReturn(null);
+        $objectManager = $this->createStub(ObjectManager::class);
+        $objectManager->method('getClassMetadata')->willReturnMap([
+            [Assets\OneToOneEntity::class, $oneToOneMetadata],
+            [Assets\ByValueDifferentiatorEntity::class, $byValueDifferentiatorMetadata],
+        ]);
+        $objectManager->method('find')->willReturnMap([
+            [Assets\OneToOneEntity::class, ['id' => 12], null],
+            [Assets\ByValueDifferentiatorEntity::class, ['id' => 13], null],
+        ]);
 
-        return $objectManager->reveal();
+        return $objectManager;
     }
 
     public function testNestedHydrationByValue(): void

@@ -6,6 +6,6 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 enum SimpleEnumPhp81: int
 {
-case One = 1;
-case Two = 2;
-    }
+    case One = 1;
+    case Two = 2;
+}

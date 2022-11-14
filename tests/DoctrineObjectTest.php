@@ -17,7 +17,6 @@ use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionClass;
 use stdClass;
 use TypeError;
@@ -30,8 +29,6 @@ use function time;
 
 class DoctrineObjectTest extends TestCase
 {
-    use ProphecyTrait;
-
     protected DoctrineObjectHydrator $hydratorByValue;
 
     protected DoctrineObjectHydrator $hydratorByReference;

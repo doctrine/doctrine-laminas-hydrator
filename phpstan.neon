@@ -11,5 +11,3 @@ parameters:
         -
           message: '#Unable to resolve the template type T in call to method Doctrine\\Laminas\\Hydrator\\DoctrineObject::tryConvertArrayToObject\(\)#'
           path: src/DoctrineObject.php
-includes:
-	- vendor/jangregor/phpstan-prophecy/extension.neon

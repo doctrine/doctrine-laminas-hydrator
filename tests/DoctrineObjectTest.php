@@ -15,6 +15,7 @@ use DoctrineTest\Laminas\Hydrator\Assets\SimpleEnumPhp81;
 use InvalidArgumentException;
 use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
+use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -25,6 +26,7 @@ use function array_keys;
 use function assert;
 use function explode;
 use function implode;
+use function sprintf;
 use function time;
 
 class DoctrineObjectTest extends TestCase
@@ -2977,5 +2979,69 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue->addStrategy('enum', new Assets\SimpleEnumStrategyPhp81());
         $this->hydratorByValue->hydrate($data, $entity);
+    }
+
+    /**
+     * @requires PHP 8.1
+     */
+    public function testExtractReadonlyPropsByReference(): void
+    {
+        $entity = new Assets\SimpleEntityWithReadonlyPropsPhp81(2);
+
+        $this->configureObjectManagerForSimpleEntity(Assets\SimpleEntityWithReadonlyPropsPhp81::class);
+
+        $data = $this->hydratorByReference->extract($entity);
+        $this->assertEquals([], $data);
+
+        $entity->setField('value');
+        $data = $this->hydratorByReference->extract($entity);
+        $this->assertEquals(['field' => 'value'], $data);
+    }
+
+    /**
+     * @requires PHP 8.2
+     */
+    public function testExtractReadonlyClassByReference(): void
+    {
+        $entity = new Assets\SimpleEntityReadonlyPhp82(2, null);
+
+        $this->configureObjectManagerForSimpleEntity(Assets\SimpleEntityReadonlyPhp82::class);
+
+        $this->expectExceptionMessage(sprintf(
+            'this class "%s" is readonly, data can\'t be extracted',
+            Assets\SimpleEntityReadonlyPhp82::class
+        ));
+        $this->expectException(LogicException::class);
+
+        $this->hydratorByReference->extract($entity);
+    }
+
+    /**
+     * @requires PHP 8.1
+     */
+    public function testHydrateReadonlyPropsByValue(): void
+    {
+        $this->configureObjectManagerForSimpleEntity(Assets\SimpleEntityWithReadonlyPropsPhp81::class);
+
+        $entity = $this->hydratorByValue->hydrate(['field' => 'toto', 'id' => 15], new Assets\SimpleEntityWithReadonlyPropsPhp81(3));
+
+        $this->assertEquals(3, $entity->getId());
+        $this->assertEquals('toto', $entity->getField());
+    }
+
+    /**
+     * @requires PHP 8.1
+     */
+    public function testHydrateReadonlyPropsByReference(): void
+    {
+        $this->configureObjectManagerForSimpleEntity(Assets\SimpleEntityWithReadonlyPropsPhp81::class);
+
+        self::expectExceptionMessage(sprintf(
+            'Cannot hydrate class "%s" by reference. Property "id" is readonly. To fix this error, remove readonly',
+            Assets\SimpleEntityWithReadonlyPropsPhp81::class
+        ));
+        self::expectException(LogicException::class);
+
+        $this->hydratorByReference->hydrate(['field' => 'toto', 'id' => 15], new Assets\SimpleEntityWithReadonlyPropsPhp81(3));
     }
 }

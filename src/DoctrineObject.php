@@ -27,32 +27,29 @@ use function array_flip;
 use function array_intersect_key;
 use function array_key_exists;
 use function array_keys;
-use function array_merge;
 use function assert;
 use function ctype_upper;
 use function current;
-use function get_class;
 use function get_class_methods;
 use function gettype;
 use function in_array;
 use function is_array;
 use function is_callable;
 use function is_int;
+use function is_iterable;
 use function is_object;
 use function is_string;
 use function method_exists;
 use function property_exists;
 use function sprintf;
+use function str_ends_with;
+use function str_starts_with;
 use function strpos;
 use function substr;
 
 class DoctrineObject extends AbstractHydrator
 {
-    protected ObjectManager $objectManager;
-
     protected ?ClassMetadata $metadata = null;
-
-    protected bool $byValue = true;
 
     /** @var class-string<Strategy\CollectionStrategyInterface> */
     protected string $defaultByValueStrategy = AllowRemoveByValue::class;
@@ -66,11 +63,9 @@ class DoctrineObject extends AbstractHydrator
      * @param ObjectManager $objectManager The ObjectManager to use
      * @param bool          $byValue       If set to true, hydrator will always use entity's public API
      */
-    public function __construct(ObjectManager $objectManager, bool $byValue = true, ?Inflector $inflector = null)
+    public function __construct(protected ObjectManager $objectManager, protected bool $byValue = true, ?Inflector $inflector = null)
     {
-        $this->objectManager = $objectManager;
-        $this->byValue       = $byValue;
-        $this->inflector     = $inflector ?? InflectorFactory::create()->build();
+        $this->inflector = $inflector ?? InflectorFactory::create()->build();
     }
 
     protected function getClassMetadata(): ClassMetadata
@@ -122,10 +117,7 @@ class DoctrineObject extends AbstractHydrator
      */
     public function getFieldNames(): iterable
     {
-        $fields = array_merge(
-            $this->getClassMetadata()->getFieldNames(),
-            $this->getClassMetadata()->getAssociationNames()
-        );
+        $fields = [...$this->getClassMetadata()->getFieldNames(), ...$this->getClassMetadata()->getAssociationNames()];
 
         foreach ($fields as $fieldName) {
             $pos = strpos($fieldName, '.');
@@ -174,7 +166,7 @@ class DoctrineObject extends AbstractHydrator
      */
     protected function prepare(object $object): void
     {
-        $this->metadata = $this->objectManager->getClassMetadata(get_class($object));
+        $this->metadata = $this->objectManager->getClassMetadata($object::class);
         $this->prepareStrategies();
     }
 
@@ -210,7 +202,7 @@ class DoctrineObject extends AbstractHydrator
                     sprintf(
                         'Strategies used for collections valued associations must inherit from %s, %s given',
                         Strategy\CollectionStrategyInterface::class,
-                        get_class($strategy)
+                        $strategy::class
                     )
                 );
             }
@@ -250,7 +242,7 @@ class DoctrineObject extends AbstractHydrator
             } elseif (in_array($isser, $methods)) {
                 $data[$dataFieldName] = $this->extractValue($fieldName, $object->$isser(), $object);
             } elseif (
-                substr($fieldName, 0, 2) === 'is'
+                str_starts_with($fieldName, 'is')
                 && ctype_upper(substr($fieldName, 2, 1))
                 && in_array($fieldName, $methods)
             ) {
@@ -283,7 +275,7 @@ class DoctrineObject extends AbstractHydrator
             throw new LogicException(
                 sprintf(
                     'this class "%s" is readonly, data can\'t be extracted',
-                    get_class($object)
+                    $object::class
                 )
             );
         }
@@ -441,7 +433,7 @@ class DoctrineObject extends AbstractHydrator
                 throw new LogicException(
                     sprintf(
                         'Cannot hydrate class "%s" by reference. Property "%s" is readonly. To fix this error, remove readonly.',
-                        get_class($object),
+                        $object::class,
                         $field
                     )
                 );
@@ -513,9 +505,8 @@ class DoctrineObject extends AbstractHydrator
      * target will be returned.
      *
      * @param  class-string $target
-     * @param  mixed        $value
      */
-    protected function toOne(string $target, $value): ?object
+    protected function toOne(string $target, mixed $value): ?object
     {
         $metadata = $this->objectManager->getClassMetadata($target);
 
@@ -540,11 +531,10 @@ class DoctrineObject extends AbstractHydrator
      * changing the collection of the object
      *
      * @param  class-string $target
-     * @param  mixed        $values
      *
      * @throws InvalidArgumentException
      */
-    protected function toMany(object $object, string $collectionName, string $target, $values): void
+    protected function toMany(object $object, string $collectionName, string $target, mixed $values): void
     {
         $metadata   = $this->objectManager->getClassMetadata($target);
         $identifier = $metadata->getIdentifier();
@@ -609,9 +599,7 @@ class DoctrineObject extends AbstractHydrator
 
         $collection = array_filter(
             $collection,
-            static function ($item) {
-                return $item !== null;
-            }
+            static fn ($item) => $item !== null
         );
 
         // Set the object so that the strategy can extract the Collection from it
@@ -630,11 +618,9 @@ class DoctrineObject extends AbstractHydrator
      *
      * @link http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/basic-mapping.html#doctrine-mapping-types
      *
-     * @param  mixed $value
-     *
      * @return mixed|null
      */
-    protected function handleTypeConversions($value, ?string $typeOfField)
+    protected function handleTypeConversions(mixed $value, ?string $typeOfField)
     {
         if ($value === null) {
             return null;
@@ -667,7 +653,7 @@ class DoctrineObject extends AbstractHydrator
                     return null;
                 }
 
-                $isImmutable = substr($typeOfField, -9) === 'immutable';
+                $isImmutable = str_ends_with($typeOfField, 'immutable');
 
                 // Psalm has troubles with nested conditions, therefore break this into two return statements.
                 // See https://github.com/vimeo/psalm/issues/6683.
@@ -712,14 +698,13 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Find an object by a given target class and identifier
      *
-     * @param  mixed $identifiers
      * @psalm-param class-string<T> $targetClass
      *
      * @psalm-return T|null
      *
      * @template T of object
      */
-    protected function find($identifiers, string $targetClass): ?object
+    protected function find(mixed $identifiers, string $targetClass): ?object
     {
         if ($identifiers instanceof $targetClass) {
             return $identifiers;
@@ -743,12 +728,10 @@ class DoctrineObject extends AbstractHydrator
             return true;
         }
 
-        if ($identifier instanceof Traversable || is_array($identifier)) {
+        if (is_iterable($identifier)) {
             $nonNullIdentifiers = array_filter(
                 ArrayUtils::iteratorToArray($identifier),
-                static function ($value) {
-                    return $value !== null;
-                }
+                static fn ($value) => $value !== null
             );
 
             return empty($nonNullIdentifiers);

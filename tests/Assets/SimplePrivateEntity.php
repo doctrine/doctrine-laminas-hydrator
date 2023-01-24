@@ -9,12 +9,10 @@ use Exception;
 class SimplePrivateEntity
 {
     /**
-     * @param         mixed $value
-     *
      * @phpcsSuppress SlevomatCodingStandard.Classes.UnusedPrivateElements
      * @phpstan-ignore-next-line
      */
-    private function setPrivate($value): void
+    private function setPrivate(mixed $value): void
     {
         throw new Exception('Should never be called');
     }
@@ -28,10 +26,7 @@ class SimplePrivateEntity
         throw new Exception('Should never be called');
     }
 
-    /**
-     * @param mixed $value
-     */
-    protected function setProtected($value): void
+    protected function setProtected(mixed $value): void
     {
         throw new Exception('Should never be called');
     }

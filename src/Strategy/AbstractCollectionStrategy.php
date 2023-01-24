@@ -13,7 +13,6 @@ use InvalidArgumentException;
 use LogicException;
 use ReflectionException;
 
-use function get_class;
 use function is_array;
 use function method_exists;
 use function spl_object_hash;
@@ -115,7 +114,7 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
                     'The getter %s to access collection %s in object %s does not exist',
                     $getter,
                     $this->getCollectionName(),
-                    get_class($object)
+                    $object::class
                 )
             );
         }

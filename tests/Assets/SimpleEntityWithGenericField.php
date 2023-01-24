@@ -21,10 +21,7 @@ class SimpleEntityWithGenericField
         return $this->id;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function setGenericField($value): void
+    public function setGenericField(mixed $value): void
     {
         $this->genericField = $value;
     }

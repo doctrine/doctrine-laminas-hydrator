@@ -9,7 +9,6 @@ use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
 use LogicException;
 
 use function array_udiff;
-use function get_class;
 use function method_exists;
 use function sprintf;
 
@@ -35,7 +34,7 @@ class DifferentAllowRemoveByValue extends AbstractCollectionStrategy
                      entity domain code, but one or both seem to be missing',
                     $adder,
                     $remover,
-                    get_class($object)
+                    $object::class
                 )
             );
         }

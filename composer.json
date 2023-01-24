@@ -13,7 +13,7 @@
         "rss": "https://github.com/doctrine/doctrine-laminas-hydrator/releases.atom"
     },
     "require": {
-        "php": "^7.4 || ~8.0.0 || ~8.1.0 || ~8.2.0",
+        "php": "~8.0.0 || ~8.1.0 || ~8.2.0",
         "ext-ctype": "*",
         "doctrine/collections": "^1.6.8",
         "doctrine/inflector": "^2.0.4",

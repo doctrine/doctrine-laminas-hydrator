@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use LogicException;
 
 use function array_udiff;
-use function get_class;
 use function method_exists;
 use function sprintf;
 
@@ -43,7 +42,7 @@ final class AllowRemoveByValue extends AbstractCollectionStrategy
                      entity domain code, but one or both seem to be missing',
                     $adder,
                     $remover,
-                    get_class($object)
+                    $object::class
                 )
             );
         }

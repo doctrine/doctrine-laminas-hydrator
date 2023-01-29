@@ -196,8 +196,8 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $now    = new DateTime();
-        $now->setTimestamp(1522353676);
-        $data = ['genericField' => 1522353676];
+        $now->setTimestamp(1_522_353_676);
+        $data = ['genericField' => 1_522_353_676];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -244,8 +244,8 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('datetime_immutable');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now    = (new DateTimeImmutable())->setTimestamp(1522353676);
-        $data   = ['genericField' => 1522353676];
+        $now    = (new DateTimeImmutable())->setTimestamp(1_522_353_676);
+        $data   = ['genericField' => 1_522_353_676];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -293,8 +293,8 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $now    = new DateTime();
-        $now->setTimestamp(1522353676);
-        $data = ['genericField' => 1522353676];
+        $now->setTimestamp(1_522_353_676);
+        $data = ['genericField' => 1_522_353_676];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -341,8 +341,8 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->configureObjectManagerForSimpleEntityWithGenericField('datetimetz_immutable');
 
         $entity = new Assets\SimpleEntityWithGenericField();
-        $now    = (new DateTimeImmutable())->setTimestamp(1522353676);
-        $data   = ['genericField' => 1522353676];
+        $now    = (new DateTimeImmutable())->setTimestamp(1_522_353_676);
+        $data   = ['genericField' => 1_522_353_676];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -390,8 +390,8 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $now    = new DateTime();
-        $now->setTimestamp(1522353676);
-        $data = ['genericField' => 1522353676];
+        $now->setTimestamp(1_522_353_676);
+        $data = ['genericField' => 1_522_353_676];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -439,8 +439,8 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $now    = new DateTime();
-        $now->setTimestamp(1522353676);
-        $data = ['genericField' => 1522353676];
+        $now->setTimestamp(1_522_353_676);
+        $data = ['genericField' => 1_522_353_676];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 

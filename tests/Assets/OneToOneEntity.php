@@ -10,7 +10,7 @@ class OneToOneEntity
 {
     protected int $id;
 
-    protected ?ByValueDifferentiatorEntity $toOne;
+    protected ?ByValueDifferentiatorEntity $toOne = null;
 
     protected DateTime $createdAt;
 

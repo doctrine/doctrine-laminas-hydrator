@@ -10,7 +10,7 @@ class SimpleEntityWithDateTime
 {
     protected int $id;
 
-    protected ?DateTime $date;
+    protected ?DateTime $date = null;
 
     public function setId(int $id): void
     {

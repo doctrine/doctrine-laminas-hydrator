@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use LogicException;
 
 use function array_udiff;
-use function get_class;
 use function method_exists;
 use function sprintf;
 
@@ -41,7 +40,7 @@ final class DisallowRemoveByValue extends AbstractCollectionStrategy
                     'DisallowRemove strategy for DoctrineModule hydrator requires %s to
                      be defined in %s entity domain code, but it seems to be missing',
                     $adder,
-                    get_class($object)
+                    $object::class
                 )
             );
         }

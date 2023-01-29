@@ -11,18 +11,12 @@ class SimpleEntity
 
     protected string $field;
 
-    /**
-     * @param string|int $id
-     */
-    public function setId($id): void
+    public function setId(string|int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string|int
-     */
-    public function getId()
+    public function getId(): string|int
     {
         return $this->id;
     }

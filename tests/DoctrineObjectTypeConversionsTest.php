@@ -430,6 +430,54 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($now, $entity->getGenericField());
     }
 
+    public function testHandleTypeConversionsTimeImmutable(): void
+    {
+        // When using hydration by value, it will use the public API of the entity to set values (setters)
+        $this->configureObjectManagerForSimpleEntityWithGenericField('time_immutable');
+
+        $entity = new Assets\SimpleEntityWithGenericField();
+        $now    = (new DateTimeImmutable())->setTimestamp(1_522_353_676);
+        $data = ['genericField' => 1_522_353_676];
+
+        $entity = $this->hydratorByValue->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+
+        $entity = $this->hydratorByReference->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+
+        $entity = new Assets\SimpleEntityWithGenericField();
+        $now    = new DateTimeImmutable();
+        $data   = ['genericField' => $now->format('Y-m-d\TH:i:s\.u')];
+
+        $entity = $this->hydratorByValue->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+
+        $entity = $this->hydratorByReference->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+
+        $entity = new Assets\SimpleEntityWithGenericField();
+        $now    = new DateTimeImmutable();
+        $data   = ['genericField' => clone $now];
+
+        $entity = $this->hydratorByValue->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+
+        $entity = $this->hydratorByReference->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+    }
+
     public function testHandleTypeConversionsDate(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
@@ -476,6 +524,55 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
         $this->assertInstanceOf('DateTime', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+    }
+
+
+    public function testHandleTypeConversionsDateImmutable(): void
+    {
+        // When using hydration by value, it will use the public API of the entity to set values (setters)
+        $this->configureObjectManagerForSimpleEntityWithGenericField('date_immutable');
+
+        $entity = new Assets\SimpleEntityWithGenericField();
+        $now    = (new DateTimeImmutable())->setTimestamp(1_522_353_676);
+        $data = ['genericField' => 1_522_353_676];
+
+        $entity = $this->hydratorByValue->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+
+        $entity = $this->hydratorByReference->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+
+        $entity = new Assets\SimpleEntityWithGenericField();
+        $now    = new DateTimeImmutable();
+        $data   = ['genericField' => $now->format('Y-m-d\TH:i:s\.u')];
+
+        $entity = $this->hydratorByValue->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+
+        $entity = $this->hydratorByReference->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+
+        $entity = new Assets\SimpleEntityWithGenericField();
+        $now    = new DateTimeImmutable();
+        $data   = ['genericField' => clone $now];
+
+        $entity = $this->hydratorByValue->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
+        $this->assertEquals($now, $entity->getGenericField());
+
+        $entity = $this->hydratorByReference->hydrate($data, $entity);
+
+        $this->assertInstanceOf('DateTimeImmutable', $entity->getGenericField());
         $this->assertEquals($now, $entity->getGenericField());
     }
 

@@ -648,7 +648,9 @@ class DoctrineObject extends AbstractHydrator
             case 'datetime':
             case 'datetime_immutable':
             case 'time':
+            case 'time_immutable':
             case 'date':
+            case 'date_immutable':
                 if ($value === '') {
                     return null;
                 }

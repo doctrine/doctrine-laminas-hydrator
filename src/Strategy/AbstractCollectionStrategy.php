@@ -152,6 +152,6 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
      */
     protected function compareObjects(object $a, object $b): int
     {
-        return spl_object_hash($a) <=> spl_object_hash($b);
+        return strcmp(spl_object_hash($a), spl_object_hash($b));
     }
 }

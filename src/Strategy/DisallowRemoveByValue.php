@@ -40,8 +40,8 @@ final class DisallowRemoveByValue extends AbstractCollectionStrategy
                     'DisallowRemove strategy for DoctrineModule hydrator requires %s to
                      be defined in %s entity domain code, but it seems to be missing',
                     $adder,
-                    $object::class
-                )
+                    $object::class,
+                ),
             );
         }
 

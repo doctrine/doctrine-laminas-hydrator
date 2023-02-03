@@ -8,9 +8,7 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
 
 class SimpleEnumStrategyPhp81 implements StrategyInterface
 {
-    /**
-     * @param mixed $value
-     */
+    /** @param mixed $value */
     public function extract($value, ?object $object = null): ?int
     {
         if ($value === null) {

@@ -18,9 +18,7 @@ use function method_exists;
 use function spl_object_hash;
 use function sprintf;
 
-/**
- * @internal
- */
+/** @internal */
 abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
 {
     private ?string $collectionName = null;
@@ -114,8 +112,8 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
                     'The getter %s to access collection %s in object %s does not exist',
                     $getter,
                     $this->getCollectionName(),
-                    $object::class
-                )
+                    $object::class,
+                ),
             );
         }
 

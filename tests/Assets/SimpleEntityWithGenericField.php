@@ -26,9 +26,7 @@ class SimpleEntityWithGenericField
         $this->genericField = $value;
     }
 
-    /**
-     * @return mixed
-     */
+    /** @return mixed */
     public function getGenericField()
     {
         return $this->genericField;

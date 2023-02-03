@@ -66,9 +66,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('genericField')))
             ->willReturnCallback(
-                /**
-                 * @param string $arg
-                 */
+                /** @param string $arg */
                 static function ($arg) use ($genericFieldType) {
                     if ($arg === 'id') {
                         return 'integer';
@@ -79,7 +77,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -99,11 +97,11 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -136,7 +134,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -154,7 +152,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -181,11 +179,11 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 

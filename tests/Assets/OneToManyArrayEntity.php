@@ -29,9 +29,7 @@ class OneToManyArrayEntity
         return $this->id;
     }
 
-    /**
-     * @psalm-param Collection<array-key,object> $entities
-     */
+    /** @psalm-param Collection<array-key,object> $entities */
     public function addEntities(Collection $entities, bool $modifyValue = true): void
     {
         foreach ($entities as $entity) {
@@ -44,9 +42,7 @@ class OneToManyArrayEntity
         }
     }
 
-    /**
-     * @param Collection<array-key,object> $entities
-     */
+    /** @param Collection<array-key,object> $entities */
     public function removeEntities(Collection $entities): void
     {
         foreach ($entities as $entity) {
@@ -54,9 +50,7 @@ class OneToManyArrayEntity
         }
     }
 
-    /**
-     * @return object[]
-     */
+    /** @return object[] */
     public function getEntities(bool $modifyValue = true): array
     {
         // Modify the value to illustrate the difference between by value and by reference

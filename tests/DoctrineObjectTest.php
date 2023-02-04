@@ -86,7 +86,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -106,11 +106,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -160,11 +160,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -201,7 +201,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -221,11 +221,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -262,7 +262,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -282,11 +282,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -331,11 +331,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -373,7 +373,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -393,11 +393,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -421,7 +421,7 @@ class DoctrineObjectTest extends TestCase
             ->with($this->logicalOr(
                 $this->equalTo('id'),
                 $this->equalTo('embedded.field'),
-                $this->equalTo('embedded')
+                $this->equalTo('embedded'),
             ))
             ->willReturnCallback(
                 static function (string $arg): ?string {
@@ -438,7 +438,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -458,11 +458,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -495,7 +495,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -513,7 +513,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -540,11 +540,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -569,8 +569,8 @@ class DoctrineObjectTest extends TestCase
                 $this->logicalOr(
                     $this->equalTo('id'),
                     $this->equalTo('toOne'),
-                    $this->equalTo('field')
-                )
+                    $this->equalTo('field'),
+                ),
             )
             ->willReturnCallback(
                 static function ($arg) {
@@ -587,7 +587,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -597,8 +597,8 @@ class DoctrineObjectTest extends TestCase
                 $this->logicalOr(
                     $this->equalTo('id'),
                     $this->equalTo('toOne'),
-                    $this->equalTo('field')
-                )
+                    $this->equalTo('field'),
+                ),
             )
             ->willReturnCallback(
                 static function ($arg) {
@@ -611,7 +611,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -638,11 +638,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -667,8 +667,8 @@ class DoctrineObjectTest extends TestCase
                 $this->logicalOr(
                     $this->equalTo('id'),
                     $this->equalTo('entities'),
-                    $this->equalTo('field')
-                )
+                    $this->equalTo('field'),
+                ),
             )
             ->willReturnCallback(
                 static function ($arg) {
@@ -685,7 +685,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -707,7 +707,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -739,11 +739,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -768,8 +768,8 @@ class DoctrineObjectTest extends TestCase
                 $this->logicalOr(
                     $this->equalTo('id'),
                     $this->equalTo('entities'),
-                    $this->equalTo('field')
-                )
+                    $this->equalTo('field'),
+                ),
             )
             ->willReturnCallback(
                 static function ($arg) {
@@ -786,7 +786,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -808,7 +808,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -840,11 +840,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -877,7 +877,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $this
@@ -897,11 +897,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -1317,7 +1317,7 @@ class DoctrineObjectTest extends TestCase
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
-                ['id' => 1]
+                ['id' => 1],
             )
             ->will($this->returnValue($entityInDatabaseWithIdOfOne));
 
@@ -1325,16 +1325,16 @@ class DoctrineObjectTest extends TestCase
 
         $this->assertInstanceOf(
             Assets\OneToOneEntityNotNullable::class,
-            $entity
+            $entity,
         );
         $this->assertInstanceOf(
             Assets\ByValueDifferentiatorEntity::class,
-            $entity->getToOne(false)
+            $entity->getToOne(false),
         );
         $this->assertSame($entityInDatabaseWithIdOfOne, $entity->getToOne(false));
         $this->assertEquals(
             'From getter: Modified from setToOne setter',
-            $entityInDatabaseWithIdOfOne->getField()
+            $entityInDatabaseWithIdOfOne->getField(),
         );
     }
 
@@ -1425,9 +1425,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $data['entities'][1]);
     }
 
-    /**
-     * @depends testExtractOneToManyAssociationByValue
-     */
+    /** @depends testExtractOneToManyAssociationByValue */
     public function testExtractOneToManyByValueWithArray(): void
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
@@ -1488,9 +1486,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $data['entities'][1]);
     }
 
-    /**
-     * @depends testExtractOneToManyAssociationByReference
-     */
+    /** @depends testExtractOneToManyAssociationByReference */
     public function testExtractOneToManyArrayByReference(): void
     {
         // When using extraction by reference, it won't use the public API of the entity to retrieve values (getters)
@@ -1558,9 +1554,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $entities[1]);
     }
 
-    /**
-     * @depends testHydrateOneToManyAssociationByValue
-     */
+    /** @depends testHydrateOneToManyAssociationByValue */
     public function testHydrateOneToManyArrayByValue(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
@@ -1635,9 +1629,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $entities[1]);
     }
 
-    /**
-     * @depends testHydrateOneToManyAssociationByReference
-     */
+    /** @depends testHydrateOneToManyAssociationByReference */
     public function testHydrateOneToManyArrayByReference(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
@@ -1699,7 +1691,7 @@ class DoctrineObjectTest extends TestCase
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
-                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
+                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3])),
             )
             ->willReturnCallback(
                 static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
@@ -1712,7 +1704,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -1762,7 +1754,7 @@ class DoctrineObjectTest extends TestCase
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
-                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
+                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3])),
             )
             ->willReturnCallback(
                 static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
@@ -1775,7 +1767,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -1810,7 +1802,7 @@ class DoctrineObjectTest extends TestCase
                 new ReflectionClass(Assets\OneToManyEntity::class),
                 new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
                 new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
-                new ReflectionClass(Assets\OneToManyEntity::class)
+                new ReflectionClass(Assets\OneToManyEntity::class),
             );
 
         $this->configureObjectManagerForOneToManyEntity();
@@ -1836,7 +1828,7 @@ class DoctrineObjectTest extends TestCase
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
-                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
+                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3])),
             )
             ->willReturnCallback(
                 static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
@@ -1849,7 +1841,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
@@ -1894,7 +1886,7 @@ class DoctrineObjectTest extends TestCase
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
-                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
+                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3])),
             )
             ->willReturnCallback(
                 static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
@@ -1907,7 +1899,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
@@ -2060,7 +2052,7 @@ class DoctrineObjectTest extends TestCase
             new ArrayCollection([
                 $entityInDatabaseWithIdOfTwo,
                 $entityInDatabaseWithIdOfThree,
-            ])
+            ]),
         );
         $this->configureObjectManagerForOneToManyEntity();
 
@@ -2070,7 +2062,7 @@ class DoctrineObjectTest extends TestCase
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
-                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
+                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3])),
             )
             ->willReturnCallback(
                 static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
@@ -2083,7 +2075,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -2129,7 +2121,7 @@ class DoctrineObjectTest extends TestCase
             new ArrayCollection([
                 $entityInDatabaseWithIdOfTwo,
                 $entityInDatabaseWithIdOfThree,
-            ])
+            ]),
         );
         $this->configureObjectManagerForOneToManyEntity();
 
@@ -2139,7 +2131,7 @@ class DoctrineObjectTest extends TestCase
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
-                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
+                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3])),
             )
             ->willReturnCallback(
                 static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
@@ -2152,7 +2144,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -2199,7 +2191,7 @@ class DoctrineObjectTest extends TestCase
             new ArrayCollection([
                 $entityInDatabaseWithIdOfTwo,
                 $entityInDatabaseWithIdOfThree,
-            ])
+            ]),
         );
         $this->configureObjectManagerForOneToManyEntity();
 
@@ -2209,7 +2201,7 @@ class DoctrineObjectTest extends TestCase
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
-                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
+                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3])),
             )
             ->willReturnCallback(
                 static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
@@ -2222,7 +2214,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -2266,7 +2258,7 @@ class DoctrineObjectTest extends TestCase
             new ArrayCollection([
                 $entityInDatabaseWithIdOfTwo,
                 $entityInDatabaseWithIdOfThree,
-            ])
+            ]),
         );
 
         $this
@@ -2276,7 +2268,7 @@ class DoctrineObjectTest extends TestCase
                 new ReflectionClass(Assets\OneToManyEntityWithEntities::class),
                 new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
                 new ReflectionClass(Assets\ByValueDifferentiatorEntity::class),
-                new ReflectionClass(Assets\OneToManyEntityWithEntities::class)
+                new ReflectionClass(Assets\OneToManyEntityWithEntities::class),
             );
 
         $this->configureObjectManagerForOneToManyEntity();
@@ -2287,7 +2279,7 @@ class DoctrineObjectTest extends TestCase
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
-                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
+                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3])),
             )
             ->willReturnCallback(
                 static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
@@ -2300,7 +2292,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     throw new InvalidArgumentException();
-                }
+                },
             );
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
@@ -2379,7 +2371,7 @@ class DoctrineObjectTest extends TestCase
             ->method('find')
             ->with(
                 Assets\ByValueDifferentiatorEntity::class,
-                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3]))
+                $this->logicalOr($this->equalTo(['id' => 2]), $this->equalTo(['id' => 3])),
             )
             ->willReturnCallback(
                 static function ($target, $arg) use ($entityInDatabaseWithIdOfTwo, $entityInDatabaseWithIdOfThree) {
@@ -2388,7 +2380,7 @@ class DoctrineObjectTest extends TestCase
                     }
 
                     return $entityInDatabaseWithIdOfThree;
-                }
+                },
             );
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
@@ -2677,11 +2669,11 @@ class DoctrineObjectTest extends TestCase
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
-            true
+            true,
         );
         $this->hydratorByReference = new DoctrineObjectHydrator(
             $this->objectManager,
-            false
+            false,
         );
     }
 
@@ -2706,30 +2698,28 @@ class DoctrineObjectTest extends TestCase
 
         $this->assertEquals(
             Strategy\AllowRemoveByValue::class,
-            $this->hydratorByValue->getDefaultByValueStrategy()
+            $this->hydratorByValue->getDefaultByValueStrategy(),
         );
 
         $this->assertInstanceOf(
             Strategy\AllowRemoveByValue::class,
-            $this->hydratorByValue->getStrategy('entities')
+            $this->hydratorByValue->getStrategy('entities'),
         );
 
         $this->hydratorByReference->hydrate([], $entity);
 
         $this->assertEquals(
             Strategy\AllowRemoveByReference::class,
-            $this->hydratorByReference->getDefaultByReferenceStrategy()
+            $this->hydratorByReference->getDefaultByReferenceStrategy(),
         );
 
         $this->assertInstanceOf(
             Strategy\AllowRemoveByReference::class,
-            $this->hydratorByReference->getStrategy('entities')
+            $this->hydratorByReference->getStrategy('entities'),
         );
     }
 
-    /**
-     * @depends testDefaultStrategy
-     */
+    /** @depends testDefaultStrategy */
     public function testOverrideDefaultStrategy(): void
     {
         $this->configureObjectManagerForOneToManyEntity();
@@ -2743,24 +2733,24 @@ class DoctrineObjectTest extends TestCase
 
         $this->assertEquals(
             Assets\DifferentAllowRemoveByValue::class,
-            $this->hydratorByValue->getDefaultByValueStrategy()
+            $this->hydratorByValue->getDefaultByValueStrategy(),
         );
 
         $this->assertInstanceOf(
             Assets\DifferentAllowRemoveByValue::class,
-            $this->hydratorByValue->getStrategy('entities')
+            $this->hydratorByValue->getStrategy('entities'),
         );
 
         $this->hydratorByReference->hydrate([], $entity);
 
         $this->assertEquals(
             Assets\DifferentAllowRemoveByReference::class,
-            $this->hydratorByReference->getDefaultByReferenceStrategy()
+            $this->hydratorByReference->getDefaultByReferenceStrategy(),
         );
 
         $this->assertInstanceOf(
             Assets\DifferentAllowRemoveByReference::class,
-            $this->hydratorByReference->getStrategy('entities')
+            $this->hydratorByReference->getStrategy('entities'),
         );
     }
 
@@ -2930,9 +2920,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame('2019-01-24 12:00:00', $entity->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
-    /**
-     * @requires PHP 8.1
-     */
+    /** @requires PHP 8.1 */
     public function testHandleEnumConversionUsingByValue(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
@@ -2949,9 +2937,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(SimpleEnumPhp81::tryFrom($value), $entity->getEnum());
     }
 
-    /**
-     * @requires PHP 8.1
-     */
+    /** @requires PHP 8.1 */
     public function testNullValueIsNotConvertedToEnum(): void
     {
         $entity = new Assets\SimpleEntityWithEnumPhp81();
@@ -2965,9 +2951,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertNull($entity->getEnum());
     }
 
-    /**
-     * @requires PHP 8.1
-     */
+    /** @requires PHP 8.1 */
     public function testWrongEnumBackedValueThrowsException(): void
     {
         $entity = new Assets\SimpleEntityWithEnumPhp81();
@@ -2981,9 +2965,7 @@ class DoctrineObjectTest extends TestCase
         $this->hydratorByValue->hydrate($data, $entity);
     }
 
-    /**
-     * @requires PHP 8.1
-     */
+    /** @requires PHP 8.1 */
     public function testExtractReadonlyPropsByReference(): void
     {
         $entity = new Assets\SimpleEntityWithReadonlyPropsPhp81(2);
@@ -2998,9 +2980,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['field' => 'value'], $data);
     }
 
-    /**
-     * @requires PHP 8.2
-     */
+    /** @requires PHP 8.2 */
     public function testExtractReadonlyClassByReference(): void
     {
         $entity = new Assets\SimpleEntityReadonlyPhp82(2, null);
@@ -3009,16 +2989,14 @@ class DoctrineObjectTest extends TestCase
 
         $this->expectExceptionMessage(sprintf(
             'this class "%s" is readonly, data can\'t be extracted',
-            Assets\SimpleEntityReadonlyPhp82::class
+            Assets\SimpleEntityReadonlyPhp82::class,
         ));
         $this->expectException(LogicException::class);
 
         $this->hydratorByReference->extract($entity);
     }
 
-    /**
-     * @requires PHP 8.1
-     */
+    /** @requires PHP 8.1 */
     public function testHydrateReadonlyPropsByValue(): void
     {
         $this->configureObjectManagerForSimpleEntity(Assets\SimpleEntityWithReadonlyPropsPhp81::class);
@@ -3029,16 +3007,14 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals('toto', $entity->getField());
     }
 
-    /**
-     * @requires PHP 8.1
-     */
+    /** @requires PHP 8.1 */
     public function testHydrateReadonlyPropsByReference(): void
     {
         $this->configureObjectManagerForSimpleEntity(Assets\SimpleEntityWithReadonlyPropsPhp81::class);
 
         self::expectExceptionMessage(sprintf(
             'Cannot hydrate class "%s" by reference. Property "id" is readonly. To fix this error, remove readonly',
-            Assets\SimpleEntityWithReadonlyPropsPhp81::class
+            Assets\SimpleEntityWithReadonlyPropsPhp81::class,
         ));
         self::expectException(LogicException::class);
 

@@ -77,33 +77,25 @@ class DoctrineObject extends AbstractHydrator
         return $this->metadata;
     }
 
-    /**
-     * @return class-string<Strategy\CollectionStrategyInterface>
-     */
+    /** @return class-string<Strategy\CollectionStrategyInterface> */
     public function getDefaultByValueStrategy(): string
     {
         return $this->defaultByValueStrategy;
     }
 
-    /**
-     * @param class-string<Strategy\CollectionStrategyInterface> $defaultByValueStrategy
-     */
+    /** @param class-string<Strategy\CollectionStrategyInterface> $defaultByValueStrategy */
     public function setDefaultByValueStrategy(string $defaultByValueStrategy): void
     {
         $this->defaultByValueStrategy = $defaultByValueStrategy;
     }
 
-    /**
-     * @return class-string<Strategy\CollectionStrategyInterface>
-     */
+    /** @return class-string<Strategy\CollectionStrategyInterface> */
     public function getDefaultByReferenceStrategy(): string
     {
         return $this->defaultByReferenceStrategy;
     }
 
-    /**
-     * @param class-string<Strategy\CollectionStrategyInterface> $defaultByReferenceStrategy
-     */
+    /** @param class-string<Strategy\CollectionStrategyInterface> $defaultByReferenceStrategy */
     public function setDefaultByReferenceStrategy(string $defaultByReferenceStrategy): void
     {
         $this->defaultByReferenceStrategy = $defaultByReferenceStrategy;
@@ -202,8 +194,8 @@ class DoctrineObject extends AbstractHydrator
                     sprintf(
                         'Strategies used for collections valued associations must inherit from %s, %s given',
                         Strategy\CollectionStrategyInterface::class,
-                        $strategy::class
-                    )
+                        $strategy::class,
+                    ),
                 );
             }
 
@@ -275,8 +267,8 @@ class DoctrineObject extends AbstractHydrator
             throw new LogicException(
                 sprintf(
                     'this class "%s" is readonly, data can\'t be extracted',
-                    $object::class
-                )
+                    $object::class,
+                ),
             );
         }
 
@@ -434,8 +426,8 @@ class DoctrineObject extends AbstractHydrator
                     sprintf(
                         'Cannot hydrate class "%s" by reference. Property "%s" is readonly. To fix this error, remove readonly.',
                         $object::class,
-                        $field
-                    )
+                        $field,
+                    ),
                 );
             }
 
@@ -514,7 +506,7 @@ class DoctrineObject extends AbstractHydrator
             // $value is most likely an array of fieldset data
             $identifiers = array_intersect_key(
                 $value,
-                array_flip($metadata->getIdentifier())
+                array_flip($metadata->getIdentifier()),
             );
             $object      = $this->find($identifiers, $target) ?: new $target();
 
@@ -599,7 +591,7 @@ class DoctrineObject extends AbstractHydrator
 
         $collection = array_filter(
             $collection,
-            static fn ($item) => $item !== null
+            static fn ($item) => $item !== null,
         );
 
         // Set the object so that the strategy can extract the Collection from it
@@ -731,7 +723,7 @@ class DoctrineObject extends AbstractHydrator
         if (is_iterable($identifier)) {
             $nonNullIdentifiers = array_filter(
                 ArrayUtils::iteratorToArray($identifier),
-                static fn ($value) => $value !== null
+                static fn ($value) => $value !== null,
             );
 
             return empty($nonNullIdentifiers);

@@ -34,8 +34,8 @@ class DifferentAllowRemoveByValue extends AbstractCollectionStrategy
                      entity domain code, but one or both seem to be missing',
                     $adder,
                     $remover,
-                    $object::class
-                )
+                    $object::class,
+                ),
             );
         }
 

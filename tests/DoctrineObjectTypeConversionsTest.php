@@ -437,7 +437,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $now    = (new DateTimeImmutable())->setTimestamp(1_522_353_676);
-        $data = ['genericField' => 1_522_353_676];
+        $data   = ['genericField' => 1_522_353_676];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -527,7 +527,6 @@ class DoctrineObjectTypeConversionsTest extends TestCase
         $this->assertEquals($now, $entity->getGenericField());
     }
 
-
     public function testHandleTypeConversionsDateImmutable(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
@@ -535,7 +534,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
 
         $entity = new Assets\SimpleEntityWithGenericField();
         $now    = (new DateTimeImmutable())->setTimestamp(1_522_353_676);
-        $data = ['genericField' => 1_522_353_676];
+        $data   = ['genericField' => 1_522_353_676];
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 

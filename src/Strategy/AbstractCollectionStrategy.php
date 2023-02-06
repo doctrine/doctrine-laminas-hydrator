@@ -18,6 +18,7 @@ use function is_array;
 use function method_exists;
 use function spl_object_hash;
 use function sprintf;
+use function strcmp;
 
 /**
  * @internal
@@ -153,6 +154,7 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
      */
     protected function compareObjects(object $a, object $b): int
     {
-        return spl_object_hash($a) <=> spl_object_hash($b);
+        // see https://github.com/php/php-src/issues/10513
+        return strcmp(spl_object_hash($a), spl_object_hash($b));
     }
 }

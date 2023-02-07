@@ -14,7 +14,7 @@
         "rss": "https://github.com/doctrine/doctrine-laminas-hydrator/releases.atom"
     },
     "require": {
-        "php": "^7.3 || ~8.0.0 || ~8.1.0",
+        "php": "^7.3 || ~8.0.0 || ~8.1.0 || ~8.2.0",
         "ext-ctype": "*",
         "doctrine/collections": "^1.6.8",
         "doctrine/inflector": "^1.4.4 || ^2.0.3",
@@ -26,9 +26,9 @@
         "doctrine/coding-standard": "^9.0.0",
         "jangregor/phpstan-prophecy": "^1.0.0",
         "phpspec/prophecy-phpunit": "^2.0.1",
-        "phpstan/phpstan": "^1.1.2",
-        "phpunit/phpunit": "^9.5.10",
-        "vimeo/psalm": "^4.10.0"
+        "phpstan/phpstan": "^1.9.14",
+        "phpunit/phpunit": "^9.6.3",
+        "vimeo/psalm": "^4.30"
     },
     "autoload": {
         "psr-4": {

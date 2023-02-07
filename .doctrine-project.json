@@ -4,24 +4,30 @@
   "slug": "doctrine-laminas-hydrator",
   "versions": [
     {
-      "name": "3.3",
-      "branchName": "3.3.x",
-      "slug": "3.3",
+      "name": "3.4",
+      "branchName": "3.4.x",
+      "slug": "3.4",
       "aliases": [
         "latest"
       ],
       "upcoming": true
     },
     {
-      "name": "3.2",
-      "branchName": "3.2.x",
-      "slug": "3.2",
+      "name": "3.3",
+      "branchName": "3.3.x",
+      "slug": "3.3",
       "aliases": [
         "current",
         "stable"
       ],
       "current": true,
       "maintained": true
+    },
+    {
+      "name": "3.2",
+      "branchName": "3.2.x",
+      "slug": "3.2",
+      "maintained": false
     },
     {
       "name": "3.1",

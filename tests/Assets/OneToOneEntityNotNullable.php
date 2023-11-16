@@ -30,7 +30,7 @@ class OneToOneEntityNotNullable
         $this->toOne = $entity;
     }
 
-    public function getToOne(bool $modifyValue = true): ?ByValueDifferentiatorEntity
+    public function getToOne(bool $modifyValue = true): ByValueDifferentiatorEntity|null
     {
         // Make some modifications to the association so that we can demonstrate difference between
         // by value and by reference

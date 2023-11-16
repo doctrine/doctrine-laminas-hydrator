@@ -28,7 +28,7 @@ final class AllowRemoveByValue extends AbstractCollectionStrategy
      *
      * @return mixed Returns the value that should be hydrated.
      */
-    public function hydrate($value, ?array $data)
+    public function hydrate($value, array|null $data)
     {
         // AllowRemove strategy need "adder" and "remover"
         $adder   = 'add' . $this->getInflector()->classify($this->getCollectionName());

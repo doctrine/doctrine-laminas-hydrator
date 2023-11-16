@@ -13,7 +13,7 @@ class ContextStrategy implements StrategyInterface
      *
      * @return mixed
      */
-    public function extract($value, ?object $object = null)
+    public function extract($value, object|null $object = null)
     {
         return (string) $value . $object->getField();
     }
@@ -24,7 +24,7 @@ class ContextStrategy implements StrategyInterface
      *
      * @return mixed
      */
-    public function hydrate($value, ?array $data = null)
+    public function hydrate($value, array|null $data = null)
     {
         return $value . $data['field'];
     }

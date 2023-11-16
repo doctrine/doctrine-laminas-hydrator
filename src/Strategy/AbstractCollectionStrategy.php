@@ -22,15 +22,15 @@ use function strcmp;
 /** @internal */
 abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
 {
-    private ?string $collectionName = null;
+    private string|null $collectionName = null;
 
-    private ?ClassMetadata $metadata = null;
+    private ClassMetadata|null $metadata = null;
 
-    private ?object $object = null;
+    private object|null $object = null;
 
     private Inflector $inflector;
 
-    public function __construct(?Inflector $inflector = null)
+    public function __construct(Inflector|null $inflector = null)
     {
         $this->inflector = $inflector ?? InflectorFactory::create()->build();
     }
@@ -85,7 +85,7 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
      *
      * @return mixed       Returns the value that should be extracted.
      */
-    public function extract($value, ?object $object = null)
+    public function extract($value, object|null $object = null)
     {
         return $value;
     }

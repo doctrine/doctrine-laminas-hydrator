@@ -20,7 +20,7 @@ class DifferentAllowRemoveByReference extends AbstractCollectionStrategy
      *
      * @throws ReflectionException
      */
-    public function hydrate($value, ?array $data): Collection
+    public function hydrate($value, array|null $data): Collection
     {
         $collection      = $this->getCollectionFromObjectByReference();
         $collectionArray = $collection->toArray();

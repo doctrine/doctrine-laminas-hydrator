@@ -424,7 +424,7 @@ class DoctrineObjectTest extends TestCase
                 $this->equalTo('embedded'),
             ))
             ->willReturnCallback(
-                static function (string $arg): ?string {
+                static function (string $arg): string|null {
                     if ($arg === 'id') {
                         return 'integer';
                     }
@@ -2769,7 +2769,7 @@ class DoctrineObjectTest extends TestCase
              *
              * @return string[]
              */
-            public function extract($value, ?object $object = null): array
+            public function extract($value, object|null $object = null): array
             {
                 return explode(',', $value);
             }
@@ -2778,7 +2778,7 @@ class DoctrineObjectTest extends TestCase
              * @param mixed    $value
              * @param string[] $data
              */
-            public function hydrate($value, ?array $data): string
+            public function hydrate($value, array|null $data): string
             {
                 return implode(',', $value);
             }
@@ -2801,7 +2801,7 @@ class DoctrineObjectTest extends TestCase
              *
              * @return string[]
              */
-            public function extract($value, ?object $object = null): array
+            public function extract($value, object|null $object = null): array
             {
                 return explode(',', $value);
             }
@@ -2810,7 +2810,7 @@ class DoctrineObjectTest extends TestCase
              * @param mixed    $value
              * @param string[] $data
              */
-            public function hydrate($value, ?array $data): string
+            public function hydrate($value, array|null $data): string
             {
                 return implode(',', $value);
             }

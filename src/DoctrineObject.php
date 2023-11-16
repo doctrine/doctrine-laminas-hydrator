@@ -49,7 +49,7 @@ use function substr;
 
 class DoctrineObject extends AbstractHydrator
 {
-    protected ?ClassMetadata $metadata = null;
+    protected ClassMetadata|null $metadata = null;
 
     /** @var class-string<Strategy\CollectionStrategyInterface> */
     protected string $defaultByValueStrategy = AllowRemoveByValue::class;
@@ -63,7 +63,7 @@ class DoctrineObject extends AbstractHydrator
      * @param ObjectManager $objectManager The ObjectManager to use
      * @param bool          $byValue       If set to true, hydrator will always use entity's public API
      */
-    public function __construct(protected ObjectManager $objectManager, protected bool $byValue = true, ?Inflector $inflector = null)
+    public function __construct(protected ObjectManager $objectManager, protected bool $byValue = true, Inflector|null $inflector = null)
     {
         $this->inflector = $inflector ?? InflectorFactory::create()->build();
     }
@@ -306,7 +306,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @return mixed|null
      */
-    public function hydrateValue(string $name, $value, ?array $data = null)
+    public function hydrateValue(string $name, $value, array|null $data = null)
     {
         $value = parent::hydrateValue($name, $value, $data);
 
@@ -337,7 +337,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @template T of object
      */
-    protected function hydrateByValue(array $data, ?object $object): object
+    protected function hydrateByValue(array $data, object|null $object): object
     {
         $tryObject = $this->tryConvertArrayToObject($data, $object);
         $metadata  = $this->getClassMetadata();
@@ -400,7 +400,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @template T of object
      */
-    protected function hydrateByReference(array $data, ?object $object): object
+    protected function hydrateByReference(array $data, object|null $object): object
     {
         $tryObject = $this->tryConvertArrayToObject($data, $object);
         $metadata  = $this->getClassMetadata();
@@ -465,7 +465,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @template T of object
      */
-    protected function tryConvertArrayToObject(array $data, object $object): ?object
+    protected function tryConvertArrayToObject(array $data, object $object): object|null
     {
         $metadata         = $this->getClassMetadata();
         $identifierNames  = $metadata->getIdentifierFieldNames();
@@ -498,7 +498,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  class-string $target
      */
-    protected function toOne(string $target, mixed $value): ?object
+    protected function toOne(string $target, mixed $value): object|null
     {
         $metadata = $this->objectManager->getClassMetadata($target);
 
@@ -612,7 +612,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @return mixed|null
      */
-    protected function handleTypeConversions(mixed $value, ?string $typeOfField)
+    protected function handleTypeConversions(mixed $value, string|null $typeOfField)
     {
         if ($value === null) {
             return null;
@@ -698,7 +698,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @template T of object
      */
-    protected function find(mixed $identifiers, string $targetClass): ?object
+    protected function find(mixed $identifiers, string $targetClass): object|null
     {
         if ($identifiers instanceof $targetClass) {
             return $identifiers;

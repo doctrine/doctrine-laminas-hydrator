@@ -13,7 +13,7 @@ class SimpleStrategy implements StrategyInterface
      *
      * @return mixed
      */
-    public function extract($value, ?object $object = null)
+    public function extract($value, object|null $object = null)
     {
         return 'modified while extracting';
     }
@@ -24,7 +24,7 @@ class SimpleStrategy implements StrategyInterface
      *
      * @return mixed
      */
-    public function hydrate($value, ?array $data)
+    public function hydrate($value, array|null $data)
     {
         return 'modified while hydrating';
     }

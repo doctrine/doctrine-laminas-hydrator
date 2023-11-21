@@ -13,13 +13,13 @@
         "rss": "https://github.com/doctrine/doctrine-laminas-hydrator/releases.atom"
     },
     "require": {
-        "php": "~8.0.0 || ~8.1.0 || ~8.2.0",
+        "php": "~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0",
         "ext-ctype": "*",
         "doctrine/collections": "^1.8.0 || ^2.0.0",
         "doctrine/inflector": "^2.0.4",
-        "doctrine/persistence": "^2.2.3 || ^3.0.0",
-        "laminas/laminas-hydrator": "^4.3.1",
-        "laminas/laminas-stdlib": "^3.6.1"
+        "doctrine/persistence": "^2.5.0 || ^3.0.0",
+        "laminas/laminas-hydrator": "^4.13.0",
+        "laminas/laminas-stdlib": "^3.14.0"
     },
     "require-dev": {
         "doctrine/coding-standard": "^11.1.0",

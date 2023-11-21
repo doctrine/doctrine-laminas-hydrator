@@ -6,9 +6,9 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class SimpleEntityWithReadonlyPropsPhp81
 {
-    protected ?string $field;
+    protected string|null $field;
 
-    public function __construct(protected readonly ?int $id)
+    public function __construct(protected readonly int|null $id)
     {
     }
 

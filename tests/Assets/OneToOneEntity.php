@@ -10,7 +10,7 @@ class OneToOneEntity
 {
     protected int $id;
 
-    protected ?ByValueDifferentiatorEntity $toOne = null;
+    protected ByValueDifferentiatorEntity|null $toOne = null;
 
     protected DateTime $createdAt;
 
@@ -24,7 +24,7 @@ class OneToOneEntity
         return $this->id;
     }
 
-    public function setToOne(?ByValueDifferentiatorEntity $entity = null, bool $modifyValue = true): void
+    public function setToOne(ByValueDifferentiatorEntity|null $entity = null, bool $modifyValue = true): void
     {
         // Modify the value to illustrate the difference between by value and by reference
         if ($modifyValue && $entity !== null) {
@@ -34,7 +34,7 @@ class OneToOneEntity
         $this->toOne = $entity;
     }
 
-    public function getToOne(bool $modifyValue = true): ?ByValueDifferentiatorEntity
+    public function getToOne(bool $modifyValue = true): ByValueDifferentiatorEntity|null
     {
         // Make some modifications to the association so that we can demonstrate difference between
         // by value and by reference

@@ -43,7 +43,7 @@ class DoctrineObjectTypeConversionsTest extends TestCase
             ->will($this->returnValue($this->metadata));
     }
 
-    public function configureObjectManagerForSimpleEntityWithGenericField(?string $genericFieldType): void
+    public function configureObjectManagerForSimpleEntityWithGenericField(string|null $genericFieldType): void
     {
         $refl = new ReflectionClass(Assets\SimpleEntityWithGenericField::class);
 

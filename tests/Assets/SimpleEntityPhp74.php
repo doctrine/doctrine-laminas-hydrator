@@ -6,9 +6,9 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class SimpleEntityPhp74
 {
-    protected ?int $id;
+    protected int|null $id;
 
-    protected ?string $field;
+    protected string|null $field;
 
     public function setId(int $id): void
     {

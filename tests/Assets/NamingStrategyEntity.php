@@ -6,16 +6,16 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class NamingStrategyEntity
 {
-    public function __construct(protected ?string $camelCase = null)
+    public function __construct(protected string|null $camelCase = null)
     {
     }
 
-    public function setCamelCase(?string $camelCase): void
+    public function setCamelCase(string|null $camelCase): void
     {
         $this->camelCase = $camelCase;
     }
 
-    public function getCamelCase(): ?string
+    public function getCamelCase(): string|null
     {
         return $this->camelCase;
     }

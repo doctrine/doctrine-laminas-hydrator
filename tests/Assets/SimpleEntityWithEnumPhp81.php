@@ -8,7 +8,7 @@ class SimpleEntityWithEnumPhp81
 {
     protected int $id;
 
-    protected ?SimpleEnumPhp81 $enum = null;
+    protected SimpleEnumPhp81|null $enum = null;
 
     public function setId(int $id): void
     {
@@ -20,12 +20,12 @@ class SimpleEntityWithEnumPhp81
         return $this->id;
     }
 
-    public function setEnum(?SimpleEnumPhp81 $enum = null): void
+    public function setEnum(SimpleEnumPhp81|null $enum = null): void
     {
         $this->enum = $enum;
     }
 
-    public function getEnum(): ?SimpleEnumPhp81
+    public function getEnum(): SimpleEnumPhp81|null
     {
         return $this->enum;
     }

@@ -6,7 +6,7 @@ namespace DoctrineTest\Laminas\Hydrator\Assets;
 
 class SimpleEntityWithGenericField
 {
-    protected ?int $id = null;
+    protected int|null $id = null;
 
     /** @var mixed */
     protected $genericField;
@@ -16,7 +16,7 @@ class SimpleEntityWithGenericField
         $this->id = $id;
     }
 
-    public function getId(): ?int
+    public function getId(): int|null
     {
         return $this->id;
     }

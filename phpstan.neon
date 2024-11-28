@@ -1,10 +1,14 @@
 parameters:
     level: 6
-    checkGenericClassInNonGenericObjectType: false
+    treatPhpDocTypesAsCertain: false
     paths:
         - src
         - tests
     ignoreErrors:
+        -
+          identifier: missingType.generics
+        -
+          identifier: method.alreadyNarrowedType
         -
           message: '#expects .*Collection<\(int\|string\), object>, .*ArrayCollection<int, Doctrine.*Entity> given#'
           path: tests/DoctrineObjectTest.php

@@ -329,9 +329,9 @@ class DoctrineObject extends AbstractHydrator
      * Caution: Parameter $object should not be null, signature will be changed to not-nullable in next major
      *
      * @param array<string,mixed> $data
-     * @psalm-param T $object
+     * @phpstan-param T $object
      *
-     * @psalm-return T
+     * @phpstan-return T
      *
      * @throws RuntimeException
      *
@@ -394,9 +394,9 @@ class DoctrineObject extends AbstractHydrator
      * Caution: Parameter $object should not be null, signature will be changed to not-nullable in next major
      *
      * @param array<string,mixed> $data
-     * @psalm-param T $object
+     * @phpstan-param T $object
      *
-     * @psalm-return T
+     * @phpstan-return T
      *
      * @template T of object
      */
@@ -459,9 +459,9 @@ class DoctrineObject extends AbstractHydrator
      * tricks like setting manually the existing id directly into the entity
      *
      * @param array<string,mixed> $data The data that may contain identifiers keys
-     * @psalm-param T $object
+     * @phpstan-param T $object
      *
-     * @psalm-return T|null
+     * @phpstan-return T|null
      *
      * @template T of object
      */
@@ -692,9 +692,9 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Find an object by a given target class and identifier
      *
-     * @psalm-param class-string<T> $targetClass
+     * @phpstan-param class-string<T> $targetClass
      *
-     * @psalm-return T|null
+     * @phpstan-return T|null
      *
      * @template T of object
      */

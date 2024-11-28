@@ -29,7 +29,7 @@ class OneToManyArrayEntity
         return $this->id;
     }
 
-    /** @psalm-param Collection<array-key,object> $entities */
+    /** @param Collection<array-key,object> $entities */
     public function addEntities(Collection $entities, bool $modifyValue = true): void
     {
         foreach ($entities as $entity) {

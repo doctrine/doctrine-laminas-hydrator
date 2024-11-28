@@ -2,8 +2,8 @@
 
 [![Build Status](https://github.com/doctrine/doctrine-laminas-hydrator/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/doctrine/doctrine-laminas-hydrator/actions/workflows/continuous-integration.yml?query=branch%3A3.5.x)
 [![Code Coverage](https://codecov.io/gh/doctrine/doctrine-laminas-hydrator/branch/3.5.x/graphs/badge.svg)](https://codecov.io/gh/doctrine/doctrine-laminas-hydrator/branch/3.5.x)
-[![Latest Stable Version](https://poser.pugx.org/doctrine/doctrine-laminas-hydrator/v/stable.png)](https://packagist.org/packages/doctrine/doctrine-laminas-hydrator)
-[![Total Downloads](https://poser.pugx.org/doctrine/doctrine-laminas-hydrator/downloads.png)](https://packagist.org/packages/doctrine/doctrine-laminas-hydrator)
+[![Latest Stable Version](https://poser.pugx.org/doctrine/doctrine-laminas-hydrator/v)](https://packagist.org/packages/doctrine/doctrine-laminas-hydrator)
+[![Total Downloads](https://poser.pugx.org/doctrine/doctrine-laminas-hydrator/downloads)](https://packagist.org/packages/doctrine/doctrine-laminas-hydrator)
 
 This library provides Doctrine hydrators for Laminas.
 

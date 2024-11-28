@@ -17,7 +17,7 @@
         "ext-ctype": "*",
         "doctrine/collections": "^2.0.0",
         "doctrine/inflector": "^2.0.4",
-        "doctrine/persistence": "^2.5.0 || ^3.0.0",
+        "doctrine/persistence": "^3.0.0",
         "laminas/laminas-hydrator": "^4.13.0",
         "laminas/laminas-stdlib": "^3.14.0"
     },

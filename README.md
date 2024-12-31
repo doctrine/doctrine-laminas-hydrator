@@ -1,7 +1,7 @@
 # doctrine-laminas-hydrator
 
-[![Build Status](https://github.com/doctrine/doctrine-laminas-hydrator/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/doctrine/doctrine-laminas-hydrator/actions/workflows/continuous-integration.yml?query=branch%3A3.6.x)
-[![Code Coverage](https://codecov.io/gh/doctrine/doctrine-laminas-hydrator/branch/3.6.x/graphs/badge.svg)](https://codecov.io/gh/doctrine/doctrine-laminas-hydrator/branch/3.6.x)
+[![Build Status](https://github.com/doctrine/doctrine-laminas-hydrator/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/doctrine/doctrine-laminas-hydrator/actions/workflows/continuous-integration.yml)
+[![Code Coverage](https://codecov.io/gh/doctrine/doctrine-laminas-hydrator/graphs/badge.svg)](https://app.codecov.io/gh/doctrine/doctrine-laminas-hydrator)
 [![Latest Stable Version](https://poser.pugx.org/doctrine/doctrine-laminas-hydrator/v)](https://packagist.org/packages/doctrine/doctrine-laminas-hydrator)
 [![Total Downloads](https://poser.pugx.org/doctrine/doctrine-laminas-hydrator/downloads)](https://packagist.org/packages/doctrine/doctrine-laminas-hydrator)
 

@@ -10,8 +10,11 @@ parameters:
         -
           identifier: method.alreadyNarrowedType
         -
-          message: '#expects .*Collection<\(int\|string\), object>, .*ArrayCollection<int, Doctrine.*Entity> given#'
+          message: "#expects .*Collection<\\(int\\|string\\), object>, .*ArrayCollection<int, Doctrine.*Entity> given#"
           path: tests/DoctrineObjectTest.php
         -
-          message: '#Unable to resolve the template type T in call to method Doctrine\\Laminas\\Hydrator\\DoctrineObject::tryConvertArrayToObject\(\)#'
+          message: "#Unable to resolve the template type T in call to method .*DoctrineObject::tryConvertArrayToObject\\(\\)#"
+          path: src/DoctrineObject.php
+        -
+          message: "#Call to function method_exists\\(\\) with ReflectionClass and 'isReadOnly' will always evaluate to true#"
           path: src/DoctrineObject.php

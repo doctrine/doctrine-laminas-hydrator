@@ -25,9 +25,15 @@ Next Steps
 .. toctree::
     :caption: Table of Contents
 
-    basic-usage
-    collections-strategy
-    by-value-by-reference
-    laminas-form
-    enum-strategy
-    performance-considerations
+-  :doc:`Basic Usage <basic-usage>`:
+   introduces the basic usage of Doctrine Laminas Hydrator.
+-  :doc:`Collections Strategy <collections-strategy>`:
+   explains using strategies for hydrating or extracting collections.
+-  :doc:`enum-strategy <enum-strategy>`:
+   this sections shows an example how PHP enums can be handled using strategies.
+-  :doc:`By Value or By Reference <by-value-by-reference>`:
+   shows the differences of by-value and by-reference extraction or hydration of data.
+-  :doc:`Laminas Form <laminas-form>`:
+   this section shows usage examples with the Laminas form library.
+-  :doc:`Performance Considerations <performance-considerations>`:
+   some remarks to consider for keeping your application performant.

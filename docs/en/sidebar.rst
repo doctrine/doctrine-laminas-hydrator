@@ -1,11 +1,13 @@
 :orphan:
-.. toctree::
-    :depth: 3
 
-    index
-    basic-usage
-    collections-strategy
-    by-value-by-reference
-    laminas-form
-    enum-strategy
-    performance-considerations
+.. toctree::
+   :caption: Doctrine Laminas Hydrator
+   :depth: 3
+
+   index
+   basic-usage
+   collections-strategy
+   enum-strategy
+   by-value-by-reference
+   laminas-form
+   performance-considerations

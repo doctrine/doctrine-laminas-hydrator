@@ -16,6 +16,7 @@ use InvalidArgumentException;
 use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -31,6 +32,8 @@ use function implode;
 use function sprintf;
 use function time;
 
+#[CoversMethod(DoctrineObjectHydrator::class, 'hydrateByValue')]
+#[CoversMethod(DoctrineObjectHydrator::class, 'hydrateByReference')]
 class DoctrineObjectTest extends TestCase
 {
     protected DoctrineObjectHydrator $hydratorByValue;
@@ -982,8 +985,6 @@ class DoctrineObjectTest extends TestCase
 
     /**
      * When using hydration by value, it will use the public API of the entity to set values (setters)
-     *
-     * @covers \Doctrine\Laminas\Hydrator\DoctrineObject::hydrateByValue
      */
     public function testCanHydrateSimpleEntityWithStringIdByValue(): void
     {
@@ -1013,8 +1014,6 @@ class DoctrineObjectTest extends TestCase
 
     /**
      * When using hydration by reference, it won't use the public API of the entity to set values (getters)
-     *
-     * @covers \Doctrine\Laminas\Hydrator\DoctrineObject::hydrateByReference
      */
     public function testCanHydrateSimpleEntityWithStringIdByReference(): void
     {

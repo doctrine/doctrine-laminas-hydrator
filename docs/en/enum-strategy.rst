@@ -23,7 +23,7 @@ The following example uses a card with an enum representing hearts, diamonds, cl
     {
         /** ... */
 
-        #[Column(type: 'string', enumType: Suit::class)]
+        #[Column(type: Types::ENUM)]
         public Suit $suit;
 
         public function getSuit(): Suit

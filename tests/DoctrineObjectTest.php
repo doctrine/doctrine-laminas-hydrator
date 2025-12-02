@@ -16,6 +16,8 @@ use InvalidArgumentException;
 use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 use LogicException;
+use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -50,7 +52,7 @@ class DoctrineObjectTest extends TestCase
 
         $this->objectManager
             ->method('getClassMetadata')
-            ->will($this->returnValue($this->metadata));
+            ->willReturn($this->metadata);
     }
 
     public function configureObjectManagerForSimpleEntity(string $className = Assets\SimpleEntity::class): void
@@ -60,16 +62,16 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getName')
-            ->will($this->returnValue($className));
+            ->willReturn($className);
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['id', 'field']));
+            ->willReturn(['id', 'field']);
 
         $this
             ->metadata
@@ -92,17 +94,17 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('hasAssociation')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this
             ->metadata
             ->method('getIdentifierFieldNames')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -126,37 +128,37 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getName')
-            ->will($this->returnValue(Assets\NamingStrategyEntity::class));
+            ->willReturn(Assets\NamingStrategyEntity::class);
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['camelCase']));
+            ->willReturn(['camelCase']);
 
         $this
             ->metadata
             ->method('getTypeOfField')
             ->with($this->equalTo('camelCase'))
-            ->will($this->returnValue('string'));
+            ->willReturn('string');
 
         $this
             ->metadata
             ->method('hasAssociation')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this
             ->metadata
             ->method('getIdentifierFieldNames')
-            ->will($this->returnValue(['camelCase']));
+            ->willReturn(['camelCase']);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -175,16 +177,16 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getName')
-            ->will($this->returnValue(Assets\SimpleIsEntity::class));
+            ->willReturn(Assets\SimpleIsEntity::class);
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['id', 'done']));
+            ->willReturn(['id', 'done']);
 
         $this
             ->metadata
@@ -207,17 +209,17 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('hasAssociation')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this
             ->metadata
             ->method('getIdentifierFieldNames')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -236,16 +238,16 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getName')
-            ->will($this->returnValue(Assets\SimpleEntityWithIsBoolean::class));
+            ->willReturn(Assets\SimpleEntityWithIsBoolean::class);
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['id', 'isActive']));
+            ->willReturn(['id', 'isActive']);
 
         $this
             ->metadata
@@ -268,17 +270,17 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('hasAssociation')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this
             ->metadata
             ->method('getIdentifierFieldNames')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -297,37 +299,37 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getName')
-            ->will($this->returnValue($className));
+            ->willReturn($className);
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['id', 'field']));
+            ->willReturn(['id', 'field']);
 
         $this
             ->metadata
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('id'), $this->equalTo('field')))
-            ->will($this->returnValue('string'));
+            ->willReturn('string');
 
         $this
             ->metadata
             ->method('hasAssociation')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this
             ->metadata
             ->method('getIdentifierFieldNames')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -351,12 +353,12 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['id', 'date']));
+            ->willReturn(['id', 'date']);
 
         $this
             ->metadata
@@ -379,17 +381,17 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('hasAssociation')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this
             ->metadata
             ->method('getIdentifierFieldNames')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -408,12 +410,12 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['id', 'embedded.field']));
+            ->willReturn(['id', 'embedded.field']);
 
         $this
             ->metadata
@@ -444,17 +446,17 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('hasAssociation')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this
             ->metadata
             ->method('getIdentifierFieldNames')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -473,12 +475,12 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue(['toOne']));
+            ->willReturn(['toOne']);
 
         $this
             ->metadata
@@ -520,23 +522,23 @@ class DoctrineObjectTest extends TestCase
             ->metadata
             ->method('isSingleValuedAssociation')
             ->with('toOne')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $this
             ->metadata
             ->method('getAssociationTargetClass')
             ->with('toOne')
-            ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
+            ->willReturn(Assets\ByValueDifferentiatorEntity::class);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this
             ->metadata
             ->method('getIdentifier')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -555,12 +557,12 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue(['toOne']));
+            ->willReturn(['toOne']);
 
         $this
             ->metadata
@@ -618,23 +620,23 @@ class DoctrineObjectTest extends TestCase
             ->metadata
             ->method('isSingleValuedAssociation')
             ->with('toOne')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $this
             ->metadata
             ->method('getAssociationTargetClass')
             ->with('toOne')
-            ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
+            ->willReturn(Assets\ByValueDifferentiatorEntity::class);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this
             ->metadata
             ->method('getIdentifier')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -653,12 +655,12 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue(['entities']));
+            ->willReturn(['entities']);
 
         $this
             ->metadata
@@ -714,28 +716,28 @@ class DoctrineObjectTest extends TestCase
             ->metadata
             ->method('isSingleValuedAssociation')
             ->with('entities')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this
             ->metadata
             ->method('isCollectionValuedAssociation')
             ->with('entities')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $this
             ->metadata
             ->method('getAssociationTargetClass')
             ->with('entities')
-            ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
+            ->willReturn(Assets\ByValueDifferentiatorEntity::class);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this->metadata
             ->method('getIdentifier')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -754,12 +756,12 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue(['entities']));
+            ->willReturn(['entities']);
 
         $this
             ->metadata
@@ -815,28 +817,28 @@ class DoctrineObjectTest extends TestCase
             ->metadata
             ->method('isSingleValuedAssociation')
             ->with('entities')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this
             ->metadata
             ->method('isCollectionValuedAssociation')
             ->with('entities')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $this
             ->metadata
             ->method('getAssociationTargetClass')
             ->with('entities')
-            ->will($this->returnValue(Assets\ByValueDifferentiatorEntity::class));
+            ->willReturn(Assets\ByValueDifferentiatorEntity::class);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this->metadata
             ->method('getIdentifier')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -855,12 +857,12 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['id', 'enum']));
+            ->willReturn(['id', 'enum']);
 
         $this
             ->metadata
@@ -883,17 +885,17 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('hasAssociation')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this
             ->metadata
             ->method('getIdentifierFieldNames')
-            ->will($this->returnValue(['id']));
+            ->willReturn(['id']);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -1044,7 +1046,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->once())
             ->method('find')
             ->with(Assets\ByValueDifferentiatorEntity::class, ['id' => 1])
-            ->will($this->returnValue($entityInDatabaseWithIdOfOne));
+            ->willReturn($entityInDatabaseWithIdOfOne);
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -1072,7 +1074,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->once())
             ->method('find')
             ->with(Assets\ByValueDifferentiatorEntity::class, ['id' => 0])
-            ->will($this->returnValue($entityInDatabaseWithIdOfOne));
+            ->willReturn($entityInDatabaseWithIdOfOne);
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -1236,7 +1238,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->once())
             ->method('find')
             ->with(Assets\ByValueDifferentiatorEntity::class, 1)
-            ->will($this->returnValue($entityInDatabaseWithIdOfOne));
+            ->willReturn($entityInDatabaseWithIdOfOne);
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -1263,7 +1265,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->once())
             ->method('find')
             ->with(Assets\ByValueDifferentiatorEntity::class, 1)
-            ->will($this->returnValue($entityInDatabaseWithIdOfOne));
+            ->willReturn($entityInDatabaseWithIdOfOne);
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -1290,7 +1292,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->once())
             ->method('find')
             ->with(Assets\ByValueDifferentiatorEntity::class, ['id' => 1])
-            ->will($this->returnValue($entityInDatabaseWithIdOfOne));
+            ->willReturn($entityInDatabaseWithIdOfOne);
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -1319,7 +1321,7 @@ class DoctrineObjectTest extends TestCase
                 Assets\ByValueDifferentiatorEntity::class,
                 ['id' => 1],
             )
-            ->will($this->returnValue($entityInDatabaseWithIdOfOne));
+            ->willReturn($entityInDatabaseWithIdOfOne);
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -1356,7 +1358,7 @@ class DoctrineObjectTest extends TestCase
             ->expects($this->once())
             ->method('find')
             ->with(Assets\ByValueDifferentiatorEntity::class, ['id' => 1])
-            ->will($this->returnValue($entityInDatabaseWithIdOfOne));
+            ->willReturn($entityInDatabaseWithIdOfOne);
 
         $entity = $this->hydratorByReference->hydrate($data, $entity);
 
@@ -1425,7 +1427,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $data['entities'][1]);
     }
 
-    /** @depends testExtractOneToManyAssociationByValue */
+    #[Depends('testExtractOneToManyAssociationByValue')]
     public function testExtractOneToManyByValueWithArray(): void
     {
         // When using extraction by value, it will use the public API of the entity to retrieve values (getters)
@@ -1486,7 +1488,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $data['entities'][1]);
     }
 
-    /** @depends testExtractOneToManyAssociationByReference */
+    #[Depends('testExtractOneToManyAssociationByReference')]
     public function testExtractOneToManyArrayByReference(): void
     {
         // When using extraction by reference, it won't use the public API of the entity to retrieve values (getters)
@@ -1554,7 +1556,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $entities[1]);
     }
 
-    /** @depends testHydrateOneToManyAssociationByValue */
+    #[Depends('testHydrateOneToManyAssociationByValue')]
     public function testHydrateOneToManyArrayByValue(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
@@ -1629,7 +1631,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame($toMany2, $entities[1]);
     }
 
-    /** @depends testHydrateOneToManyAssociationByReference */
+    #[Depends('testHydrateOneToManyAssociationByReference')]
     public function testHydrateOneToManyArrayByReference(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
@@ -2407,7 +2409,7 @@ class DoctrineObjectTest extends TestCase
             ->objectManager
             ->method('find')
             ->with(Assets\ByValueDifferentiatorEntity::class, '')
-            ->will($this->returnValue($entityInDatabaseWithEmptyId));
+            ->willReturn($entityInDatabaseWithEmptyId);
 
         $entity = $this->hydratorByValue->hydrate($data, $entity);
 
@@ -2635,37 +2637,37 @@ class DoctrineObjectTest extends TestCase
         $this
             ->metadata
             ->method('getName')
-            ->will($this->returnValue(Assets\SimplePrivateEntity::class));
+            ->willReturn(Assets\SimplePrivateEntity::class);
         $this
             ->metadata
             ->method('getAssociationNames')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $this
             ->metadata
             ->method('getFieldNames')
-            ->will($this->returnValue(['private', 'protected']));
+            ->willReturn(['private', 'protected']);
 
         $this
             ->metadata
             ->method('getTypeOfField')
             ->with($this->logicalOr($this->equalTo('private'), $this->equalTo('protected')))
-            ->will($this->returnValue('integer'));
+            ->willReturn('integer');
 
         $this
             ->metadata
             ->method('hasAssociation')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this
             ->metadata
             ->method('getIdentifierFieldNames')
-            ->will($this->returnValue(['private']));
+            ->willReturn(['private']);
 
         $this
             ->metadata
             ->method('getReflectionClass')
-            ->will($this->returnValue($refl));
+            ->willReturn($refl);
 
         $this->hydratorByValue     = new DoctrineObjectHydrator(
             $this->objectManager,
@@ -2719,7 +2721,7 @@ class DoctrineObjectTest extends TestCase
         );
     }
 
-    /** @depends testDefaultStrategy */
+    #[Depends('testDefaultStrategy')]
     public function testOverrideDefaultStrategy(): void
     {
         $this->configureObjectManagerForOneToManyEntity();
@@ -2920,7 +2922,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame('2019-01-24 12:00:00', $entity->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
-    /** @requires PHP 8.1 */
+    #[RequiresPhp('8.1')]
     public function testHandleEnumConversionUsingByValue(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
@@ -2937,7 +2939,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(SimpleEnumPhp81::tryFrom($value), $entity->getEnum());
     }
 
-    /** @requires PHP 8.1 */
+    #[RequiresPhp('8.1')]
     public function testNullValueIsNotConvertedToEnum(): void
     {
         $entity = new Assets\SimpleEntityWithEnumPhp81();
@@ -2951,7 +2953,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertNull($entity->getEnum());
     }
 
-    /** @requires PHP 8.1 */
+    #[RequiresPhp('8.1')]
     public function testWrongEnumBackedValueThrowsException(): void
     {
         $entity = new Assets\SimpleEntityWithEnumPhp81();
@@ -2965,7 +2967,7 @@ class DoctrineObjectTest extends TestCase
         $this->hydratorByValue->hydrate($data, $entity);
     }
 
-    /** @requires PHP 8.1 */
+    #[RequiresPhp('8.1')]
     public function testExtractReadonlyPropsByReference(): void
     {
         $entity = new Assets\SimpleEntityWithReadonlyPropsPhp81(2);
@@ -2980,7 +2982,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['field' => 'value'], $data);
     }
 
-    /** @requires PHP 8.2 */
+    #[RequiresPhp('8.2')]
     public function testExtractReadonlyClassByReference(): void
     {
         $entity = new Assets\SimpleEntityReadonlyPhp82(2, null);
@@ -2996,7 +2998,7 @@ class DoctrineObjectTest extends TestCase
         $this->hydratorByReference->extract($entity);
     }
 
-    /** @requires PHP 8.1 */
+    #[RequiresPhp('8.1')]
     public function testHydrateReadonlyPropsByValue(): void
     {
         $this->configureObjectManagerForSimpleEntity(Assets\SimpleEntityWithReadonlyPropsPhp81::class);
@@ -3007,7 +3009,7 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals('toto', $entity->getField());
     }
 
-    /** @requires PHP 8.1 */
+    #[RequiresPhp('8.1')]
     public function testHydrateReadonlyPropsByReference(): void
     {
         $this->configureObjectManagerForSimpleEntity(Assets\SimpleEntityWithReadonlyPropsPhp81::class);

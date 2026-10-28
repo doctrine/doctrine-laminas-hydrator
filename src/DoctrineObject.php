@@ -28,6 +28,7 @@ use function array_intersect_key;
 use function array_key_exists;
 use function array_keys;
 use function assert;
+use function count;
 use function ctype_upper;
 use function current;
 use function get_class_methods;
@@ -41,6 +42,7 @@ use function is_object;
 use function is_string;
 use function method_exists;
 use function property_exists;
+use function spl_object_id;
 use function sprintf;
 use function str_ends_with;
 use function str_starts_with;
@@ -58,6 +60,16 @@ class DoctrineObject extends AbstractHydrator
     protected string $defaultByReferenceStrategy = AllowRemoveByReference::class;
 
     protected Inflector $inflector;
+
+    protected AssociationExtraction $associationExtraction = AssociationExtraction::Object;
+
+    protected int $associationExtractionMaxDepth = 1;
+
+    /** Nesting level of this hydrator when extracting associations recursively */
+    private int $associationExtractionLevel = 0;
+
+    /** @var array<int, true> Objects currently being extracted, keyed by their object id */
+    private array $associationExtractionPath = [];
 
     /**
      * @param ObjectManager $objectManager The ObjectManager to use
@@ -101,6 +113,36 @@ class DoctrineObject extends AbstractHydrator
         $this->defaultByReferenceStrategy = $defaultByReferenceStrategy;
     }
 
+    public function getAssociationExtraction(): AssociationExtraction
+    {
+        return $this->associationExtraction;
+    }
+
+    public function getAssociationExtractionMaxDepth(): int
+    {
+        return $this->associationExtractionMaxDepth;
+    }
+
+    /**
+     * Define how associations are represented when extracting an object
+     *
+     * @param int $maxDepth Number of association levels extracted into arrays, only used
+     *                      with AssociationExtraction::Array
+     *
+     * @throws InvalidArgumentException
+     */
+    public function setAssociationExtraction(AssociationExtraction $associationExtraction, int $maxDepth = 1): void
+    {
+        if ($maxDepth < 1) {
+            throw new InvalidArgumentException(
+                sprintf('The maximum depth for association extraction must be at least 1, %d given', $maxDepth),
+            );
+        }
+
+        $this->associationExtraction         = $associationExtraction;
+        $this->associationExtractionMaxDepth = $maxDepth;
+    }
+
     /**
      * Get all field names, this includes direct field names, names of embeddables and
      * associations. By using a key-based generator, duplicates are effectively removed.
@@ -129,6 +171,10 @@ class DoctrineObject extends AbstractHydrator
     public function extract(object $object): array
     {
         $this->prepare($object);
+
+        if ($this->associationExtractionLevel === 0) {
+            $this->associationExtractionPath = [spl_object_id($object) => true];
+        }
 
         if ($this->byValue) {
             return $this->extractByValue($object);
@@ -230,15 +276,15 @@ class DoctrineObject extends AbstractHydrator
 
             $dataFieldName = $this->computeExtractFieldName($fieldName);
             if (in_array($getter, $methods)) {
-                $data[$dataFieldName] = $this->extractValue($fieldName, $object->$getter(), $object);
+                $data[$dataFieldName] = $this->extractAssociation($fieldName, $this->extractValue($fieldName, $object->$getter(), $object));
             } elseif (in_array($isser, $methods)) {
-                $data[$dataFieldName] = $this->extractValue($fieldName, $object->$isser(), $object);
+                $data[$dataFieldName] = $this->extractAssociation($fieldName, $this->extractValue($fieldName, $object->$isser(), $object));
             } elseif (
                 str_starts_with($fieldName, 'is')
                 && ctype_upper(substr($fieldName, 2, 1))
                 && in_array($fieldName, $methods)
             ) {
-                $data[$dataFieldName] = $this->extractValue($fieldName, $object->$fieldName(), $object);
+                $data[$dataFieldName] = $this->extractAssociation($fieldName, $this->extractValue($fieldName, $object->$fieldName(), $object));
             }
 
             // Unknown fields are ignored
@@ -290,10 +336,79 @@ class DoctrineObject extends AbstractHydrator
             }
 
             $dataFieldName        = $this->computeExtractFieldName($fieldName);
-            $data[$dataFieldName] = $this->extractValue($fieldName, $reflProperty->getValue($object), $object);
+            $data[$dataFieldName] = $this->extractAssociation(
+                $fieldName,
+                $this->extractValue($fieldName, $reflProperty->getValue($object), $object),
+            );
         }
 
         return $data;
+    }
+
+    /**
+     * Converts associated entities of an extracted value according to the configured
+     * association extraction. Values that are not instances of the association's target
+     * class, e.g. because a strategy already converted them, are left untouched.
+     */
+    private function extractAssociation(string $fieldName, mixed $value): mixed
+    {
+        if ($this->associationExtraction === AssociationExtraction::Object) {
+            return $value;
+        }
+
+        $metadata = $this->getClassMetadata();
+        if (! $metadata->hasAssociation($fieldName)) {
+            return $value;
+        }
+
+        $target = $metadata->getAssociationTargetClass($fieldName);
+        if ($target === null) {
+            return $value;
+        }
+
+        if ($metadata->isSingleValuedAssociation($fieldName)) {
+            return $value instanceof $target ? $this->extractAssociatedObject($value, $target) : $value;
+        }
+
+        if (! is_iterable($value)) {
+            return $value;
+        }
+
+        $values = [];
+        foreach ($value as $key => $item) {
+            $values[$key] = $item instanceof $target ? $this->extractAssociatedObject($item, $target) : $item;
+        }
+
+        return $values;
+    }
+
+    /** @param class-string $target */
+    private function extractAssociatedObject(object $object, string $target): mixed
+    {
+        $objectId = spl_object_id($object);
+
+        if (
+            $this->associationExtraction === AssociationExtraction::Array
+            && $this->associationExtractionLevel < $this->associationExtractionMaxDepth
+            && ! isset($this->associationExtractionPath[$objectId])
+        ) {
+            // A separate hydrator is used, as extracting changes the hydrator's metadata and strategies
+            $hydrator = new self($this->objectManager, $this->byValue, $this->inflector);
+            $hydrator->setAssociationExtraction($this->associationExtraction, $this->associationExtractionMaxDepth);
+            $hydrator->associationExtractionLevel = $this->associationExtractionLevel + 1;
+            $hydrator->associationExtractionPath  = $this->associationExtractionPath + [$objectId => true];
+
+            return $hydrator->extract($object);
+        }
+
+        $metadata         = $this->objectManager->getClassMetadata($target);
+        $identifierValues = $metadata->getIdentifierValues($object);
+
+        if (count($metadata->getIdentifierFieldNames()) === 1) {
+            return $identifierValues === [] ? null : current($identifierValues);
+        }
+
+        return $identifierValues;
     }
 
     /**

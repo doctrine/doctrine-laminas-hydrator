@@ -20,7 +20,8 @@ The hydrator constructor has an optional second parameter, ``byValue``,
 which is true by default. This allows changing the hydrator's way to
 get/set data by either accessing the public API of your entity
 (getters/setters) or directly get/set data through reflection, hence
-bypassing any of your custom logic.
+bypassing any of your custom logic. See
+:doc:`By Value and By Reference <by-value-by-reference>` for details.
 
 Example 1: Simple Entity with no Associations
 ---------------------------------------------
@@ -77,9 +78,9 @@ Now, let’s use the Doctrine hydrator:
    $dataArray = $hydrator->extract($city);
    echo $dataArray['name']; // prints "Paris"
 
-As shows in this simple example, the Doctrine hydrator
-provides nearly no benefits over a simpler hydrator like ``ClassMethods``.
-However, even in those cases, it provides benefitst such as
+As shown in this simple example, the Doctrine hydrator
+provides nearly no benefits over a simpler hydrator like ``ClassMethodsHydrator``.
+However, even in those cases, it provides benefits such as
 automatic conversion between types. For instance, it can convert
 a timestamp to a ``DateTime`` instance:
 
@@ -146,7 +147,7 @@ Form/Fieldset logic (`learn more about this
 here <https://docs.laminas.dev/laminas-form/collections/>`__).
 
 A simple example with BlogPost and User entities to
-illustrate OneToOne association:
+illustrate a ManyToOne association:
 
 .. code:: php
 
@@ -245,7 +246,7 @@ And the BlogPost entity, with a ManyToOne association:
 There are two use cases that can arise when using OneToOne associations:
 the toOne entity (in this case, the User) may already exist (which will
 often be the case with a User and BlogPost example), or it needs to be
-created. The Doctrined hydrator natively supports both cases.
+created. The Doctrine hydrator natively supports both cases.
 
 Existing Entity in the Association
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -316,7 +317,7 @@ the actual object to the hydrator:
    $blogPost = $hydrator->hydrate($data, $blogPost);
 
    echo $blogPost->getTitle(); // prints "The best blog post in the world!"
-   echo $blogPost->getUser()->getId(); // prints 2
+   echo $blogPost->getUser()->getUsername(); // prints "bakura"
 
 For this to work, you must also slightly change your mapping, so that
 Doctrine can persist new entities on associations (note the cascade
@@ -331,7 +332,7 @@ options on the ManyToOne association):
    #[ORM\Entity]
    class BlogPost
    {
-       /** .. */
+       /** … */
 
        #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
        private ?User $user = null;
@@ -342,7 +343,7 @@ options on the ManyToOne association):
 It’s also possible to use a nested fieldset for the User data. The
 hydrator will use the mapping data to determine the identifiers for the
 toOne relation and either attempt to find the existing record or
-instanciate a new target instance which will be hydrated before it is
+instantiate a new target instance which will be hydrated before it is
 passed to the BlogPost entity.
 
 .. note::
@@ -353,7 +354,7 @@ passed to the BlogPost entity.
 
    use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
-   $hydrator = new DoctrineHydrator($entityManager, BlogPost::class);
+   $hydrator = new DoctrineHydrator($entityManager);
    $blogPost = new BlogPost();
 
    $data = [
@@ -369,6 +370,29 @@ passed to the BlogPost entity.
 
    echo $blogPost->getUser()->getUsername(); // prints willshakes
    echo $blogPost->getUser()->getPassword(); // prints 2BorN0t2B
+
+Handling of Null Values
+~~~~~~~~~~~~~~~~~~~~~~~
+
+When a null value is passed to a OneToOne or ManyToOne field, for
+example:
+
+.. code:: php
+
+   $data = [
+       'user' => null,
+   ];
+
+The hydrator will check whether the ``setUser()`` method on the entity
+allows null values and act accordingly. The following describes the
+process that happens when a null value is received:
+
+1. If the ``setUser()`` method DOES NOT allow null values
+   i.e. ``function setUser(User $user)``, the null is silently ignored
+   and will not be hydrated.
+2. If the ``setUser()`` method DOES allow null values
+   i.e. ``function setUser(?User $user)``, the null value will be
+   hydrated.
 
 Example 3: OneToMany Association
 --------------------------------
@@ -393,7 +417,7 @@ about Collection elements.
    which should not happen if you use auto-increment primary keys,
    anyway).
 
-For example consider, again the BlogPost and Tag entities:
+For example, consider the following BlogPost and Tag entities:
 
 .. code:: php
 
@@ -515,18 +539,115 @@ with collections. This is not overkill and is preferred to just a
 
 This is considered a bad design because Doctrine collections
 should not be swapped; mostly because collections are managed by an
-object manager and must not be replaced by a new instance.
+object manager and must not be replaced by a new instance. See
+:doc:`Collections Strategy <collections-strategy>` for how adders and
+removers are used.
 
 Once again, two cases may arise: the tags already exist or they do not.
 
-Example 4: Embedded Entities
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Existing Entities in the Association
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When the association’s entities already exist, just
+provide the identifiers of these entities:
+
+.. code:: php
+
+   use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+
+   $hydrator = new DoctrineHydrator($entityManager);
+   $blogPost = new BlogPost();
+   $data = [
+       'tags'  => [
+           ['id' => 3], // add tag whose id is 3
+           ['id' => 8], // also add tag whose id is 8
+       ],
+   ];
+
+   $blogPost = $hydrator->hydrate($data, $blogPost);
+
+   echo count($blogPost->getTags()); // prints 2
+
+Note, again, that
+
+.. code:: php
+
+   $data = [
+       'tags'  => [
+           ['id' => 3], // add tag whose id is 3
+           ['id' => 8], // also add tag whose id is 8
+       ],
+   ];
+
+can be written:
+
+.. code:: php
+
+   $data = [
+       'tags'  => [3, 8],
+   ];
+
+Non-existing Entities in the Association
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If the association’s entities do not exist, you need to provide
+the actual objects:
+
+.. code:: php
+
+   use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+
+   $hydrator = new DoctrineHydrator($entityManager);
+   $blogPost = new BlogPost();
+
+   $tags = [];
+
+   $tag1 = new Tag();
+   $tag1->setName('PHP');
+   $tags[] = $tag1;
+
+   $tag2 = new Tag();
+   $tag2->setName('STL');
+   $tags[] = $tag2;
+
+   $data = [
+       'tags'  => $tags, // Note that you can mix integers and entities without any problem
+   ];
+
+   $blogPost = $hydrator->hydrate($data, $blogPost);
+
+   echo count($blogPost->getTags()); // prints 2
+
+For this to work, you must also slightly change your mapping, so that
+Doctrine can persist new entities on associations (note the cascade
+options on the OneToMany association):
+
+.. code:: php
+
+   namespace Application\Entity;
+
+   use Doctrine\Common\Collections\Collection;
+   use Doctrine\ORM\Mapping as ORM;
+
+   #[ORM\Entity]
+   class BlogPost
+   {
+       /** … */
+
+       #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost', cascade: ['persist'])]
+       private Collection $tags;
+
+       /** … */
+   }
+
+Example 4: Embeddables
+----------------------
 
 Doctrine provides so-called embeddables as a layer of abstraction that
 allows reusing partial objects across entities. For example, one might
-have an entity ``Address`` which is not only used for a ``Person``, but
+have an ``Address`` which is not only used for a ``Person``, but
 also for an ``Organization``.
-First, we have a ``Tag`` class, which will be our embeddable:
+First, we have an ``Address`` class, which will be our embeddable:
 
 .. code:: php
 
@@ -534,11 +655,8 @@ First, we have a ``Tag`` class, which will be our embeddable:
 
    use Doctrine\ORM\Mapping as ORM;
 
-   /**
-    * Address class for embedding in entities.
-    */
    #[ORM\Embeddable]
-   class Tag
+   class Address
    {
        #[ORM\Column(type: 'string', nullable: true)]
        private ?string $postalCode = null;
@@ -572,8 +690,6 @@ embeddable is used:
 
 .. code:: php
 
-   <?php
-
    namespace Application\Entity;
 
    use Doctrine\ORM\Mapping as ORM;
@@ -582,13 +698,14 @@ embeddable is used:
    class Person
    {
        #[ORM\Id]
+       #[ORM\Column(type: 'integer')]
        #[ORM\GeneratedValue]
        private ?int $id = null;
 
        #[ORM\Column(type: 'string', nullable: true)]
        private ?string $name = null;
 
-       #[ORM\Embedded(class: 'Address')]
+       #[ORM\Embedded(class: Address::class)]
        private Address $address;
 
        /**
@@ -618,10 +735,17 @@ embeddable is used:
        {
            return $this->address;
        }
+
+       public function setAddress(Address $address): void
+       {
+           $this->address = $address;
+       }
    }
 
-The hydrator provided by this module will require the data for the
-embeddable to be in a separate array, as follows:
+The hydrator handles an embeddable as a single field holding the
+embeddable object. It does not convert array data into an embeddable,
+so provide an instance of it (or add a strategy for the field that
+creates one from your data):
 
 .. code:: php
 
@@ -629,14 +753,14 @@ embeddable to be in a separate array, as follows:
 
    $hydrator = new DoctrineHydrator($entityManager);
    $person = new Person();
+
+   $address = new Address();
+   $address->setPostalCode('48149');
+   $address->setCity('Münster');
+
    $data = [
-       'name' => 'Mr. Example',
-       'address'  => [
-           [
-               'postalCode' => '48149',
-               'city' => 'Münster',
-           ],
-       ],
+       'name'    => 'Mr. Example',
+       'address' => $address,
    ];
 
    $person = $hydrator->hydrate($data, $person);
@@ -644,126 +768,120 @@ embeddable to be in a separate array, as follows:
    echo $person->getAddress()->getPostalCode(); // prints "48149"
    echo $person->getAddress()->getCity();       // prints "Münster"
 
-Existing Entity in the Association
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Likewise, extracting a ``Person`` returns the ``Address`` object under
+the ``address`` key.
 
-When the association’s entity already exists, just
-provide the identifiers of these entities:
+.. _extracting-associations:
+
+Extracting Associations
+-----------------------
+
+By default, ``extract()`` returns associations as they are: a OneToOne or
+ManyToOne association is returned as the associated entity (which may be
+an uninitialized proxy), a OneToMany or ManyToMany association as the
+collection (e.g. a ``PersistentCollection``). This is exactly what
+Laminas forms need to bind nested fieldsets to the associated entities,
+see :doc:`Laminas Form <laminas-form>`.
+
+When you need plain data instead, for instance to serialize an entity
+to JSON, you can change how associations are extracted:
 
 .. code:: php
 
+   use Doctrine\Laminas\Hydrator\AssociationExtraction;
    use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 
    $hydrator = new DoctrineHydrator($entityManager);
-   $blogPost = new BlogPost();
-   $data = [
-       'title' => 'The best blog post in the world!',
-       'tags'  => [
-           ['id' => 3], // add tag whose id is 3
-           ['id' => 8], // also add tag whose id is 8
-       ],
-   ];
+   $hydrator->setAssociationExtraction(AssociationExtraction::Identifier);
 
-   $blogPost = $hydrator->hydrate($data, $blogPost);
+The following modes are available:
 
-   echo $blogPost->getTitle(); // prints "The best blog post in the world!"
-   echo count($blogPost->getTags()); // prints 2
+========================================== ==================================================
+Mode                                       Extracted associations
+========================================== ==================================================
+``AssociationExtraction::Object``          Entities and collections as they are (default).
+``AssociationExtraction::Identifier``      Identifiers of the associated entities.
+``AssociationExtraction::Array``           Associated entities extracted into nested arrays.
+========================================== ==================================================
 
-Note, again, that
+The following examples use a BlogPost with the ``user`` association from
+example 2 and the ``tags`` association from example 3.
 
-.. code:: php
+Identifiers
+~~~~~~~~~~~
 
-   $data = [
-       'title' => 'The best blog post in the world!',
-       'tags'  => [
-           ['id' => 3], // add tag whose id is 3
-           ['id' => 8], // also add tag whose id is 8
-       ],
-   ];
-
-can be written:
+With ``AssociationExtraction::Identifier``, each associated entity is
+replaced by its identifier, collections become arrays of identifiers:
 
 .. code:: php
 
-   $data = [
-       'title' => 'The best blog post in the world!',
-       'tags'  => [3, 8],
-   ];
+   $hydrator->setAssociationExtraction(AssociationExtraction::Identifier);
 
-Non-existing Entity in the Association
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   $data = $hydrator->extract($blogPost);
 
-If the association’s entity does not exist, you need to provide
-the actual object:
+   // [
+   //     'id'    => 5,
+   //     'title' => 'The best blog post in the world!',
+   //     'user'  => 2,
+   //     'tags'  => [3, 8],
+   // ]
 
-.. code:: php
+Entities with a composite identifier are extracted as an array of their
+identifier fields, e.g. ``['country' => 'DE', 'code' => '48149']``. An
+empty OneToOne or ManyToOne association is extracted as ``null``.
 
-   use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+Nested Arrays
+~~~~~~~~~~~~~
 
-   $hydrator = new DoctrineHydrator($entityManager);
-   $blogPost = new BlogPost();
-
-   $tags = [];
-
-   $tag1 = new Tag();
-   $tag1->setName('PHP');
-   $tags[] = $tag1;
-
-   $tag2 = new Tag();
-   $tag2->setName('STL');
-   $tags[] = $tag2;
-
-   $data = [
-       'title' => 'The best blog post in the world!',
-       'tags'  => $tags, // Note that you can mix integers and entities without any problem
-   ];
-
-   $blogPost = $hydrator->hydrate($data, $blogPost);
-
-   echo $blogPost->getTitle(); // prints "The best blog post in the world!"
-   echo count($blogPost->getTags()); // prints 2
-
-For this to work, you must also slightly change your mapping, so that
-Doctrine can persist new entities on associations (note the cascade
-options on the OneToMany association):
+With ``AssociationExtraction::Array``, associated entities are extracted
+into arrays themselves:
 
 .. code:: php
 
-   namespace Application\Entity;
+   $hydrator->setAssociationExtraction(AssociationExtraction::Array);
 
-   use Doctrine\ORM\Mapping as ORM;
-   use Doctrine\Common\Collections\Collection;
+   $data = $hydrator->extract($blogPost);
 
-   #[ORM\Entity]
-   class BlogPost
-   {
-       /** .. */
+   // [
+   //     'id'    => 5,
+   //     'title' => 'The best blog post in the world!',
+   //     'user'  => ['id' => 2, 'username' => 'bakura', 'password' => 'p@$$w0rd'],
+   //     'tags'  => [
+   //         ['id' => 3, 'name' => 'PHP', 'blogPost' => 5],
+   //         ['id' => 8, 'name' => 'STL', 'blogPost' => 5],
+   //     ],
+   // ]
 
-       #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost', cascade: ['persist'])]
-       private Collection $tags;
-
-       /** … */
-   }
-
-Handling of Null Values
-~~~~~~~~~~~~~~~~~~~~~~~
-
-When a null value is passed to a OneToOne or ManyToOne field, for
-example:
+By default, only the associations of the extracted entity are converted
+to arrays; associations of nested entities are extracted as identifiers.
+Pass the maximum depth as second argument to extract more levels:
 
 .. code:: php
 
-   $data = [
-       'city' => null,
-   ];
+   $hydrator->setAssociationExtraction(AssociationExtraction::Array, 3);
 
-The hydrator will check whether the setCity() method on the Entity
-allows null values and act accordingly. The following describes the
-process that happens when a null value is received:
+Circular references are detected: an entity that is already being
+extracted further up, like the blog post of each tag above, is extracted
+as its identifier, regardless of the maximum depth.
 
-1. If the setCity() method DOES NOT allow null values
-   i.e. ``function setCity(City $city)``, the null is silently ignored
-   and will not be hydrated.
-2. If the setCity() method DOES allow null values
-   i.e. ``function setCity(City $city = null)``, the null value will be
-   hydrated.
+Nested entities are extracted by separate hydrators using the same
+object manager and the same by-value or by-reference setting. Strategies,
+filters and naming strategies added to your hydrator only apply to the
+top-level entity. To exclude fields of nested entities, like the
+password of the user above, let the entity class implement
+``Laminas\Hydrator\Filter\FilterProviderInterface``, which is respected
+at all levels.
+
+Further Notes
+~~~~~~~~~~~~~
+
+- Values that a strategy has already converted are left untouched; only
+  instances of the association's target entity are converted.
+- Keys of collections are preserved, which matters for collections
+  indexed by a field.
+- Embeddables are no associations and are always extracted as objects.
+- The extracted data can be passed to ``hydrate()`` again, as the
+  hydrator accepts both identifiers and nested arrays for associations.
+- Extracting associations as arrays loads the associated entities from
+  the database, see
+  :doc:`Performance Considerations <performance-considerations>`.

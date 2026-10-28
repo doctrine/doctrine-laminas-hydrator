@@ -1,8 +1,11 @@
-Using Enums with PHP 8.1
-========================
+Using Enums
+===========
 
-Doctrine ORM 2.11 introduced `support for PHP 8.1 enums <https://www.doctrine-project.org/2022/01/11/orm-2.11.html>`__.
-To make use of backed enums with doctrine-laminas-hydrator, you need to set up a hydration strategy.
+Doctrine ORM supports `backed enums <https://www.doctrine-project.org/projects/doctrine-orm/en/latest/reference/basic-mapping.html#mapping-php-enums>`__
+through the ``enumType`` option of a column. The hydrator passes enum
+instances through unchanged, but does not convert scalar values like
+``'H'`` into an enum. To hydrate backed enums from such values, you need
+to set up a hydration strategy.
 
 The Enum and Entity
 -------------------
@@ -23,7 +26,7 @@ The following example uses a card with an enum representing hearts, diamonds, cl
     {
         /** ... */
 
-        #[Column(type: Types::ENUM)]
+        #[Column(type: 'string', enumType: Suit::class)]
         public Suit $suit;
 
         public function getSuit(): Suit
@@ -50,14 +53,18 @@ Next, you need to create a hydration strategy for your backed enum:
 
     class SuitHydratorStrategy implements StrategyInterface
     {
-        public function extract($value, ?object $object = null): ?int
+        public function extract(mixed $value, ?object $object = null): ?string
         {
-            return null === $value ? null : Suit::tryFrom($value)->value;
+            return $value instanceof Suit ? $value->value : $value;
         }
 
-        public function hydrate($value, ?array $data): ?Suit
+        public function hydrate(mixed $value, ?array $data = null): ?Suit
         {
-            return null === $value ? null : Suit::tryFrom($value);
+            if ($value === null || $value instanceof Suit) {
+                return $value;
+            }
+
+            return Suit::from($value);
         }
     }
 
@@ -73,4 +80,9 @@ strategy to the relevant field in your hydrator.
     $hydrator->addStrategy('suit', new \Application\Hydrator\Strategy\SuitHydratorStrategy());
 
     $card = new Card();
-    $hydrator->hydrate([ 'suit' => 'H' ], $card);
+    $hydrator->hydrate(['suit' => 'H'], $card);
+
+    echo $card->getSuit()->name; // prints "Hearts"
+
+    $data = $hydrator->extract($card);
+    echo $data['suit']; // prints "H"

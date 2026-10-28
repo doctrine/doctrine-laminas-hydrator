@@ -18,7 +18,7 @@
         "doctrine/collections": "^2.6.0 || ^3.1.0",
         "doctrine/inflector": "^2.0.4",
         "doctrine/persistence": "^4.0.0",
-        "laminas/laminas-hydrator": "^4.13.0",
+        "laminas/laminas-hydrator": "^4.13.0 || ^5.0.0",
         "laminas/laminas-stdlib": "^3.14.0"
     },
     "require-dev": {

@@ -8,23 +8,13 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
 
 class SimpleStrategy implements StrategyInterface
 {
-    /**
-     * @param  mixed $value
-     *
-     * @return mixed
-     */
-    public function extract($value, object|null $object = null)
+    public function extract(mixed $value, object|null $object = null): mixed
     {
         return 'modified while extracting';
     }
 
-    /**
-     * @param mixed                        $value
-     * @param array<array-key, mixed>|null $data
-     *
-     * @return mixed
-     */
-    public function hydrate($value, array|null $data)
+    /** @param array<array-key, mixed>|null $data */
+    public function hydrate(mixed $value, array|null $data = null): mixed
     {
         return 'modified while hydrating';
     }

@@ -26,5 +26,6 @@ jobs:
     uses: "doctrine/.github/.github/workflows/continuous-integration.yml@15.1.0"
     with:
       php-versions: '["8.3", "8.4", "8.5"]'
+      composer-options: "--prefer-dist --with laminas/laminas-hydrator:^5.0.0"
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

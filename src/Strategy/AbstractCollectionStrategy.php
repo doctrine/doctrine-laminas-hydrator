@@ -85,7 +85,7 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
      *
      * @return mixed       Returns the value that should be extracted.
      */
-    public function extract($value, object|null $object = null)
+    public function extract(mixed $value, object|null $object = null): mixed
     {
         return $value;
     }

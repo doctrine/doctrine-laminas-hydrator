@@ -18,7 +18,6 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Depends;
-use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -2921,7 +2920,6 @@ class DoctrineObjectTest extends TestCase
         $this->assertSame('2019-01-24 12:00:00', $entity->getCreatedAt()->format('Y-m-d H:i:s'));
     }
 
-    #[RequiresPhp('8.1')]
     public function testHandleEnumConversionUsingByValue(): void
     {
         // When using hydration by value, it will use the public API of the entity to set values (setters)
@@ -2938,7 +2936,6 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(SimpleEnumPhp81::tryFrom($value), $entity->getEnum());
     }
 
-    #[RequiresPhp('8.1')]
     public function testNullValueIsNotConvertedToEnum(): void
     {
         $entity = new Assets\SimpleEntityWithEnumPhp81();
@@ -2952,7 +2949,6 @@ class DoctrineObjectTest extends TestCase
         $this->assertNull($entity->getEnum());
     }
 
-    #[RequiresPhp('8.1')]
     public function testWrongEnumBackedValueThrowsException(): void
     {
         $entity = new Assets\SimpleEntityWithEnumPhp81();
@@ -2966,7 +2962,6 @@ class DoctrineObjectTest extends TestCase
         $this->hydratorByValue->hydrate($data, $entity);
     }
 
-    #[RequiresPhp('8.1')]
     public function testExtractReadonlyPropsByReference(): void
     {
         $entity = new Assets\SimpleEntityWithReadonlyPropsPhp81(2);
@@ -2981,7 +2976,6 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals(['field' => 'value'], $data);
     }
 
-    #[RequiresPhp('8.2')]
     public function testExtractReadonlyClassByReference(): void
     {
         $entity = new Assets\SimpleEntityReadonlyPhp82(2, null);
@@ -2997,7 +2991,6 @@ class DoctrineObjectTest extends TestCase
         $this->hydratorByReference->extract($entity);
     }
 
-    #[RequiresPhp('8.1')]
     public function testHydrateReadonlyPropsByValue(): void
     {
         $this->configureObjectManagerForSimpleEntity(Assets\SimpleEntityWithReadonlyPropsPhp81::class);
@@ -3008,7 +3001,6 @@ class DoctrineObjectTest extends TestCase
         $this->assertEquals('toto', $entity->getField());
     }
 
-    #[RequiresPhp('8.1')]
     public function testHydrateReadonlyPropsByReference(): void
     {
         $this->configureObjectManagerForSimpleEntity(Assets\SimpleEntityWithReadonlyPropsPhp81::class);

@@ -3,7 +3,10 @@ Collections Strategy
 
 By default, every collection association has a strategy
 attached to it that is called during the hydrating and extracting phase.
-All those strategies extend from the class
+Strategies for collection associations must implement
+``Doctrine\Laminas\Hydrator\Strategy\CollectionStrategyInterface``,
+otherwise an ``InvalidArgumentException`` is thrown. All strategies
+provided by this library extend from the class
 ``Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy``.
 
 The library provides four strategies out of the box:
@@ -28,7 +31,7 @@ least the adder, but the remover is optional (because elements are never
 removed).
 
 The following table illustrates the difference between the two
-strategies
+strategies:
 
 ================ ================== ==================== =======
 Strategy         Initial collection Submitted collection Result
@@ -55,4 +58,35 @@ Changing the strategy for collections is simple:
    $hydrator = new DoctrineHydrator($entityManager);
    $hydrator->addStrategy('tags', new Strategy\DisallowRemoveByValue());
 
-Note that you can also add strategies to non-collection fields.
+To change the strategy for all collections of a hydrator, set the default
+strategy instead:
+
+.. code:: php
+
+   $hydrator->setDefaultByValueStrategy(Strategy\DisallowRemoveByValue::class);
+   $hydrator->setDefaultByReferenceStrategy(Strategy\DisallowRemoveByReference::class);
+
+Note that you can also add strategies to non-collection fields, as shown
+in :doc:`Enum Strategy <enum-strategy>`.
+
+Custom Strategies
+-----------------
+
+A custom strategy for collections can extend ``AbstractCollectionStrategy``
+and implement the ``hydrate()`` method:
+
+.. code:: php
+
+   use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
+
+   final class MyCollectionStrategy extends AbstractCollectionStrategy
+   {
+       public function hydrate(mixed $value, ?array $data = null): mixed
+       {
+           $collection = $this->getCollectionFromObjectByValue();
+
+           // … add and remove elements of $collection based on $value …
+
+           return $collection;
+       }
+   }

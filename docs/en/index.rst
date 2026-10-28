@@ -26,11 +26,12 @@ Next Steps
     :caption: Table of Contents
 
 -  :doc:`Basic Usage <basic-usage>`:
-   introduces the basic usage of Doctrine Laminas Hydrator.
+   introduces the basic usage of Doctrine Laminas Hydrator, including
+   associations and how they are extracted.
 -  :doc:`Collections Strategy <collections-strategy>`:
    explains using strategies for hydrating or extracting collections.
--  :doc:`enum-strategy <enum-strategy>`:
-   this sections shows an example how PHP enums can be handled using strategies.
+-  :doc:`Enum Strategy <enum-strategy>`:
+   this section shows an example how PHP enums can be handled using strategies.
 -  :doc:`By Value or By Reference <by-value-by-reference>`:
    shows the differences of by-value and by-reference extraction or hydration of data.
 -  :doc:`Laminas Form <laminas-form>`:

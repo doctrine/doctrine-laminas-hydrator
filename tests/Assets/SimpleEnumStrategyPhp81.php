@@ -8,8 +8,7 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
 
 class SimpleEnumStrategyPhp81 implements StrategyInterface
 {
-    /** @param mixed $value */
-    public function extract($value, object|null $object = null): int|null
+    public function extract(mixed $value, object|null $object = null): int|null
     {
         if ($value === null) {
             return null;
@@ -18,11 +17,8 @@ class SimpleEnumStrategyPhp81 implements StrategyInterface
         return SimpleEnumPhp81::tryFrom($value)->value;
     }
 
-    /**
-     * @param mixed                        $value
-     * @param array<array-key, mixed>|null $data
-     */
-    public function hydrate($value, array|null $data): SimpleEnumPhp81|null
+    /** @param array<array-key, mixed>|null $data */
+    public function hydrate(mixed $value, array|null $data = null): SimpleEnumPhp81|null
     {
         if ($value === null) {
             return null;

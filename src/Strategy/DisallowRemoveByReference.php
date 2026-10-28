@@ -23,7 +23,7 @@ final class DisallowRemoveByReference extends AbstractCollectionStrategy
      *
      * @return mixed Returns the value that should be hydrated.
      */
-    public function hydrate($value, array|null $data)
+    public function hydrate(mixed $value, array|null $data = null): mixed
     {
         $collection      = $this->getCollectionFromObjectByReference();
         $collectionArray = $collection->toArray();

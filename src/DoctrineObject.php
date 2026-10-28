@@ -303,10 +303,8 @@ class DoctrineObject extends AbstractHydrator
      * @param string                       $name  The name of the strategy to use.
      * @param mixed                        $value The value that should be converted.
      * @param array<array-key, mixed>|null $data  The whole data is optionally provided as context.
-     *
-     * @return mixed|null
      */
-    public function hydrateValue(string $name, $value, array|null $data = null)
+    public function hydrateValue(string $name, mixed $value, array|null $data = null): mixed
     {
         $value = parent::hydrateValue($name, $value, $data);
 

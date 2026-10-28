@@ -2766,21 +2766,14 @@ class DoctrineObjectTest extends TestCase
         $data = ['field' => ['complex', 'value']];
         $this->configureObjectManagerForSimpleEntity();
         $this->hydratorByValue->addStrategy('field', new class implements StrategyInterface {
-            /**
-             * @param mixed $value
-             *
-             * @return string[]
-             */
-            public function extract($value, object|null $object = null): array
+            /** @return string[] */
+            public function extract(mixed $value, object|null $object = null): array
             {
                 return explode(',', $value);
             }
 
-            /**
-             * @param mixed    $value
-             * @param string[] $data
-             */
-            public function hydrate($value, array|null $data): string
+            /** @param string[] $data */
+            public function hydrate(mixed $value, array|null $data = null): string
             {
                 return implode(',', $value);
             }
@@ -2798,21 +2791,14 @@ class DoctrineObjectTest extends TestCase
         $data = ['field' => ['complex', 'value']];
         $this->configureObjectManagerForSimpleEntity();
         $this->hydratorByReference->addStrategy('field', new class implements StrategyInterface {
-            /**
-             * @param mixed $value
-             *
-             * @return string[]
-             */
-            public function extract($value, object|null $object = null): array
+            /** @return string[] */
+            public function extract(mixed $value, object|null $object = null): array
             {
                 return explode(',', $value);
             }
 
-            /**
-             * @param mixed    $value
-             * @param string[] $data
-             */
-            public function hydrate($value, array|null $data): string
+            /** @param string[] $data */
+            public function hydrate(mixed $value, array|null $data = null): string
             {
                 return implode(',', $value);
             }

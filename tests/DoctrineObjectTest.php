@@ -16,6 +16,7 @@ use InvalidArgumentException;
 use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 use LogicException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -31,6 +32,7 @@ use function implode;
 use function sprintf;
 use function time;
 
+#[AllowMockObjectsWithoutExpectations]
 #[CoversMethod(DoctrineObjectHydrator::class, 'hydrateByValue')]
 #[CoversMethod(DoctrineObjectHydrator::class, 'hydrateByReference')]
 class DoctrineObjectTest extends TestCase

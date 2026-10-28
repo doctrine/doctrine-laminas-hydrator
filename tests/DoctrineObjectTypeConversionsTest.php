@@ -10,6 +10,7 @@ use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineObjectHydrator;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -19,6 +20,7 @@ use function is_float;
 use function is_int;
 use function is_string;
 
+#[AllowMockObjectsWithoutExpectations]
 class DoctrineObjectTypeConversionsTest extends TestCase
 {
     protected DoctrineObjectHydrator $hydratorByValue;

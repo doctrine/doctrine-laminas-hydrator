@@ -15,7 +15,7 @@
     "require": {
         "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
         "ext-ctype": "*",
-        "doctrine/collections": "^2.0.0",
+        "doctrine/collections": "^2.6.0 || ^3.1.0",
         "doctrine/inflector": "^2.0.4",
         "doctrine/persistence": "^4.0.0",
         "laminas/laminas-hydrator": "^4.13.0",

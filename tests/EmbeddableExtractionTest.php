@@ -15,11 +15,12 @@ use DoctrineTest\Laminas\Hydrator\Assets\SimpleStrategy;
 use DoctrineTest\Laminas\Hydrator\Support\HydratorTestCase;
 use InvalidArgumentException;
 use Laminas\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
+use Laminas\Hydrator\Strategy\StrategyInterface;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function iterator_to_array;
+use function array_keys;
 
 #[CoversClass(DoctrineObject::class)]
 class EmbeddableExtractionTest extends HydratorTestCase
@@ -55,12 +56,31 @@ class EmbeddableExtractionTest extends HydratorTestCase
     }
 
     #[DataProvider('byValueProvider')]
-    public function testEmbeddablesAreListedOnceInFieldNames(bool $byValue): void
+    public function testEmbeddablesAreExtractedOnce(bool $byValue): void
     {
-        $hydrator = $this->createHydrator($this->createPersonObjectManager(), $byValue);
-        $hydrator->extract($this->createPerson());
+        // Doctrine lists the embeddable once per field, as "address.postalCode", "address.city", ...
+        $strategy = new class implements StrategyInterface {
+            public int $calls = 0;
 
-        $this->assertSame(['id', 'name', 'address', 'partner'], iterator_to_array($hydrator->getFieldNames(), false));
+            public function extract(mixed $value, object|null $object = null): mixed
+            {
+                $this->calls++;
+
+                return $value;
+            }
+
+            /** @param array<array-key, mixed>|null $data */
+            public function hydrate(mixed $value, array|null $data = null): mixed
+            {
+                return $value;
+            }
+        };
+
+        $hydrator = $this->createHydrator($this->createPersonObjectManager(), $byValue);
+        $hydrator->addStrategy('address', $strategy);
+
+        $this->assertSame(['id', 'name', 'address', 'partner'], array_keys($hydrator->extract($this->createPerson())));
+        $this->assertSame(1, $strategy->calls);
     }
 
     #[DataProvider('byValueProvider')]

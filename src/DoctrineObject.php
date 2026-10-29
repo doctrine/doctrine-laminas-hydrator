@@ -20,7 +20,6 @@ use Laminas\Stdlib\ArrayUtils;
 use LogicException;
 use ReflectionNamedType;
 use ReflectionProperty;
-use RuntimeException;
 use Traversable;
 use UnexpectedValueException;
 
@@ -55,27 +54,27 @@ use function str_starts_with;
 use function strpos;
 use function substr;
 
-class DoctrineObject extends AbstractHydrator
+final class DoctrineObject extends AbstractHydrator
 {
-    protected ClassMetadata|null $metadata = null;
+    private ClassMetadata|null $metadata = null;
 
     /** @var class-string<Strategy\CollectionStrategyInterface> */
-    protected string $defaultByValueStrategy = AllowRemoveByValue::class;
+    private string $defaultByValueStrategy = AllowRemoveByValue::class;
 
     /** @var class-string<Strategy\CollectionStrategyInterface> */
-    protected string $defaultByReferenceStrategy = AllowRemoveByReference::class;
+    private string $defaultByReferenceStrategy = AllowRemoveByReference::class;
 
-    protected Inflector $inflector;
+    private Inflector $inflector;
 
-    protected TypeConverterInterface $typeConverter;
+    private TypeConverterInterface $typeConverter;
 
-    protected AssociationExtraction $associationExtraction = AssociationExtraction::Object;
+    private AssociationExtraction $associationExtraction = AssociationExtraction::Object;
 
-    protected int $associationExtractionMaxDepth = 1;
+    private int $associationExtractionMaxDepth = 1;
 
-    protected EmbeddableExtraction $embeddableExtraction = EmbeddableExtraction::Object;
+    private EmbeddableExtraction $embeddableExtraction = EmbeddableExtraction::Object;
 
-    protected string $embeddableSeparator = '__';
+    private string $embeddableSeparator = '__';
 
     /** @var array<class-string, DoctrineObject> Hydrators for associated entities by class, kept by the root hydrator */
     private array $associationHydrators = [];
@@ -112,17 +111,17 @@ class DoctrineObject extends AbstractHydrator
      * @phpstan-param (Closure(class-string, array<array-key, mixed>): object)|null $instantiator
      */
     public function __construct(
-        protected ObjectManager $objectManager,
-        protected bool $byValue = true,
+        private ObjectManager $objectManager,
+        private bool $byValue = true,
         Inflector|null $inflector = null,
         TypeConverterInterface|null $typeConverter = null,
-        protected Closure|null $instantiator = null,
+        private Closure|null $instantiator = null,
     ) {
         $this->inflector     = $inflector ?? InflectorFactory::create()->build();
         $this->typeConverter = $typeConverter ?? new DoctrineTypeConverter();
     }
 
-    protected function getClassMetadata(): ClassMetadata
+    private function getClassMetadata(): ClassMetadata
     {
         if ($this->metadata === null) {
             throw new LogicException('Class metadata is not set, call prepare().');
@@ -302,7 +301,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @return Generator<string>
      */
-    public function getFieldNames(): iterable
+    private function getFieldNames(): iterable
     {
         $fields = [...$this->getClassMetadata()->getFieldNames(), ...$this->getClassMetadata()->getAssociationNames()];
         $seen   = [];
@@ -412,7 +411,7 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Prepare the hydrator by adding strategies to every collection valued associations
      */
-    protected function prepare(object $object): void
+    private function prepare(object $object): void
     {
         $this->metadata = $this->objectManager->getClassMetadata($object::class);
         $this->prepareStrategies();
@@ -423,7 +422,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @throws InvalidArgumentException
      */
-    protected function prepareStrategies(): void
+    private function prepareStrategies(): void
     {
         $associations = $this->getClassMetadata()->getAssociationNames();
 
@@ -465,10 +464,8 @@ class DoctrineObject extends AbstractHydrator
      * API, in this case, getters)
      *
      * @return array<string,mixed>
-     *
-     * @throws RuntimeException
      */
-    protected function extractByValue(object $object): array
+    private function extractByValue(object $object): array
     {
         $methods = get_class_methods($object);
         $filter  = $object instanceof FilterProviderInterface
@@ -500,7 +497,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @return array<string,mixed>
      */
-    protected function extractByReference(object $object): array
+    private function extractByReference(object $object): array
     {
         $refl   = $this->getClassMetadata()->getReflectionClass();
         $filter = $object instanceof FilterProviderInterface
@@ -510,7 +507,7 @@ class DoctrineObject extends AbstractHydrator
         $data        = [];
         $embeddables = $this->getEmbeddables();
 
-        // fail for readonly classes (PHP 8.2)
+        // fail for readonly classes
         if ($refl->isReadOnly()) {
             throw new LogicException(
                 sprintf(
@@ -532,7 +529,7 @@ class DoctrineObject extends AbstractHydrator
                 continue;
             }
 
-            // skip uninitialized properties (available from PHP 7.4)
+            // skip uninitialized properties
             if (! $reflProperty->isInitialized($object)) {
                 continue;
             }
@@ -1029,18 +1026,14 @@ class DoctrineObject extends AbstractHydrator
      * Hydrate the object using a by-value logic (this means that it uses the entity API, in this
      * case, setters)
      *
-     * Caution: Parameter $object should not be null, signature will be changed to not-nullable in next major
-     *
      * @param array<string,mixed> $data
      * @phpstan-param T $object
      *
      * @phpstan-return T
      *
-     * @throws RuntimeException
-     *
      * @template T of object
      */
-    protected function hydrateByValue(array $data, object|null $object): object
+    private function hydrateByValue(array $data, object $object): object
     {
         $tryObject = $this->tryConvertArrayToObject($data, $object);
         $metadata  = $this->getClassMetadata();
@@ -1094,8 +1087,6 @@ class DoctrineObject extends AbstractHydrator
      * using the public API, in this case setters, and hence override any logic that could be done in those
      * setters)
      *
-     * Caution: Parameter $object should not be null, signature will be changed to not-nullable in next major
-     *
      * @param array<string,mixed> $data
      * @phpstan-param T $object
      *
@@ -1103,7 +1094,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @template T of object
      */
-    protected function hydrateByReference(array $data, object|null $object): object
+    private function hydrateByReference(array $data, object $object): object
     {
         $tryObject = $this->tryConvertArrayToObject($data, $object);
         $metadata  = $this->getClassMetadata();
@@ -1125,7 +1116,7 @@ class DoctrineObject extends AbstractHydrator
 
             $reflProperty = $refl->getProperty($field);
 
-            // fail for readonly property (PHP 8.1)
+            // fail for readonly property
             if ($reflProperty->isReadOnly()) {
                 throw new LogicException(
                     sprintf(
@@ -1174,7 +1165,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @template T of object
      */
-    protected function tryConvertArrayToObject(array $data, object $object): object|null
+    private function tryConvertArrayToObject(array $data, object $object): object|null
     {
         $metadata         = $this->getClassMetadata();
         $identifierNames  = $metadata->getIdentifierFieldNames();
@@ -1207,7 +1198,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @param  class-string $target
      */
-    protected function toOne(string $target, mixed $value): object|null
+    private function toOne(string $target, mixed $value): object|null
     {
         $metadata = $this->objectManager->getClassMetadata($target);
 
@@ -1235,7 +1226,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @throws InvalidArgumentException
      */
-    protected function toMany(object $object, string $collectionName, string $target, mixed $values): void
+    private function toMany(object $object, string $collectionName, string $target, mixed $values): void
     {
         $metadata   = $this->objectManager->getClassMetadata($target);
         $identifier = $metadata->getIdentifier();
@@ -1257,7 +1248,7 @@ class DoctrineObject extends AbstractHydrator
             }
 
             if (empty($value)) {
-                // assumes no id and retrieves new $target
+                // Empty values, e.g. empty strings from forms, are looked up as identifier and ignored if not found
                 $collection[] = $this->find($value, $target);
                 continue;
             }
@@ -1316,8 +1307,7 @@ class DoctrineObject extends AbstractHydrator
         assert($collectionStrategy instanceof Strategy\CollectionStrategyInterface);
         $collectionStrategy->setObject($object);
 
-        // We could directly call hydrate method from the strategy, but if people want to override
-        // hydrateValue function, they can do it and do their own stuff
+        // Hydrate like any other field: the strategy first, then the type conversion
         $this->hydrateValue($collectionName, $collection, $values);
     }
 
@@ -1360,7 +1350,7 @@ class DoctrineObject extends AbstractHydrator
      *
      * @template T of object
      */
-    protected function find(mixed $identifiers, string $targetClass): object|null
+    private function find(mixed $identifiers, string $targetClass): object|null
     {
         if ($identifiers instanceof $targetClass) {
             return $identifiers;
@@ -1375,10 +1365,8 @@ class DoctrineObject extends AbstractHydrator
 
     /**
      * Verifies if a provided identifier is to be considered null
-     *
-     * @param array<string|null>|mixed $identifier
      */
-    private function isNullIdentifier($identifier): bool
+    private function isNullIdentifier(mixed $identifier): bool
     {
         if ($identifier === null) {
             return true;
@@ -1399,7 +1387,7 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Applies the naming strategy if there is one set
      */
-    protected function computeHydrateFieldName(string $field): string
+    private function computeHydrateFieldName(string $field): string
     {
         if ($this->hasNamingStrategy()) {
             $field = $this->getNamingStrategy()->hydrate($field);
@@ -1411,7 +1399,7 @@ class DoctrineObject extends AbstractHydrator
     /**
      * Applies the naming strategy if there is one set
      */
-    protected function computeExtractFieldName(string $field): string
+    private function computeExtractFieldName(string $field): string
     {
         if ($this->hasNamingStrategy()) {
             $field = $this->getNamingStrategy()->extract($field);

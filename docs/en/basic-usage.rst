@@ -372,6 +372,45 @@ passed to the BlogPost entity.
    echo $blogPost->getUser()->getUsername(); // prints willshakes
    echo $blogPost->getUser()->getPassword(); // prints 2BorN0t2B
 
+Creating New Associated Entities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, new associated entities are created by calling their
+constructor without arguments, before they are hydrated with the data.
+This applies to OneToOne and ManyToOne associations as well as to
+collections. If the constructor of an entity requires arguments, pass a
+closure creating the entities to the hydrator. The closure receives the
+class name and the data the entity will be hydrated with:
+
+.. code:: php
+
+   use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+
+   $hydrator = new DoctrineHydrator(
+       $entityManager,
+       instantiator: static fn (string $className, array $data): object => match ($className) {
+           User::class => new User($data['username']),
+           default => new $className(),
+       },
+   );
+
+The closure must return an instance of the given class. To create entities
+without calling their constructor, as Doctrine does when loading entities,
+you can use `doctrine/instantiator <https://github.com/doctrine/instantiator>`__:
+
+.. code:: php
+
+   use Doctrine\Instantiator\Instantiator;
+
+   $instantiator = new Instantiator();
+   $hydrator     = new DoctrineHydrator(
+       $entityManager,
+       instantiator: static fn (string $className): object => $instantiator->instantiate($className),
+   );
+
+Note that collections and other properties initialized in the constructor
+are not initialized then.
+
 Handling of Null Values
 ~~~~~~~~~~~~~~~~~~~~~~~
 

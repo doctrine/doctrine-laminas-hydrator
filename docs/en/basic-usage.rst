@@ -791,10 +791,8 @@ embeddable is used:
        }
    }
 
-The hydrator handles an embeddable as a single field holding the
-embeddable object. It does not convert array data into an embeddable,
-so provide an instance of it (or add a strategy for the field that
-creates one from your data):
+By default, the hydrator handles an embeddable as a single field holding
+the embeddable object. To hydrate it, provide an instance of it:
 
 .. code:: php
 
@@ -819,6 +817,101 @@ creates one from your data):
 
 Likewise, extracting a ``Person`` returns the ``Address`` object under
 the ``address`` key.
+
+.. _embeddable-extraction:
+
+Embeddables as Arrays
+~~~~~~~~~~~~~~~~~~~~~
+
+To work with plain data instead of embeddable objects, e.g. for a JSON
+API or a form, you can change how embeddables are represented. The setting
+applies to both extracting and hydrating:
+
+.. code:: php
+
+   use Doctrine\Laminas\Hydrator\EmbeddableExtraction;
+
+   $hydrator->setEmbeddableExtraction(EmbeddableExtraction::Array);
+
+The following modes are available:
+
+========================================== ==================================================
+Mode                                       Embeddables in the data
+========================================== ==================================================
+``EmbeddableExtraction::Object``           Embeddable objects (default).
+``EmbeddableExtraction::Array``            Nested arrays of the fields of the embeddables.
+``EmbeddableExtraction::Flattened``        Fields of the embeddables in the data of the entity.
+========================================== ==================================================
+
+With ``EmbeddableExtraction::Array``, the ``Person`` above is extracted
+and hydrated as follows:
+
+.. code:: php
+
+   [
+       'id'      => 1,
+       'name'    => 'Mr. Example',
+       'address' => [
+           'postalCode' => '48149',
+           'city'       => 'Münster',
+       ],
+   ]
+
+With ``EmbeddableExtraction::Flattened``, the name of the embeddable and
+the name of the field are joined by a separator, which is ``__`` by default:
+
+.. code:: php
+
+   [
+       'id'                  => 1,
+       'name'                => 'Mr. Example',
+       'address__postalCode' => '48149',
+       'address__city'       => 'Münster',
+   ]
+
+The separator can be passed as second argument, e.g.
+``$hydrator->setEmbeddableExtraction(EmbeddableExtraction::Flattened, '.')``
+for ``address.postalCode``. Note that a dot does not work for HTML forms,
+as PHP converts dots in the names of submitted fields to underscores, and
+that a single underscore easily collides with the names of other fields
+when using the ``UnderscoreNamingStrategy``. If a flattened key equals the
+key of another field, a ``LogicException`` is thrown.
+
+When hydrating:
+
+- Nested arrays are hydrated with ``EmbeddableExtraction::Array`` only,
+  flattened keys with ``EmbeddableExtraction::Flattened`` only.
+  Embeddable objects are hydrated in all modes.
+- Only the fields contained in the data are written. If the entity has no
+  embeddable yet, a new one is created, using the instantiator if one is
+  configured (see `Creating New Associated Entities`_).
+- The fields of embeddables are read and written like the fields of
+  entities: by value using getters and setters, by reference using their
+  properties. Embeddables without setters can therefore only be hydrated
+  by reference, ``readonly`` properties cannot be hydrated.
+
+The fields of embeddables are converted by their own Doctrine types, see
+:doc:`Type Conversion <type-conversion>`. Strategies can be added for them
+by their full name, as Doctrine lists them in the metadata:
+
+.. code:: php
+
+   $hydrator->addStrategy('address.postalCode', new PostalCodeStrategy());
+
+Filters for the embeddable itself, e.g. for ``address``, apply to the
+embeddable as a whole. A strategy for the embeddable itself is applied
+when extracting, before the embeddable is converted; if the strategy
+converts it into something else than an object, the result is kept as it
+is. Nested arrays and flattened keys are hydrated without that strategy.
+An entity without an embeddable is extracted with ``null`` under the name
+of the embeddable. The naming strategy is applied to each part of the
+name, e.g. ``address__postal_code`` with the ``UnderscoreNamingStrategy``.
+
+Embeddables within embeddables are supported as well, e.g. as
+``address__geo__lat``. Like the extraction of associations, the setting of
+the hydrator ``hydrate()`` or ``extract()`` is called on also applies to the
+associated entities. Embeddables are recognized by the field names of the
+Doctrine ORM metadata, e.g. ``address.postalCode``.
 
 .. _extracting-associations:
 
@@ -932,7 +1025,8 @@ Further Notes
   instances of the association's target entity are converted.
 - Keys of collections are preserved, which matters for collections
   indexed by a field.
-- Embeddables are no associations and are always extracted as objects.
+- Embeddables are no associations, how they are extracted is configured
+  separately, see :ref:`Embeddables as Arrays <embeddable-extraction>`.
 - The extracted data can be passed to ``hydrate()`` again, as the
   hydrator accepts both identifiers and nested arrays for associations.
 - Extracting associations as arrays loads the associated entities from
@@ -979,8 +1073,8 @@ the object manager, hydrating by value or by reference, the type converter,
 the instantiator, the default strategies for collections and the naming
 strategy. Strategies and filters are not inherited. The naming strategy
 can be changed or removed on an association hydrator, and the way
-associations are extracted is always determined by the hydrator
-``extract()`` is called on.
+associations and embeddables are represented in the data is always
+determined by the hydrator ``hydrate()`` or ``extract()`` is called on.
 
 To use a hydrator with different settings, e.g. one hydrating by
 reference, set it for the class:

@@ -12,6 +12,11 @@ Values that already have the expected PHP type are kept as they are. The
 type converter is inherited by the hydrators of associated entities, see
 :ref:`Configuring Associated Entities <association-hydrators>`.
 
+The fields of embeddables are converted by their own types when
+embeddables are represented as arrays, see
+:ref:`Embeddables as Arrays <embeddable-extraction>`. The type converter
+receives them by their full name, e.g. ``address.postalCode``.
+
 Default Conversions
 -------------------
 

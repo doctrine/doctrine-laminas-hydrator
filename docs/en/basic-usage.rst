@@ -394,6 +394,11 @@ process that happens when a null value is received:
    i.e. ``function setUser(?User $user)``, the null value will be
    hydrated.
 
+When hydrating by reference, the type of the ``$user`` property is
+checked the same way: for ``private User $user``, the null is silently
+ignored, while for ``private ?User $user`` (or an untyped property) the
+null value will be hydrated.
+
 Example 3: OneToMany Association
 --------------------------------
 

@@ -12,7 +12,6 @@ use DoctrineTest\Laminas\Hydrator\Assets\OneToOneEntityNotNullable;
 use DoctrineTest\Laminas\Hydrator\Support\HydratorTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use TypeError;
 
 #[CoversClass(DoctrineObject::class)]
 class ToOneAssociationTest extends HydratorTestCase
@@ -151,7 +150,7 @@ class ToOneAssociationTest extends HydratorTestCase
     }
 
     #[DataProvider('byValueProvider')]
-    public function testHydrateNullWithNullableSetter(bool $byValue): void
+    public function testHydrateNull(bool $byValue): void
     {
         $entity = new OneToOneEntity();
         $entity->setToOne(new ByValueDifferentiatorEntity(), false);
@@ -168,7 +167,7 @@ class ToOneAssociationTest extends HydratorTestCase
     }
 
     #[DataProvider('byValueProvider')]
-    public function testHydrateNullWithNonNullableSetter(bool $byValue): void
+    public function testHydrateNullIsIgnoredIfNotAccepted(bool $byValue): void
     {
         $toOne  = new ByValueDifferentiatorEntity();
         $entity = new OneToOneEntityNotNullable();
@@ -184,12 +183,7 @@ class ToOneAssociationTest extends HydratorTestCase
         ]);
         $objectManager->expects($this->never())->method('find');
 
-        if (! $byValue) {
-            // Documents the current behaviour: by reference, null is written to the non-nullable property
-            $this->expectException(TypeError::class);
-        }
-
-        // By value, null is ignored as the setter does not accept it
+        // Null is ignored as the setter (by value) or the property (by reference) does not accept it
         $entity = $this->createHydrator($objectManager, $byValue)->hydrate(['toOne' => null], $entity);
 
         $this->assertSame($toOne, $entity->getToOne(false));

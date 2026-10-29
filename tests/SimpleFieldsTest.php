@@ -129,7 +129,7 @@ class SimpleFieldsTest extends HydratorTestCase
         $hydrator = $this->createHydrator($this->createObjectManager([$metadata]), $byValue);
 
         if ($byValue) {
-            // Documents the current behaviour: the getter accesses the uninitialized property
+            // By value, the getter is called; making sure it does not access uninitialized properties is up to the entity
             $this->expectException(Error::class);
             $this->expectExceptionMessage('must not be accessed before initialization');
         }

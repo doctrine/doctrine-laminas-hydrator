@@ -15,6 +15,7 @@ use Generator;
 use InvalidArgumentException;
 use Laminas\Hydrator\AbstractHydrator;
 use Laminas\Hydrator\Filter\FilterProviderInterface;
+use Laminas\Hydrator\NamingStrategy\NamingStrategyInterface;
 use Laminas\Stdlib\ArrayUtils;
 use LogicException;
 use RuntimeException;
@@ -63,11 +64,24 @@ class DoctrineObject extends AbstractHydrator
 
     protected int $associationExtractionMaxDepth = 1;
 
-    /** Nesting level of this hydrator when extracting associations recursively */
-    private int $associationExtractionLevel = 0;
+    /** @var array<class-string, DoctrineObject> Hydrators for associated entities by class, kept by the root hydrator */
+    private array $associationHydrators = [];
 
-    /** @var array<int, true> Objects currently being extracted, keyed by their object id */
-    private array $associationExtractionPath = [];
+    /** The hydrator configuring this hydrator as association hydrator, null for a root hydrator */
+    private DoctrineObject|null $root = null;
+
+    /** Whether this hydrator has been created automatically as association hydrator */
+    private bool $inheritsSettings = false;
+
+    /** Whether a naming strategy has been set or removed explicitly, otherwise it is inherited from the root */
+    private bool $hasOwnNamingStrategy = false;
+
+    /**
+     * State of the current extraction, shared by the hydrators of all extracted entities
+     *
+     * @var array{level: int, path: array<int, true>, mode: AssociationExtraction, maxDepth: int}|null
+     */
+    private array|null $extractionContext = null;
 
     /**
      * @param ObjectManager               $objectManager The ObjectManager to use
@@ -132,7 +146,8 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
-     * Define how associations are represented when extracting an object
+     * Define how associations are represented when extracting an object. The setting of the hydrator
+     * extracting the object applies to the associated entities at all levels.
      *
      * @param int $maxDepth Number of association levels extracted into arrays, only used
      *                      with AssociationExtraction::Array
@@ -149,6 +164,86 @@ class DoctrineObject extends AbstractHydrator
 
         $this->associationExtraction         = $associationExtraction;
         $this->associationExtractionMaxDepth = $maxDepth;
+    }
+
+    /**
+     * Returns the hydrator used for associated entities of the given class, at any level. Unless set
+     * explicitly, it is created with the settings of this hydrator, but without its strategies and filters.
+     *
+     * @param class-string $className
+     */
+    public function getAssociationHydrator(string $className): DoctrineObject
+    {
+        return $this->getRoot()->resolveAssociationHydrator($className);
+    }
+
+    /**
+     * Sets the hydrator used for associated entities of the given class, at any level
+     *
+     * @param class-string $className
+     *
+     * @throws InvalidArgumentException
+     */
+    public function setAssociationHydrator(string $className, DoctrineObject $hydrator): void
+    {
+        $root = $this->getRoot();
+        if ($hydrator === $root || $hydrator->associationHydrators !== []) {
+            throw new InvalidArgumentException(
+                'An association hydrator must not have association hydrators itself, configure them on the root hydrator',
+            );
+        }
+
+        $hydrator->root                         = $root;
+        $hydrator->inheritsSettings             = false;
+        $root->associationHydrators[$className] = $hydrator;
+    }
+
+    public function setNamingStrategy(NamingStrategyInterface $strategy): void
+    {
+        parent::setNamingStrategy($strategy);
+
+        $this->hasOwnNamingStrategy = true;
+    }
+
+    public function removeNamingStrategy(): void
+    {
+        parent::removeNamingStrategy();
+
+        $this->hasOwnNamingStrategy = true;
+    }
+
+    private function getRoot(): DoctrineObject
+    {
+        return $this->root ?? $this;
+    }
+
+    /**
+     * Returns the association hydrator for a class, synchronizing the settings it inherits. Called on the root hydrator.
+     *
+     * @param class-string $className
+     */
+    private function resolveAssociationHydrator(string $className): DoctrineObject
+    {
+        if (! isset($this->associationHydrators[$className])) {
+            $hydrator                   = new self($this->objectManager, $this->byValue, $this->inflector, $this->typeConverter, $this->instantiator);
+            $hydrator->root             = $this;
+            $hydrator->inheritsSettings = true;
+
+            $this->associationHydrators[$className] = $hydrator;
+        }
+
+        $hydrator = $this->associationHydrators[$className];
+
+        if ($hydrator->inheritsSettings) {
+            $hydrator->defaultByValueStrategy     = $this->defaultByValueStrategy;
+            $hydrator->defaultByReferenceStrategy = $this->defaultByReferenceStrategy;
+        }
+
+        if (! $hydrator->hasOwnNamingStrategy) {
+            $hydrator->namingStrategy = $this->hasNamingStrategy() ? $this->namingStrategy : null;
+        }
+
+        return $hydrator;
     }
 
     /**
@@ -178,17 +273,34 @@ class DoctrineObject extends AbstractHydrator
      */
     public function extract(object $object): array
     {
-        $this->prepare($object);
+        return $this->extractWithContext($object, [
+            'level' => 0,
+            'path' => [spl_object_id($object) => true],
+            'mode' => $this->associationExtraction,
+            'maxDepth' => $this->associationExtractionMaxDepth,
+        ]);
+    }
 
-        if ($this->associationExtractionLevel === 0) {
-            $this->associationExtractionPath = [spl_object_id($object) => true];
+    /**
+     * @param array{level: int, path: array<int, true>, mode: AssociationExtraction, maxDepth: int} $context
+     *
+     * @return array<array-key,mixed>
+     */
+    private function extractWithContext(object $object, array $context): array
+    {
+        // The hydrator may be used recursively for entities of the same class
+        $previousMetadata        = $this->metadata;
+        $previousContext         = $this->extractionContext;
+        $this->extractionContext = $context;
+
+        try {
+            $this->prepare($object);
+
+            return $this->byValue ? $this->extractByValue($object) : $this->extractByReference($object);
+        } finally {
+            $this->extractionContext = $previousContext;
+            $this->metadata          = $previousMetadata ?? $this->metadata;
         }
-
-        if ($this->byValue) {
-            return $this->extractByValue($object);
-        }
-
-        return $this->extractByReference($object);
     }
 
     /**
@@ -198,13 +310,16 @@ class DoctrineObject extends AbstractHydrator
      */
     public function hydrate(array $data, object $object): object
     {
-        $this->prepare($object);
+        // The hydrator may be used recursively for entities of the same class
+        $previousMetadata = $this->metadata;
 
-        if ($this->byValue) {
-            return $this->hydrateByValue($data, $object);
+        try {
+            $this->prepare($object);
+
+            return $this->byValue ? $this->hydrateByValue($data, $object) : $this->hydrateByReference($data, $object);
+        } finally {
+            $this->metadata = $previousMetadata ?? $this->metadata;
         }
-
-        return $this->hydrateByReference($data, $object);
     }
 
     /**
@@ -360,7 +475,7 @@ class DoctrineObject extends AbstractHydrator
      */
     private function extractAssociation(string $fieldName, mixed $value): mixed
     {
-        if ($this->associationExtraction === AssociationExtraction::Object) {
+        if ($this->extractionContext === null || $this->extractionContext['mode'] === AssociationExtraction::Object) {
             return $value;
         }
 
@@ -394,19 +509,18 @@ class DoctrineObject extends AbstractHydrator
     private function extractAssociatedObject(object $object, string $target): mixed
     {
         $objectId = spl_object_id($object);
+        $context  = $this->extractionContext;
+        assert($context !== null);
 
         if (
-            $this->associationExtraction === AssociationExtraction::Array
-            && $this->associationExtractionLevel < $this->associationExtractionMaxDepth
-            && ! isset($this->associationExtractionPath[$objectId])
+            $context['mode'] === AssociationExtraction::Array
+            && $context['level'] < $context['maxDepth']
+            && ! isset($context['path'][$objectId])
         ) {
-            // A separate hydrator is used, as extracting changes the hydrator's metadata and strategies
-            $hydrator = new self($this->objectManager, $this->byValue, $this->inflector, $this->typeConverter, $this->instantiator);
-            $hydrator->setAssociationExtraction($this->associationExtraction, $this->associationExtractionMaxDepth);
-            $hydrator->associationExtractionLevel = $this->associationExtractionLevel + 1;
-            $hydrator->associationExtractionPath  = $this->associationExtractionPath + [$objectId => true];
-
-            return $hydrator->extract($object);
+            return $this->getRoot()->resolveAssociationHydrator($target)->extractWithContext($object, [
+                'level' => $context['level'] + 1,
+                'path' => $context['path'] + [$objectId => true],
+            ] + $context);
         }
 
         $metadata         = $this->objectManager->getClassMetadata($target);
@@ -502,8 +616,6 @@ class DoctrineObject extends AbstractHydrator
 
                 $object->$setter($this->hydrateValue($field, $value, $data));
             }
-
-            $this->metadata = $metadata;
         }
 
         return $object;
@@ -575,8 +687,6 @@ class DoctrineObject extends AbstractHydrator
             } else {
                 $reflProperty->setValue($object, $this->hydrateValue($field, $value, $data));
             }
-
-            $this->metadata = $metadata;
         }
 
         return $object;
@@ -639,7 +749,7 @@ class DoctrineObject extends AbstractHydrator
             );
             $object      = $this->find($identifiers, $target) ?: $this->instantiate($target, $value);
 
-            return $this->hydrate($value, $object);
+            return $this->getRoot()->resolveAssociationHydrator($target)->hydrate($value, $object);
         }
 
         return $this->find($value, $target);
@@ -710,13 +820,15 @@ class DoctrineObject extends AbstractHydrator
             if (! empty($find)) {
                 $found = $this->find($find, $target);
                 if ($found) {
-                    $collection[] = is_array($value) ? $this->hydrate($value, $found) : $found;
+                    $collection[] = is_array($value)
+                        ? $this->getRoot()->resolveAssociationHydrator($target)->hydrate($value, $found)
+                        : $found;
                     continue;
                 }
             }
 
             $collection[] = is_array($value)
-                ? $this->hydrate($value, $this->instantiate($target, $value))
+                ? $this->getRoot()->resolveAssociationHydrator($target)->hydrate($value, $this->instantiate($target, $value))
                 : $this->instantiate($target, []);
         }
 

@@ -341,11 +341,12 @@ options on the ManyToOne association):
        /** … */
    }
 
-It’s also possible to use a nested fieldset for the User data. The
+It’s also possible to provide the User data as a nested array. The
 hydrator will use the mapping data to determine the identifiers for the
 toOne relation and either attempt to find the existing record or
 instantiate a new target instance which will be hydrated before it is
-passed to the BlogPost entity.
+passed to the BlogPost entity. The nested data is hydrated by a separate
+hydrator, see :ref:`Configuring Associated Entities <association-hydrators>`.
 
 .. note::
 
@@ -409,7 +410,9 @@ you can use `doctrine/instantiator <https://github.com/doctrine/instantiator>`__
    );
 
 Note that collections and other properties initialized in the constructor
-are not initialized then.
+are not initialized then. The instantiator is inherited by the hydrators
+of associated entities, see
+:ref:`Configuring Associated Entities <association-hydrators>`.
 
 Handling of Null Values
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -909,13 +912,17 @@ Circular references are detected: an entity that is already being
 extracted further up, like the blog post of each tag above, is extracted
 as its identifier, regardless of the maximum depth.
 
-Nested entities are extracted by separate hydrators using the same
-object manager and the same by-value or by-reference setting. Strategies,
-filters and naming strategies added to your hydrator only apply to the
-top-level entity. To exclude fields of nested entities, like the
-password of the user above, let the entity class implement
-``Laminas\Hydrator\Filter\FilterProviderInterface``, which is respected
-at all levels.
+Associated entities are extracted by separate hydrators. Strategies and
+filters added to your hydrator only apply to the extracted entity itself.
+To exclude fields of associated entities, like the password of the user
+above, configure the hydrator used for them, see
+:ref:`Configuring Associated Entities <association-hydrators>`:
+
+.. code:: php
+
+   use Doctrine\Laminas\Hydrator\Filter\PropertyName;
+
+   $hydrator->getAssociationHydrator(User::class)->addFilter('password', new PropertyName(['password']));
 
 Further Notes
 ~~~~~~~~~~~~~
@@ -930,3 +937,65 @@ Further Notes
 - Extracting associations as arrays loads the associated entities from
   the database, see
   :doc:`Performance Considerations <performance-considerations>`.
+
+.. _association-hydrators:
+
+Configuring Associated Entities
+-------------------------------
+
+Strategies, filters and the naming strategy of a hydrator refer to the
+fields of an entity. Therefore, they only apply to the entity passed to
+``hydrate()`` or ``extract()``. Associated entities are hydrated and
+extracted by separate hydrators, one per entity class, which are used at
+all levels of associations.
+
+These association hydrators are used in two cases:
+
+- When hydrating data containing nested arrays for an association, like
+  ``['user' => ['username' => 'willshakes']]``. Identifiers and objects
+  given for an association do not need to be hydrated.
+- When extracting associations with ``AssociationExtraction::Array``.
+
+To configure the hydrator for entities of a class, retrieve it from your
+hydrator:
+
+.. code:: php
+
+   use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
+   use Doctrine\Laminas\Hydrator\Filter\PropertyName;
+
+   $hydrator = new DoctrineHydrator($entityManager);
+
+   // Applies to the blog post passed to hydrate() or extract()
+   $hydrator->addStrategy('title', new TitleStrategy());
+
+   // Applies to every user associated with the blog post, at any level
+   $hydrator->getAssociationHydrator(User::class)
+       ->addFilter('password', new PropertyName(['password']));
+
+Association hydrators inherit the following settings from your hydrator:
+the object manager, hydrating by value or by reference, the type converter,
+the instantiator, the default strategies for collections and the naming
+strategy. Strategies and filters are not inherited. The naming strategy
+can be changed or removed on an association hydrator, and the way
+associations are extracted is always determined by the hydrator
+``extract()`` is called on.
+
+To use a hydrator with different settings, e.g. one hydrating by
+reference, set it for the class:
+
+.. code:: php
+
+   $hydrator->setAssociationHydrator(Address::class, new DoctrineHydrator($entityManager, false));
+
+A hydrator set this way keeps its own settings and only inherits the
+naming strategy, unless a naming strategy is set on it.
+
+Association hydrators are always configured on the hydrator you call
+``hydrate()`` or ``extract()`` on. Also note that the entity passed to
+``hydrate()`` or ``extract()`` is always handled by your hydrator itself,
+even if an association hydrator is configured for its class.
+
+When using Laminas forms, nested fieldsets hydrate and extract their
+objects with their own hydrators, so association hydrators are usually
+not involved there, see :doc:`Laminas Form <laminas-form>`.

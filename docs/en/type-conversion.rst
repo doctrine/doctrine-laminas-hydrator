@@ -8,7 +8,9 @@ of type ``datetime``, and a string is converted to an enum for a field
 mapped with ``enumType``.
 
 The conversion is applied after the strategy of a field, if there is one.
-Values that already have the expected PHP type are kept as they are.
+Values that already have the expected PHP type are kept as they are. The
+type converter is inherited by the hydrators of associated entities, see
+:ref:`Configuring Associated Entities <association-hydrators>`.
 
 Default Conversions
 -------------------

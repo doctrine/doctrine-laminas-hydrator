@@ -11,7 +11,7 @@ class OneToManyArrayEntity
 {
     protected int $id;
 
-    /** @var Collection<array-key,object> */
+    /** @var Collection<array-key,ByValueDifferentiatorEntity> */
     protected Collection $entities;
 
     public function __construct()
@@ -29,7 +29,7 @@ class OneToManyArrayEntity
         return $this->id;
     }
 
-    /** @param Collection<array-key,object> $entities */
+    /** @param Collection<array-key,ByValueDifferentiatorEntity> $entities */
     public function addEntities(Collection $entities, bool $modifyValue = true): void
     {
         foreach ($entities as $entity) {
@@ -42,7 +42,7 @@ class OneToManyArrayEntity
         }
     }
 
-    /** @param Collection<array-key,object> $entities */
+    /** @param Collection<array-key,ByValueDifferentiatorEntity> $entities */
     public function removeEntities(Collection $entities): void
     {
         foreach ($entities as $entity) {

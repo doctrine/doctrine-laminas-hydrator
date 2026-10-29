@@ -9,6 +9,16 @@ use Exception;
 class SimplePrivateEntity
 {
     /**
+     * Only written by the hydrator using reflection
+     *
+     * @phpcsSuppress SlevomatCodingStandard.Classes.UnusedPrivateElements
+     * @phpstan-ignore property.onlyWritten, property.unusedType
+     */
+    private int|null $private = null;
+
+    protected int|null $protected = null;
+
+    /**
      * @phpcsSuppress SlevomatCodingStandard.Classes.UnusedPrivateElements
      * @phpstan-ignore-next-line
      */

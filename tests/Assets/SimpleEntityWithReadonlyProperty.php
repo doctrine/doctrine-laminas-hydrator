@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DoctrineTest\Laminas\Hydrator\Assets;
 
-class SimpleEntityWithReadonlyPropsPhp81
+class SimpleEntityWithReadonlyProperty
 {
     protected string|null $field;
 

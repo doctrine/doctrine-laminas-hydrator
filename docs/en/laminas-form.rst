@@ -1,5 +1,5 @@
-A Complete Example using Laminas\\Form
-======================================
+Example Usage with Laminas Form
+===============================
 
 This documentation covers how the hydrator integrates into the
 Laminas Form component.  This interaction will be exemplified

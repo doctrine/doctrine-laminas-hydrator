@@ -6,8 +6,10 @@
 
    index
    basic-usage
-   collections-strategy
+   associations
+   embeddables
    type-conversion
-   by-value-by-reference
    laminas-form
+   api-usage
    performance-considerations
+   upgrading

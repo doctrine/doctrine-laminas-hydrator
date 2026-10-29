@@ -1,8 +1,9 @@
-Type Conversion
-===============
+Converting Custom DBAL Types
+============================
 
 When hydrating, the hydrator converts the values of mapped fields into the
-PHP type of the field, based on the Doctrine mapping. For instance, a
+PHP type of the field, based on the Doctrine mapping. This page describes
+the built-in conversions, and how to add conversions for custom DBAL types. For instance, a
 timestamp or a string is converted to a ``DateTime`` instance for a field
 of type ``datetime``, and a string is converted to an enum for a field
 mapped with ``enumType``.

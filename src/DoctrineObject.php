@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\Laminas\Hydrator;
 
+use Closure;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByReference;
@@ -18,6 +19,7 @@ use Laminas\Stdlib\ArrayUtils;
 use LogicException;
 use RuntimeException;
 use Traversable;
+use UnexpectedValueException;
 
 use function array_filter;
 use function array_flip;
@@ -29,6 +31,7 @@ use function count;
 use function ctype_upper;
 use function current;
 use function get_class_methods;
+use function get_debug_type;
 use function gettype;
 use function in_array;
 use function is_array;
@@ -70,12 +73,16 @@ class DoctrineObject extends AbstractHydrator
      * @param ObjectManager               $objectManager The ObjectManager to use
      * @param bool                        $byValue       If set to true, hydrator will always use entity's public API
      * @param TypeConverterInterface|null $typeConverter Converts values of mapped fields, defaults to DoctrineTypeConverter
+     * @param Closure|null                $instantiator  Creates new associated entities from their class name and data,
+     *                                                   defaults to calling the constructor without arguments
+     * @phpstan-param (Closure(class-string, array<array-key, mixed>): object)|null $instantiator
      */
     public function __construct(
         protected ObjectManager $objectManager,
         protected bool $byValue = true,
         Inflector|null $inflector = null,
         TypeConverterInterface|null $typeConverter = null,
+        protected Closure|null $instantiator = null,
     ) {
         $this->inflector     = $inflector ?? InflectorFactory::create()->build();
         $this->typeConverter = $typeConverter ?? new DoctrineTypeConverter();
@@ -394,7 +401,7 @@ class DoctrineObject extends AbstractHydrator
             && ! isset($this->associationExtractionPath[$objectId])
         ) {
             // A separate hydrator is used, as extracting changes the hydrator's metadata and strategies
-            $hydrator = new self($this->objectManager, $this->byValue, $this->inflector, $this->typeConverter);
+            $hydrator = new self($this->objectManager, $this->byValue, $this->inflector, $this->typeConverter, $this->instantiator);
             $hydrator->setAssociationExtraction($this->associationExtraction, $this->associationExtractionMaxDepth);
             $hydrator->associationExtractionLevel = $this->associationExtractionLevel + 1;
             $hydrator->associationExtractionPath  = $this->associationExtractionPath + [$objectId => true];
@@ -630,7 +637,7 @@ class DoctrineObject extends AbstractHydrator
                 $value,
                 array_flip($metadata->getIdentifier()),
             );
-            $object      = $this->find($identifiers, $target) ?: new $target();
+            $object      = $this->find($identifiers, $target) ?: $this->instantiate($target, $value);
 
             return $this->hydrate($value, $object);
         }
@@ -708,7 +715,9 @@ class DoctrineObject extends AbstractHydrator
                 }
             }
 
-            $collection[] = is_array($value) ? $this->hydrate($value, new $target()) : new $target();
+            $collection[] = is_array($value)
+                ? $this->hydrate($value, $this->instantiate($target, $value))
+                : $this->instantiate($target, []);
         }
 
         $collection = array_filter(
@@ -724,6 +733,36 @@ class DoctrineObject extends AbstractHydrator
         // We could directly call hydrate method from the strategy, but if people want to override
         // hydrateValue function, they can do it and do their own stuff
         $this->hydrateValue($collectionName, $collection, $values);
+    }
+
+    /**
+     * Creates a new associated entity, using the instantiator if one is configured
+     *
+     * @param class-string<T>         $className
+     * @param array<array-key, mixed> $data      The data the entity will be hydrated with
+     *
+     * @return T
+     *
+     * @throws UnexpectedValueException
+     *
+     * @template T of object
+     */
+    private function instantiate(string $className, array $data): object
+    {
+        if ($this->instantiator === null) {
+            return new $className();
+        }
+
+        $object = ($this->instantiator)($className, $data);
+        if (! $object instanceof $className) {
+            throw new UnexpectedValueException(sprintf(
+                'The instantiator must return an instance of "%s", "%s" returned',
+                $className,
+                get_debug_type($object),
+            ));
+        }
+
+        return $object;
     }
 
     /**

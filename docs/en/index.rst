@@ -26,15 +26,20 @@ Next Steps
     :caption: Table of Contents
 
 -  :doc:`Basic Usage <basic-usage>`:
-   introduces the basic usage of Doctrine Laminas Hydrator, including
-   associations and how associated entities are hydrated and extracted.
--  :doc:`Collections Strategy <collections-strategy>`:
-   explains using strategies for hydrating or extracting collections.
--  :doc:`Type Conversion <type-conversion>`:
-   explains how values are converted based on the Doctrine mapping, including enums.
--  :doc:`By Value or By Reference <by-value-by-reference>`:
-   shows the differences of by-value and by-reference extraction or hydration of data.
--  :doc:`Laminas Form <laminas-form>`:
-   this section shows usage examples with the Laminas form library.
+   introduces the hydrator, hydrating by value or by reference, strategies,
+   filters and naming strategies.
+-  :doc:`Working with Associations <associations>`:
+   explains how associated entities and collections are hydrated and extracted.
+-  :doc:`Working with Embeddables <embeddables>`:
+   explains how embeddables are hydrated and extracted.
+-  :doc:`Converting Custom DBAL Types <type-conversion>`:
+   explains how values are converted based on the Doctrine mapping, including
+   enums and custom DBAL types.
+-  :doc:`Example Usage with Laminas Form <laminas-form>`:
+   shows a complete example with the Laminas form library.
+-  :doc:`Example Usage in an API Context <api-usage>`:
+   shows a complete example of an API exchanging entities as JSON.
 -  :doc:`Performance Considerations <performance-considerations>`:
    some remarks to consider for keeping your application performant.
+-  :doc:`Upgrading to v4 <upgrading>`:
+   lists the changes when upgrading from version 3, and how to adapt to them.

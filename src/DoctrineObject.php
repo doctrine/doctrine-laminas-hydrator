@@ -552,6 +552,12 @@ class DoctrineObject extends AbstractHydrator
 
                 if ($metadata->isSingleValuedAssociation($field)) {
                     $value = $this->toOne($target, $this->hydrateValue($field, $value, $data));
+
+                    // Like by value, null is ignored if the property does not accept it
+                    if ($value === null && ! ($reflProperty->getType()?->allowsNull() ?? true)) {
+                        continue;
+                    }
+
                     $reflProperty->setValue($object, $value);
                 } elseif ($metadata->isCollectionValuedAssociation($field)) {
                     $this->toMany($object, $field, $target, $value);

@@ -8,11 +8,11 @@ class SimpleEntityWithEmbeddable
 {
     protected int $id;
 
-    protected EmbedabbleEntity $embedded;
+    protected EmbeddableEntity $embedded;
 
     public function __construct()
     {
-        $this->embedded = new EmbedabbleEntity();
+        $this->embedded = new EmbeddableEntity();
     }
 
     public function setId(int $id): void
@@ -25,12 +25,12 @@ class SimpleEntityWithEmbeddable
         return $this->id;
     }
 
-    public function setEmbedded(EmbedabbleEntity $embedded): void
+    public function setEmbedded(EmbeddableEntity $embedded): void
     {
         $this->embedded = $embedded;
     }
 
-    public function getEmbedded(): EmbedabbleEntity
+    public function getEmbedded(): EmbeddableEntity
     {
         return $this->embedded;
     }

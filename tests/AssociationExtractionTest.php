@@ -6,22 +6,16 @@ namespace DoctrineTest\Laminas\Hydrator;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Laminas\Hydrator\AssociationExtraction;
-use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineObjectHydrator;
-use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Laminas\Hydrator\DoctrineObject;
 use Doctrine\Persistence\ObjectManager;
 use DoctrineTest\Laminas\Hydrator\Assets\TreeNodeEntity;
+use DoctrineTest\Laminas\Hydrator\Support\HydratorTestCase;
 use InvalidArgumentException;
-use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
-use function array_flip;
-use function array_intersect_key;
-
-#[CoversMethod(DoctrineObjectHydrator::class, 'extract')]
-#[CoversMethod(DoctrineObjectHydrator::class, 'setAssociationExtraction')]
-class AssociationExtractionTest extends TestCase
+#[CoversClass(DoctrineObject::class)]
+class AssociationExtractionTest extends HydratorTestCase
 {
     private TreeNodeEntity $root;
 
@@ -40,17 +34,10 @@ class AssociationExtractionTest extends TestCase
         $this->child->addChild(new TreeNodeEntity(4, 'grandchild'));
     }
 
-    /** @return iterable<string, array{bool}> */
-    public static function byValueProvider(): iterable
-    {
-        yield 'by value' => [true];
-        yield 'by reference' => [false];
-    }
-
     #[DataProvider('byValueProvider')]
     public function testAssociationsAreExtractedAsObjectsByDefault(bool $byValue): void
     {
-        $hydrator = new DoctrineObjectHydrator($this->createObjectManager(), $byValue);
+        $hydrator = $this->createHydrator($this->createTreeObjectManager(), $byValue);
 
         $this->assertSame(AssociationExtraction::Object, $hydrator->getAssociationExtraction());
 
@@ -63,7 +50,7 @@ class AssociationExtractionTest extends TestCase
     #[DataProvider('byValueProvider')]
     public function testAssociationsAreExtractedAsIdentifiers(bool $byValue): void
     {
-        $hydrator = new DoctrineObjectHydrator($this->createObjectManager(), $byValue);
+        $hydrator = $this->createHydrator($this->createTreeObjectManager(), $byValue);
         $hydrator->setAssociationExtraction(AssociationExtraction::Identifier);
 
         $this->assertSame(
@@ -79,7 +66,7 @@ class AssociationExtractionTest extends TestCase
     #[DataProvider('byValueProvider')]
     public function testCompositeIdentifiersAreExtractedAsArrays(bool $byValue): void
     {
-        $hydrator = new DoctrineObjectHydrator($this->createObjectManager(['id', 'name']), $byValue);
+        $hydrator = $this->createHydrator($this->createTreeObjectManager(['id', 'name']), $byValue);
         $hydrator->setAssociationExtraction(AssociationExtraction::Identifier);
 
         $data = $hydrator->extract($this->child);
@@ -91,7 +78,7 @@ class AssociationExtractionTest extends TestCase
     #[DataProvider('byValueProvider')]
     public function testAssociationsAreExtractedAsArraysUpToMaxDepth(bool $byValue): void
     {
-        $hydrator = new DoctrineObjectHydrator($this->createObjectManager(), $byValue);
+        $hydrator = $this->createHydrator($this->createTreeObjectManager(), $byValue);
         $hydrator->setAssociationExtraction(AssociationExtraction::Array);
 
         $this->assertSame(1, $hydrator->getAssociationExtractionMaxDepth());
@@ -112,7 +99,7 @@ class AssociationExtractionTest extends TestCase
     #[DataProvider('byValueProvider')]
     public function testCircularReferencesAreExtractedAsIdentifiers(bool $byValue): void
     {
-        $hydrator = new DoctrineObjectHydrator($this->createObjectManager(), $byValue);
+        $hydrator = $this->createHydrator($this->createTreeObjectManager(), $byValue);
         $hydrator->setAssociationExtraction(AssociationExtraction::Array, 10);
 
         $this->assertSame(
@@ -136,9 +123,10 @@ class AssociationExtractionTest extends TestCase
         );
     }
 
-    public function testHydratorCanBeReusedAfterArrayExtraction(): void
+    #[DataProvider('byValueProvider')]
+    public function testHydratorCanBeReusedAfterArrayExtraction(bool $byValue): void
     {
-        $hydrator = new DoctrineObjectHydrator($this->createObjectManager());
+        $hydrator = $this->createHydrator($this->createTreeObjectManager(), $byValue);
         $hydrator->setAssociationExtraction(AssociationExtraction::Array);
 
         $hydrator->extract($this->child);
@@ -149,9 +137,10 @@ class AssociationExtractionTest extends TestCase
         );
     }
 
-    public function testValuesConvertedByStrategiesAreLeftUntouched(): void
+    #[DataProvider('byValueProvider')]
+    public function testValuesConvertedByStrategiesAreLeftUntouched(bool $byValue): void
     {
-        $hydrator = new DoctrineObjectHydrator($this->createObjectManager());
+        $hydrator = $this->createHydrator($this->createTreeObjectManager(), $byValue);
         $hydrator->setAssociationExtraction(AssociationExtraction::Identifier);
         $hydrator->addStrategy('parent', new Assets\SimpleStrategy());
 
@@ -160,49 +149,24 @@ class AssociationExtractionTest extends TestCase
 
     public function testMaxDepthMustBePositive(): void
     {
-        $hydrator = new DoctrineObjectHydrator($this->createObjectManager());
+        $hydrator = $this->createHydrator($this->createTreeObjectManager(), true);
 
         $this->expectException(InvalidArgumentException::class);
 
         $hydrator->setAssociationExtraction(AssociationExtraction::Array, 0);
     }
 
-    /** @param list<string> $identifierFields */
-    private function createObjectManager(array $identifierFields = ['id']): ObjectManager
+    /** @param list<string> $identifier */
+    private function createTreeObjectManager(array $identifier = ['id']): ObjectManager
     {
-        $metadata = $this->createStub(ClassMetadata::class);
-        $metadata->method('getName')->willReturn(TreeNodeEntity::class);
-        $metadata->method('getFieldNames')->willReturn(['id', 'name']);
-        $metadata->method('getAssociationNames')->willReturn(['parent', 'children']);
-        $metadata->method('hasAssociation')->willReturnMap([
-            ['id', false],
-            ['name', false],
-            ['parent', true],
-            ['children', true],
+        return $this->createObjectManager([
+            $this->createMetadata(
+                TreeNodeEntity::class,
+                ['id' => 'integer', 'name' => 'string'],
+                toOne: ['parent' => TreeNodeEntity::class],
+                toMany: ['children' => TreeNodeEntity::class],
+                identifier: $identifier,
+            ),
         ]);
-        $metadata->method('isSingleValuedAssociation')->willReturnMap([
-            ['parent', true],
-            ['children', false],
-        ]);
-        $metadata->method('isCollectionValuedAssociation')->willReturnMap([
-            ['parent', false],
-            ['children', true],
-        ]);
-        $metadata->method('getAssociationTargetClass')->willReturn(TreeNodeEntity::class);
-        $metadata->method('getReflectionClass')->willReturn(new ReflectionClass(TreeNodeEntity::class));
-        $metadata->method('getIdentifier')->willReturn($identifierFields);
-        $metadata->method('getIdentifierFieldNames')->willReturn($identifierFields);
-        $metadata->method('getIdentifierValues')->willReturnCallback(
-            static function (TreeNodeEntity $node) use ($identifierFields): array {
-                $values = ['id' => $node->getId(), 'name' => $node->getName()];
-
-                return array_intersect_key($values, array_flip($identifierFields));
-            },
-        );
-
-        $objectManager = $this->createStub(ObjectManager::class);
-        $objectManager->method('getClassMetadata')->willReturn($metadata);
-
-        return $objectManager;
     }
 }

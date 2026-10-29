@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace DoctrineTest\Laminas\Hydrator\Assets;
 
-class SimpleEntityWithEnumPhp81
+class SimpleEntityWithEnum
 {
     protected int $id;
 
-    protected SimpleEnumPhp81|null $enum = null;
+    protected SimpleEnum|null $enum = null;
 
     public function setId(int $id): void
     {
@@ -20,12 +20,12 @@ class SimpleEntityWithEnumPhp81
         return $this->id;
     }
 
-    public function setEnum(SimpleEnumPhp81|null $enum = null): void
+    public function setEnum(SimpleEnum|null $enum = null): void
     {
         $this->enum = $enum;
     }
 
-    public function getEnum(): SimpleEnumPhp81|null
+    public function getEnum(): SimpleEnum|null
     {
         return $this->enum;
     }

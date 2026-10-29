@@ -7,7 +7,7 @@
    index
    basic-usage
    collections-strategy
-   enum-strategy
+   type-conversion
    by-value-by-reference
    laminas-form
    performance-considerations

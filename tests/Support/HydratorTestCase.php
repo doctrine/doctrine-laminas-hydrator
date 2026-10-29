@@ -42,6 +42,7 @@ abstract class HydratorTestCase extends TestCase
      * @param array<string, class-string> $toOne      Single valued associations mapped to their target class
      * @param array<string, class-string> $toMany     Collection valued associations mapped to their target class
      * @param list<string>                $identifier
+     * @param array<string, class-string> $enumTypes  Fields mapped to the enum type of their field mapping
      */
     protected function createMetadata(
         string $className,
@@ -49,11 +50,20 @@ abstract class HydratorTestCase extends TestCase
         array $toOne = [],
         array $toMany = [],
         array $identifier = ['id'],
+        array $enumTypes = [],
     ): ClassMetadata {
         $associations = $toOne + $toMany;
         $reflection   = new ReflectionClass($className);
 
-        $metadata = $this->createStub(ClassMetadata::class);
+        if ($enumTypes === []) {
+            $metadata = $this->createStub(ClassMetadata::class);
+        } else {
+            $metadata = $this->createStub(ClassMetadataWithFieldMapping::class);
+            $metadata->method('getFieldMapping')->willReturnCallback(
+                static fn (string $name): array => ['fieldName' => $name, 'enumType' => $enumTypes[$name] ?? null],
+            );
+        }
+
         $metadata->method('getName')->willReturn($className);
         $metadata->method('getReflectionClass')->willReturn($reflection);
         $metadata->method('getFieldNames')->willReturn(array_keys($fields));

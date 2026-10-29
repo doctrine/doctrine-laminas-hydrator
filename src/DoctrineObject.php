@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\Laminas\Hydrator;
 
-use BackedEnum;
-use DateTime;
-use DateTimeImmutable;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use Doctrine\Laminas\Hydrator\Strategy\AllowRemoveByReference;
@@ -36,15 +33,11 @@ use function gettype;
 use function in_array;
 use function is_array;
 use function is_callable;
-use function is_int;
 use function is_iterable;
 use function is_object;
-use function is_string;
-use function method_exists;
 use function property_exists;
 use function spl_object_id;
 use function sprintf;
-use function str_ends_with;
 use function str_starts_with;
 use function strpos;
 use function substr;
@@ -61,6 +54,8 @@ class DoctrineObject extends AbstractHydrator
 
     protected Inflector $inflector;
 
+    protected TypeConverterInterface $typeConverter;
+
     protected AssociationExtraction $associationExtraction = AssociationExtraction::Object;
 
     protected int $associationExtractionMaxDepth = 1;
@@ -72,12 +67,18 @@ class DoctrineObject extends AbstractHydrator
     private array $associationExtractionPath = [];
 
     /**
-     * @param ObjectManager $objectManager The ObjectManager to use
-     * @param bool          $byValue       If set to true, hydrator will always use entity's public API
+     * @param ObjectManager               $objectManager The ObjectManager to use
+     * @param bool                        $byValue       If set to true, hydrator will always use entity's public API
+     * @param TypeConverterInterface|null $typeConverter Converts values of mapped fields, defaults to DoctrineTypeConverter
      */
-    public function __construct(protected ObjectManager $objectManager, protected bool $byValue = true, Inflector|null $inflector = null)
-    {
-        $this->inflector = $inflector ?? InflectorFactory::create()->build();
+    public function __construct(
+        protected ObjectManager $objectManager,
+        protected bool $byValue = true,
+        Inflector|null $inflector = null,
+        TypeConverterInterface|null $typeConverter = null,
+    ) {
+        $this->inflector     = $inflector ?? InflectorFactory::create()->build();
+        $this->typeConverter = $typeConverter ?? new DoctrineTypeConverter();
     }
 
     protected function getClassMetadata(): ClassMetadata
@@ -393,7 +394,7 @@ class DoctrineObject extends AbstractHydrator
             && ! isset($this->associationExtractionPath[$objectId])
         ) {
             // A separate hydrator is used, as extracting changes the hydrator's metadata and strategies
-            $hydrator = new self($this->objectManager, $this->byValue, $this->inflector);
+            $hydrator = new self($this->objectManager, $this->byValue, $this->inflector, $this->typeConverter);
             $hydrator->setAssociationExtraction($this->associationExtraction, $this->associationExtractionMaxDepth);
             $hydrator->associationExtractionLevel = $this->associationExtractionLevel + 1;
             $hydrator->associationExtractionPath  = $this->associationExtractionPath + [$objectId => true];
@@ -412,6 +413,17 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
+     * Converts a value for extraction
+     * Apply strategies first, then the type conversions
+     */
+    public function extractValue(string $name, mixed $value, object|null $object = null): mixed
+    {
+        $value = parent::extractValue($name, $value, $object);
+
+        return $this->typeConverter->extract($value, $this->getClassMetadata(), $name);
+    }
+
+    /**
      * Converts a value for hydration
      * Apply strategies first, then the type conversions
      *
@@ -423,16 +435,7 @@ class DoctrineObject extends AbstractHydrator
     {
         $value = parent::hydrateValue($name, $value, $data);
 
-        if ($value === null && $this->isNullable($name)) {
-            return null;
-        }
-
-        // BackedEnum is available from PHP 8.1 on
-        if ($value instanceof BackedEnum) {
-            return $value;
-        }
-
-        return $this->handleTypeConversions($value, $this->getClassMetadata()->getTypeOfField($name));
+        return $this->typeConverter->hydrate($value, $this->getClassMetadata(), $name);
     }
 
     /**
@@ -724,91 +727,6 @@ class DoctrineObject extends AbstractHydrator
     }
 
     /**
-     * Handle various type conversions that should be supported natively by Doctrine (like DateTime)
-     * See Documentation of Doctrine Mapping Types for defaults
-     *
-     * @link http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/basic-mapping.html#doctrine-mapping-types
-     *
-     * @return mixed|null
-     */
-    protected function handleTypeConversions(mixed $value, string|null $typeOfField)
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        switch ($typeOfField) {
-            case 'boolean':
-                $value = (bool) $value;
-                break;
-            case 'string':
-            case 'text':
-            case 'bigint':
-            case 'decimal':
-                $value = (string) $value;
-                break;
-            case 'integer':
-            case 'smallint':
-                $value = (int) $value;
-                break;
-            case 'float':
-                $value = (float) $value;
-                break;
-            case 'datetimetz':
-            case 'datetimetz_immutable':
-            case 'datetime':
-            case 'datetime_immutable':
-            case 'time':
-            case 'time_immutable':
-            case 'date':
-            case 'date_immutable':
-                if ($value === '') {
-                    return null;
-                }
-
-                $isImmutable = str_ends_with($typeOfField, 'immutable');
-
-                // Psalm has troubles with nested conditions, therefore break this into two return statements.
-                // See https://github.com/vimeo/psalm/issues/6683.
-                if ($isImmutable && $value instanceof DateTimeImmutable) {
-                    return $value;
-                }
-
-                if (! $isImmutable && $value instanceof DateTime) {
-                    return $value;
-                }
-
-                if ($isImmutable && $value instanceof DateTime) {
-                    return DateTimeImmutable::createFromMutable($value);
-                }
-
-                if (! $isImmutable && $value instanceof DateTimeImmutable) {
-                    return DateTime::createFromImmutable($value);
-                }
-
-                if (is_int($value)) {
-                    $dateTime = $isImmutable
-                        ? new DateTimeImmutable()
-                        : new DateTime();
-
-                    return $dateTime->setTimestamp($value);
-                }
-
-                if (is_string($value)) {
-                    return $isImmutable
-                        ? new DateTimeImmutable($value)
-                        : new DateTime($value);
-                }
-
-                break;
-            default:
-                break;
-        }
-
-        return $value;
-    }
-
-    /**
      * Find an object by a given target class and identifier
      *
      * @phpstan-param class-string<T> $targetClass
@@ -848,27 +766,6 @@ class DoctrineObject extends AbstractHydrator
             );
 
             return empty($nonNullIdentifiers);
-        }
-
-        return false;
-    }
-
-    /**
-     * Check the field is nullable
-     */
-    private function isNullable(string $name): bool
-    {
-        $metadata = $this->getClassMetadata();
-
-        //TODO: need update after updating isNullable method of Doctrine\ORM\Mapping\ClassMetadata
-        if ($metadata->hasField($name)) {
-            return method_exists($metadata, 'isNullable') && $metadata->isNullable($name);
-        }
-
-        if ($metadata->hasAssociation($name) && method_exists($metadata, 'getAssociationMapping')) {
-            $mapping = $metadata->getAssociationMapping($name);
-
-            return $mapping !== false && isset($mapping['nullable']) && $mapping['nullable'];
         }
 
         return false;

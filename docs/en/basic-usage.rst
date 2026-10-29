@@ -136,7 +136,8 @@ Let’s use the hydrator:
 
 As you can see, the hydrator automatically converted the timestamp to a
 DateTime object during the hydration, hence allowing us to have a clean
-API in our entity with a correct typehint.
+API in our entity with a correct typehint. See
+:doc:`Type Conversion <type-conversion>` for all conversions.
 
 Example 2: OneToOne/ManyToOne Associations
 ------------------------------------------

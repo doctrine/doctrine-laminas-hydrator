@@ -8,49 +8,33 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
+use Doctrine\Laminas\Hydrator\DoctrineTypeConverter;
+use Doctrine\Laminas\Hydrator\TypeConverterInterface;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use DoctrineTest\Laminas\Hydrator\Assets\PrefixingTypeConverter;
 use DoctrineTest\Laminas\Hydrator\Assets\SimpleEntityWithGenericField;
 use DoctrineTest\Laminas\Hydrator\Support\HydratorTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 use function sprintf;
-use function str_ends_with;
 
 #[CoversClass(DoctrineObject::class)]
 class TypeConversionTest extends HydratorTestCase
 {
-    private const int TIMESTAMP = 1_522_353_676;
-
-    /** @return iterable<string, array{string|null, mixed, mixed}> */
+    /**
+     * Representative conversions, all conversions are covered by DoctrineTypeConverterTest
+     *
+     * @return iterable<string, array{string|null, mixed, mixed}>
+     */
     private static function conversions(): iterable
     {
-        $dateTime = (new DateTime())->setTimestamp(self::TIMESTAMP);
-
-        foreach (['datetime', 'datetimetz', 'time', 'date'] as $baseType) {
-            foreach ([$baseType, $baseType . '_immutable'] as $type) {
-                $expected = str_ends_with($type, '_immutable') ? DateTimeImmutable::createFromMutable($dateTime) : $dateTime;
-
-                yield $type . ' from timestamp' => [$type, self::TIMESTAMP, $expected];
-                yield $type . ' from string' => [$type, $dateTime->format('Y-m-d\TH:i:s\.u'), $expected];
-                yield $type . ' from DateTime' => [$type, clone $dateTime, $expected];
-                yield $type . ' from DateTimeImmutable' => [$type, DateTimeImmutable::createFromMutable($dateTime), $expected];
-                yield $type . ' from empty string' => [$type, '', null];
-            }
-        }
-
         yield 'integer' => ['integer', '123465', 123465];
-        yield 'smallint' => ['smallint', '123465', 123465];
-        yield 'float' => ['float', '123.465', 123.465];
-        yield 'boolean from boolean' => ['boolean', true, true];
-        yield 'boolean from integer' => ['boolean', 1, true];
-
-        foreach (['string', 'text', 'bigint'] as $type) {
-            yield $type => [$type, 'stringvalue', 'stringvalue'];
-            yield $type . ' from integer' => [$type, 12345, '12345'];
-        }
-
-        yield 'decimal' => ['decimal', '123.45', '123.45'];
-        yield 'decimal from integer' => ['decimal', 12345, '12345'];
+        yield 'string from integer' => ['string', 12345, '12345'];
+        yield 'boolean' => ['boolean', 1, true];
+        yield 'datetime' => ['datetime', '2026-10-29 14:30:15', new DateTime('2026-10-29 14:30:15')];
+        yield 'datetime_immutable' => ['datetime_immutable', '2026-10-29 14:30:15', new DateTimeImmutable('2026-10-29 14:30:15')];
+        yield 'datetime from empty string' => ['datetime', '', null];
         yield 'null without type' => [null, null, null];
     }
 
@@ -77,5 +61,76 @@ class TypeConversionTest extends HydratorTestCase
         } else {
             $this->assertSame($expected, $entity->getGenericField());
         }
+    }
+
+    /** @return iterable<string, array{bool, bool}> */
+    public static function extractDateTimesProvider(): iterable
+    {
+        yield 'by value' => [true, false];
+        yield 'by value, extracting date times' => [true, true];
+        yield 'by reference' => [false, false];
+        yield 'by reference, extracting date times' => [false, true];
+    }
+
+    #[DataProvider('extractDateTimesProvider')]
+    public function testExtractConvertsDateTimesIfEnabled(bool $byValue, bool $extractDateTimes): void
+    {
+        $date   = new DateTime('2026-10-29 14:30:15');
+        $entity = new SimpleEntityWithGenericField();
+        $entity->setId(1);
+        $entity->setGenericField($date);
+
+        $metadata = $this->createMetadata(SimpleEntityWithGenericField::class, ['id' => 'integer', 'genericField' => 'date']);
+        $hydrator = new DoctrineObject(
+            $this->createObjectManager([$metadata]),
+            $byValue,
+            typeConverter: new DoctrineTypeConverter(extractDateTimes: $extractDateTimes),
+        );
+
+        $this->assertSame(['id' => 1, 'genericField' => $extractDateTimes ? '2026-10-29' : $date], $hydrator->extract($entity));
+    }
+
+    #[DataProvider('byValueProvider')]
+    public function testUsesConverterRegisteredForCustomType(bool $byValue): void
+    {
+        $metadata = $this->createMetadata(SimpleEntityWithGenericField::class, ['id' => 'integer', 'genericField' => 'uuid']);
+        $hydrator = new DoctrineObject(
+            $this->createObjectManager([$metadata]),
+            $byValue,
+            typeConverter: new DoctrineTypeConverter(typeConverters: ['uuid' => new PrefixingTypeConverter()]),
+        );
+
+        $entity = $hydrator->hydrate(['id' => '1', 'genericField' => 'abc'], new SimpleEntityWithGenericField());
+
+        $this->assertSame(1, $entity->getId());
+        $this->assertSame('hydrated genericField: abc', $entity->getGenericField());
+        $this->assertSame(
+            ['id' => 1, 'genericField' => 'extracted genericField: hydrated genericField: abc'],
+            $hydrator->extract($entity),
+        );
+    }
+
+    #[DataProvider('byValueProvider')]
+    public function testUsesCustomTypeConverter(bool $byValue): void
+    {
+        $typeConverter = new class implements TypeConverterInterface {
+            public function hydrate(mixed $value, ClassMetadata $metadata, string $fieldName): mixed
+            {
+                return 'hydrated ' . $fieldName;
+            }
+
+            public function extract(mixed $value, ClassMetadata $metadata, string $fieldName): mixed
+            {
+                return 'extracted ' . $fieldName;
+            }
+        };
+
+        $metadata = $this->createMetadata(SimpleEntityWithGenericField::class, ['id' => 'integer', 'genericField' => 'string']);
+        $hydrator = new DoctrineObject($this->createObjectManager([$metadata]), $byValue, typeConverter: $typeConverter);
+
+        $entity = $hydrator->hydrate(['genericField' => 'value'], new SimpleEntityWithGenericField());
+
+        $this->assertSame('hydrated genericField', $entity->getGenericField());
+        $this->assertSame(['id' => 'extracted id', 'genericField' => 'extracted genericField'], $hydrator->extract($entity));
     }
 }

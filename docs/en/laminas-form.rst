@@ -328,6 +328,23 @@ The UpdateBlogPostForm:
        }
    }
 
+Embeddables
+-----------
+
+The fields of an embeddable can be added to a form in two ways:
+
+- With a fieldset for the embeddable, bound to an object of the
+  embeddable, like the ``TagFieldset`` above. Keep the default
+  ``EmbeddableExtraction::Object`` in this case, so the hydrator provides
+  the embeddable object for the fieldset.
+- As elements of the fieldset of the entity, without a separate fieldset.
+  Use ``EmbeddableExtraction::Flattened`` and name the elements by the
+  flattened keys, e.g. ``address__postalCode``. Do not use a dot as
+  separator, as PHP converts dots in the names of submitted fields to
+  underscores.
+
+See :ref:`Embeddables as Arrays <embeddable-extraction>` for details.
+
 Controller
 ----------
 

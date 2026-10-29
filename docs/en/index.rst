@@ -30,8 +30,8 @@ Next Steps
    associations and how they are extracted.
 -  :doc:`Collections Strategy <collections-strategy>`:
    explains using strategies for hydrating or extracting collections.
--  :doc:`Enum Strategy <enum-strategy>`:
-   this section shows an example how PHP enums can be handled using strategies.
+-  :doc:`Type Conversion <type-conversion>`:
+   explains how values are converted based on the Doctrine mapping, including enums.
 -  :doc:`By Value or By Reference <by-value-by-reference>`:
    shows the differences of by-value and by-reference extraction or hydration of data.
 -  :doc:`Laminas Form <laminas-form>`:

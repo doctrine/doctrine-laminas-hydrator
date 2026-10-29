@@ -7,12 +7,16 @@ namespace DoctrineTest\Laminas\Hydrator;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Laminas\Hydrator\AssociationExtraction;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
+use Doctrine\Laminas\Hydrator\TypeConverterInterface;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use DoctrineTest\Laminas\Hydrator\Assets\TreeNodeEntity;
 use DoctrineTest\Laminas\Hydrator\Support\HydratorTestCase;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+
+use function strtoupper;
 
 #[CoversClass(DoctrineObject::class)]
 class AssociationExtractionTest extends HydratorTestCase
@@ -135,6 +139,31 @@ class AssociationExtractionTest extends HydratorTestCase
             ['id' => 2, 'name' => 'child', 'parent' => 1, 'children' => [4]],
             $hydrator->extract($this->root)['children'][0],
         );
+    }
+
+    #[DataProvider('byValueProvider')]
+    public function testNestedEntitiesUseTheTypeConverter(bool $byValue): void
+    {
+        $typeConverter = new class implements TypeConverterInterface {
+            public function hydrate(mixed $value, ClassMetadata $metadata, string $fieldName): mixed
+            {
+                return $value;
+            }
+
+            public function extract(mixed $value, ClassMetadata $metadata, string $fieldName): mixed
+            {
+                return $fieldName === 'name' ? strtoupper($value) : $value;
+            }
+        };
+
+        $hydrator = new DoctrineObject($this->createTreeObjectManager(), $byValue, typeConverter: $typeConverter);
+        $hydrator->setAssociationExtraction(AssociationExtraction::Array);
+
+        $data = $hydrator->extract($this->child);
+
+        $this->assertSame('CHILD', $data['name']);
+        $this->assertSame('ROOT', $data['parent']['name']);
+        $this->assertSame('GRANDCHILD', $data['children'][0]['name']);
     }
 
     #[DataProvider('byValueProvider')]

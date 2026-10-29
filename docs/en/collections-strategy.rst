@@ -67,7 +67,7 @@ strategy instead:
    $hydrator->setDefaultByReferenceStrategy(Strategy\DisallowRemoveByReference::class);
 
 Note that you can also add strategies to non-collection fields, as shown
-in :doc:`Enum Strategy <enum-strategy>`.
+in :doc:`Type Conversion <type-conversion>`.
 
 Custom Strategies
 -----------------

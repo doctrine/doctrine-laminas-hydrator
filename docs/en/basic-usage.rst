@@ -23,6 +23,11 @@ get/set data by either accessing the public API of your entity
 bypassing any of your custom logic. See
 :doc:`By Value and By Reference <by-value-by-reference>` for details.
 
+Further optional parameters are ``typeConverter``, which converts values
+based on the Doctrine mapping (see :doc:`Type Conversion <type-conversion>`),
+and ``instantiator``, which creates new associated entities (see
+`Creating New Associated Entities`_).
+
 Example 1: Simple Entity with no Associations
 ---------------------------------------------
 
@@ -244,7 +249,7 @@ And the BlogPost entity, with a ManyToOne association:
        }
    }
 
-There are two use cases that can arise when using OneToOne associations:
+There are two use cases that can arise when using OneToOne and ManyToOne associations:
 the toOne entity (in this case, the User) may already exist (which will
 often be the case with a User and BlogPost example), or it needs to be
 created. The Doctrine hydrator natively supports both cases.
@@ -455,15 +460,11 @@ about Collection elements.
 
    Internally, for a given collection, if an array contains
    identifiers, the hydrator automatically fetches the objects through
-   the Doctrine ``find`` function. However, this may cause problems if
-   one of the values of the collection is the empty string ’’ (as the
-   ``find`` will most likely fail). In order to solve this problem,
-   empty string identifiers are simply ignored during the hydration
-   phase. Therefore, if your database contains an empty string value as
-   a primary key, the hydrator may not work correctly (the simplest way
-   to avoid that is simply to not have an empty string primary key,
-   which should not happen if you use auto-increment primary keys,
-   anyway).
+   the Doctrine ``find`` function. Empty values, like the empty string
+   submitted by a form for a new element, are looked up the same way,
+   and are ignored if no entity is found for them. Avoid empty values as
+   primary keys, which should not happen if you use auto-increment
+   primary keys, anyway.
 
 For example, consider the following BlogPost and Tag entities:
 
@@ -573,9 +574,9 @@ And the Tag entity:
    }
 
 Please note some interesting things in the BlogPost entity. There are defined
-two functions: addTags and removeTags. Those functions must be always
-defined and are called automatically by the Doctrine hydrator when dealing
-with collections. This is not overkill and is preferred to just a
+two functions: addTags and removeTags. When hydrating by value (the
+default), those functions must be defined and are called automatically by
+the Doctrine hydrator when dealing with collections. This is not overkill and is preferred to just a
 ``setTags`` function to replace the old collection with a new one:
 
 .. code:: php
@@ -986,7 +987,7 @@ reference, set it for the class:
 
 .. code:: php
 
-   $hydrator->setAssociationHydrator(Address::class, new DoctrineHydrator($entityManager, false));
+   $hydrator->setAssociationHydrator(Tag::class, new DoctrineHydrator($entityManager, false));
 
 A hydrator set this way keeps its own settings and only inherits the
 naming strategy, unless a naming strategy is set on it.

@@ -316,7 +316,9 @@ easily lead to one query per entity and association.
 
 Keep the maximum depth as low as possible, exclude associations you do
 not need with filters, or fetch the associations upfront with a join in
-your query. If identifiers are sufficient, prefer
+your query. Filters for associations of associated entities are added to
+their hydrators, see
+:ref:`Configuring Associated Entities <association-hydrators>`. If identifiers are sufficient, prefer
 ``AssociationExtraction::Identifier``: identifiers of OneToOne and
 ManyToOne associations are read from the proxy without loading the
 associated entity, only collections still need to be initialized.

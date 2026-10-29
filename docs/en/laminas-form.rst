@@ -13,6 +13,12 @@ using BlogPost and Tag entities.
    hydrators used with forms, see
    :ref:`Extracting Associations <extracting-associations>`.
 
+   The bound entities are hydrated and extracted by the hydrators of the
+   nested fieldsets, so configure strategies and filters for associated
+   entities on those hydrators. The association hydrators described in
+   :ref:`Configuring Associated Entities <association-hydrators>` are only
+   used for a nested fieldset without a bound object.
+
 The Entities
 ------------
 

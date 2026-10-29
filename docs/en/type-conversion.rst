@@ -8,7 +8,9 @@ of type ``datetime``, and a string is converted to an enum for a field
 mapped with ``enumType``.
 
 The conversion is applied after the strategy of a field, if there is one.
-Values that already have the expected PHP type are kept as they are.
+Values that already have the expected PHP type are kept as they are. The
+type converter is inherited by the hydrators of associated entities, see
+:ref:`Configuring Associated Entities <association-hydrators>`.
 
 Default Conversions
 -------------------
@@ -26,8 +28,8 @@ Doctrine type                                                                   
 ``dateinterval``                                                                                                     ``DateInterval`` from an ISO 8601 duration, optionally with a leading ``+`` or ``-``
 ==================================================================================================================== ====================================================================================
 
-``null`` is always kept, an empty string is converted to ``null`` for date,
-time and date interval fields. Values of other types, like ``json``,
+The built-in conversions keep ``null``, and convert an empty string to
+``null`` for date, time and date interval fields. Values of other types, like ``json``,
 ``simple_array``, ``binary``, ``blob`` or custom types, are not converted.
 
 Enums
@@ -86,8 +88,7 @@ Converting Values when Extracting
 ---------------------------------
 
 By default, ``extract()`` returns enums, date and time values and date
-intervals as they are, which is what Laminas forms expect. To extract them
-as scalar values instead, for instance to serialize an entity to JSON,
+intervals as they are. To extract them as scalar values instead, for instance to serialize an entity to JSON,
 pass a configured type converter to the hydrator:
 
 .. code:: php

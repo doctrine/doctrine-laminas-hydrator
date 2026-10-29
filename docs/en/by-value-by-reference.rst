@@ -17,6 +17,9 @@ parameter of the constructor to false:
 
    $hydrator = new DoctrineHydrator($objectManager, false);
 
+The setting also applies to associated entities. To handle them
+differently, see :ref:`Configuring Associated Entities <association-hydrators>`.
+
 To illustrate the difference between the two, consider an extraction
 with the given entity, whose getter modifies the value:
 

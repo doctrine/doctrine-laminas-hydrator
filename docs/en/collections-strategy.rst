@@ -58,13 +58,18 @@ Changing the strategy for collections is simple:
    $hydrator = new DoctrineHydrator($entityManager);
    $hydrator->addStrategy('tags', new Strategy\DisallowRemoveByValue());
 
-To change the strategy for all collections of a hydrator, set the default
-strategy instead:
+To change the strategy for all collections of a hydrator, including the
+collections of associated entities, set the default strategy instead:
 
 .. code:: php
 
    $hydrator->setDefaultByValueStrategy(Strategy\DisallowRemoveByValue::class);
    $hydrator->setDefaultByReferenceStrategy(Strategy\DisallowRemoveByReference::class);
+
+Strategies added with ``addStrategy()`` only apply to the entity passed to
+the hydrator. For collections of associated entities, add them to the
+hydrator of the associated class, see
+:ref:`Configuring Associated Entities <association-hydrators>`.
 
 Note that you can also add strategies to non-collection fields, as shown
 in :doc:`Type Conversion <type-conversion>`.

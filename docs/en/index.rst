@@ -27,7 +27,7 @@ Next Steps
 
 -  :doc:`Basic Usage <basic-usage>`:
    introduces the basic usage of Doctrine Laminas Hydrator, including
-   associations and how they are extracted.
+   associations and how associated entities are hydrated and extracted.
 -  :doc:`Collections Strategy <collections-strategy>`:
    explains using strategies for hydrating or extracting collections.
 -  :doc:`Type Conversion <type-conversion>`:

@@ -15,9 +15,8 @@ use ReflectionException;
 
 use function is_array;
 use function method_exists;
-use function spl_object_hash;
+use function spl_object_id;
 use function sprintf;
-use function strcmp;
 
 /** @internal */
 abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
@@ -140,18 +139,16 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
         $refl         = $this->getClassMetadata()->getReflectionClass();
         $reflProperty = $refl->getProperty($this->getCollectionName());
 
-        $reflProperty->setAccessible(true);
-
         return $reflProperty->getValue($object);
     }
 
     /**
      * This method is used internally by array_udiff to check if two objects are equal, according to their
-     * SPL hash. This is needed because the native array_diff only compare strings
+     * object id. This is needed because the native array_diff only compare strings
      */
     protected function compareObjects(object $a, object $b): int
     {
         // see https://github.com/php/php-src/issues/10513
-        return strcmp(spl_object_hash($a), spl_object_hash($b));
+        return spl_object_id($a) <=> spl_object_id($b);
     }
 }

@@ -31,7 +31,6 @@ class AbstractCollectionStrategyTest extends TestCase
         $strategy = $this->createStrategy();
 
         $reflection = new ReflectionMethod(AbstractCollectionStrategy::class, 'getInflector');
-        $reflection->setAccessible(true);
 
         $this->assertInstanceOf(Inflector::class, $reflection->invoke($strategy));
     }
@@ -42,7 +41,6 @@ class AbstractCollectionStrategyTest extends TestCase
         $strategy  = $this->createStrategy($inflector);
 
         $reflection = new ReflectionMethod(AbstractCollectionStrategy::class, 'getInflector');
-        $reflection->setAccessible(true);
 
         $this->assertInstanceOf(Inflector::class, $reflection->invoke($strategy));
         $this->assertSame($inflector, $reflection->invoke($strategy));

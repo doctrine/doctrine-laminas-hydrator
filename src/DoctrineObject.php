@@ -523,7 +523,6 @@ final class DoctrineObject extends AbstractHydrator
             }
 
             $reflProperty = $refl->getProperty($fieldName);
-            $reflProperty->setAccessible(true);
 
             if ($reflProperty->isReadOnly()) {
                 continue;
@@ -1126,8 +1125,6 @@ final class DoctrineObject extends AbstractHydrator
                     ),
                 );
             }
-
-            $reflProperty->setAccessible(true);
 
             if ($metadata->hasAssociation($field)) {
                 $target = $metadata->getAssociationTargetClass($field);

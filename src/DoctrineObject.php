@@ -263,7 +263,7 @@ class DoctrineObject extends AbstractHydrator
         $data = [];
 
         // fail for readonly classes (PHP 8.2)
-        if (method_exists($refl, 'isReadOnly') && $refl->isReadOnly()) {
+        if ($refl->isReadOnly()) {
             throw new LogicException(
                 sprintf(
                     'this class "%s" is readonly, data can\'t be extracted',
@@ -280,7 +280,7 @@ class DoctrineObject extends AbstractHydrator
             $reflProperty = $refl->getProperty($fieldName);
             $reflProperty->setAccessible(true);
 
-            if (method_exists($reflProperty, 'isReadOnly') && $reflProperty->isReadOnly()) {
+            if ($reflProperty->isReadOnly()) {
                 continue;
             }
 
@@ -421,7 +421,7 @@ class DoctrineObject extends AbstractHydrator
             $reflProperty = $refl->getProperty($field);
 
             // fail for readonly property (PHP 8.1)
-            if (method_exists($reflProperty, 'isReadOnly') && $reflProperty->isReadOnly()) {
+            if ($reflProperty->isReadOnly()) {
                 throw new LogicException(
                     sprintf(
                         'Cannot hydrate class "%s" by reference. Property "%s" is readonly. To fix this error, remove readonly.',

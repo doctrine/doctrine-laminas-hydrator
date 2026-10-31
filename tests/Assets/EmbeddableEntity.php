@@ -4,21 +4,9 @@ declare(strict_types=1);
 
 namespace DoctrineTest\Laminas\Hydrator\Assets;
 
-class SimpleEntityPhp74
+class EmbeddableEntity
 {
-    protected int|null $id;
-
-    protected string|null $field;
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
+    protected string $field = '';
 
     public function setField(string $field): void
     {

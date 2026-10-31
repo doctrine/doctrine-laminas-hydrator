@@ -1,9 +1,23 @@
-A Complete Example using Laminas\\Form
-======================================
+Example Usage with Laminas Form
+===============================
 
 This documentation covers how the hydrator integrates into the
 Laminas Form component.  This interaction will be exemplified
 using BlogPost and Tag entities.
+
+.. note::
+
+   Nested fieldsets and collections of fieldsets are bound to the
+   associated entities returned by the hydrator. Therefore, keep the
+   default association extraction ``AssociationExtraction::Object`` for
+   hydrators used with forms, see
+   :ref:`Extracting Associations <extracting-associations>`.
+
+   The bound entities are hydrated and extracted by the hydrators of the
+   nested fieldsets, so configure strategies and filters for associated
+   entities on those hydrators. The association hydrators described in
+   :ref:`Configuring Associated Entities <association-hydrators>` are only
+   used for a nested fieldset without a bound object.
 
 The Entities
 ------------
@@ -26,6 +40,9 @@ The BlogPost entity:
        #[ORM\GeneratedValue(strategy: 'AUTO')]
        private ?int $id = null;
 
+       #[ORM\Column(type: 'string')]
+       private ?string $title = null;
+
        #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'blogPost', cascade: ['persist'])]
        private Collection $tags;
 
@@ -40,6 +57,16 @@ The BlogPost entity:
        public function getId(): ?int
        {
            return $this->id;
+       }
+
+       public function setTitle(string $title): void
+       {
+           $this->title = $title;
+       }
+
+       public function getTitle(): ?string
+       {
+           return $this->title;
        }
 
        public function addTags(Collection $tags): void
@@ -230,7 +257,7 @@ The BlogPost Fieldset:
 
 The blog post is a simple fieldset with an element
 of type ``Laminas\Form\Element\Collection`` that represents the
-ManyToOne association to tags.
+OneToMany association to tags.
 
 Form
 ----
@@ -301,6 +328,23 @@ The UpdateBlogPostForm:
        }
    }
 
+Embeddables
+-----------
+
+The fields of an embeddable can be added to a form in two ways:
+
+- With a fieldset for the embeddable, bound to an object of the
+  embeddable, like the ``TagFieldset`` above. Keep the default
+  ``EmbeddableExtraction::Object`` in this case, so the hydrator provides
+  the embeddable object for the fieldset.
+- As elements of the fieldset of the entity, without a separate fieldset.
+  Use ``EmbeddableExtraction::Flattened`` and name the elements by the
+  flattened keys, e.g. ``address__postalCode``. Do not use a dot as
+  separator, as PHP converts dots in the names of submitted fields to
+  underscores.
+
+See :ref:`Embeddables as Arrays <embeddable-extraction>` for details.
+
 Controller
 ----------
 
@@ -312,7 +356,7 @@ a controller.
    namespace Application\Controller;
 
    use Doctrine\ORM\EntityManager;
-   use Laminas\Mvc\Controller\AbstractActionController
+   use Laminas\Mvc\Controller\AbstractActionController;
 
    class MySampleController extends AbstractActionController
    {
@@ -342,6 +386,7 @@ which injects all dependencies automatically.
            ],
        ],
        /* … */
+   ];
 
 You may generate individual factories automatically using the `console
 tools <https://docs.laminas.dev/laminas-servicemanager/console-tools/>`__
@@ -351,7 +396,7 @@ Creation
 ~~~~~~~~
 
 In the controller's createAction, create a new BlogPost and all the
-associated tags. As a consequence, the hidden ids for the tags will by
+associated tags. As a consequence, the hidden ids for the tags will be
 empty because they have not been persisted yet.
 
 The controller createAction:
@@ -371,8 +416,8 @@ The controller createAction:
            $form->setData($this->request->getPost());
 
            if ($form->isValid()) {
-               $objectManager->persist($blogPost);
-               $objectManager->flush();
+               $this->entityManager->persist($blogPost);
+               $this->entityManager->flush();
            }
        }
 
@@ -391,7 +436,7 @@ instead of creating a new one:
 
        // Fetch the existing BlogPost from storage and bind it to the form.
        // This will pre-fill form field values
-       $blogPost = $this->userService->get($this->params('blogPost_id'));
+       $blogPost = $this->entityManager->find(BlogPost::class, $this->params()->fromRoute('id'));
        $form->bind($blogPost);
 
        if ($this->request->isPost()) {
@@ -399,7 +444,7 @@ instead of creating a new one:
 
            if ($form->isValid()) {
                // Save the changes
-               $objectManager->flush();
+               $this->entityManager->flush();
            }
        }
 

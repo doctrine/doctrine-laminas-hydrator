@@ -17,6 +17,8 @@ take the following entity:
 
    namespace Application\Entity;
 
+   use Doctrine\ORM\Mapping as ORM;
+
    #[ORM\Entity]
    class User
    {
@@ -25,20 +27,20 @@ take the following entity:
        #[ORM\GeneratedValue(strategy: 'AUTO')]
        private ?int $id = null;
 
-       #[ORM\Column(type: 'string', length=48)]
+       #[ORM\Column(type: 'string', length: 48)]
        private ?string $name = null;
 
-       #[ORM\OneToOne(targetEntity: 'City')]
+       #[ORM\OneToOne(targetEntity: City::class)]
        private ?City $city = null;
 
        // … getter and setters are defined …
    }
 
 This simple entity contains an id, a string property, and a OneToOne
-relationship.  When using Laminas forms the correct way, There may be
+relationship.  When using Laminas forms the correct way, there may be
 a fieldset for every entity; so a 1:1 mapping
 between entities and fieldsets.  Here are fieldsets for User and
-and City entities:
+City entities:
 
 .. note::
 
@@ -129,7 +131,7 @@ And, now, the City fieldset:
            ]);
 
            $this->add([
-               'type'    => Text::clas,
+               'type'    => Text::class,
                'name'    => 'postCode',
                'options' => [
                    'label' => 'Postcode of your city',
@@ -198,7 +200,7 @@ the form would look like this:
    read the `Laminas documentation
    <https://docs.laminas.dev/laminas-form/collections/>`__.
 
-Next, we create a simple form called ``EditSimpleForm``. Because we set
+With the ``EditNameForm`` above, because we set
 the validation group, all the inputs related to city (postCode and name
 of the city) won’t be validated, which is exactly what we want. The
 action will look something like this:
@@ -210,7 +212,7 @@ action will look something like this:
        // Create the form and inject the Entity Manager
        $form = new EditNameForm($this->entityManager);
 
-       // Get the logged user (for more informations about userIdentity(), please read the Authentication doc)
+       // Get the logged user (for more information about userIdentity(), please read the Authentication doc)
        $loggedUser = $this->userIdentity();
 
        // We bind the logged user to the form, so that the name is pre-filled with previous data
@@ -244,7 +246,7 @@ From this example:
    a string field), and "city" which is another fieldset (in our User
    entity, this is a OneToOne relationship to another entity). The
    hydrator will extract both the name and the city.  The city will be a
-   Doctrine 2 Proxy object.
+   Doctrine proxy object.
 2. Because the UserFieldset contains a reference to another Fieldset (in
    this case, a CityFieldset), it will, in turn, try to extract the
    values of the City to populate the values of the CityFieldset. And
@@ -254,14 +256,14 @@ From this example:
    please the hydrator.
 
 This is absolutely normal; this is how Laminas forms work and what make them
-so useful, but in this specific case it can leads to disastrous
+so useful, but in this specific case it can lead to disastrous
 consequences. When you have complex entities with many
 OneToMany collections, imagine how many unnecessary calls may be made
 (e.g. after discovering this problem, the author realized that their
 application was doing 10 unnecessary database calls).
 
 The fix is simple: if you don’t need specific fieldsets
-in a form, remove them. Here is a fixed EditUserForm:
+in a form, remove them. Here is a fixed EditNameForm:
 
 .. code:: php
 
@@ -301,3 +303,22 @@ relation, it won’t be extracted.
 
 As a rule of thumb, try to remove any unnecessary fieldset relationships,
 and always look at which database calls are made.
+
+Extracting Associations
+-----------------------
+
+The same applies when extracting associations into arrays with
+``AssociationExtraction::Array`` (see
+:ref:`Extracting Associations <extracting-associations>`): every associated entity
+that is extracted is loaded from the database, and every nested
+collection is initialized. Extracting a list of entities this way can
+easily lead to one query per entity and association.
+
+Keep the maximum depth as low as possible, exclude associations you do
+not need with filters, or fetch the associations upfront with a join in
+your query. Filters for associations of associated entities are added to
+their hydrators, see
+:ref:`Configuring Associated Entities <association-hydrators>`. If identifiers are sufficient, prefer
+``AssociationExtraction::Identifier``: identifiers of OneToOne and
+ManyToOne associations are read from the proxy without loading the
+associated entity, only collections still need to be initialized.

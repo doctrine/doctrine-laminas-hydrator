@@ -14,13 +14,8 @@ use function sprintf;
 
 class DifferentAllowRemoveByValue extends AbstractCollectionStrategy
 {
-    /**
-     * @param mixed                        $value
-     * @param array<array-key, mixed>|null $data
-     *
-     * @return array|mixed|mixed[]
-     */
-    public function hydrate($value, array|null $data)
+    /** @param array<array-key, mixed>|null $data */
+    public function hydrate(mixed $value, array|null $data = null): mixed
     {
         // AllowRemove strategy need "adder" and "remover"
         $adder   = 'add' . $this->getInflector()->classify($this->getCollectionName());

@@ -13,12 +13,12 @@
         "rss": "https://github.com/doctrine/doctrine-laminas-hydrator/releases.atom"
     },
     "require": {
-        "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+        "php": "~8.3.0 || ~8.4.0 || ~8.5.0 || ~8.6.0",
         "ext-ctype": "*",
-        "doctrine/collections": "^2.0.0",
+        "doctrine/collections": "^2.6.0 || ^3.1.0",
         "doctrine/inflector": "^2.0.4",
         "doctrine/persistence": "^3.4.0 || ^4.0.0",
-        "laminas/laminas-hydrator": "^4.13.0",
+        "laminas/laminas-hydrator": "^4.13.0 || ^5.0.0",
         "laminas/laminas-stdlib": "^3.14.0"
     },
     "require-dev": {
@@ -26,7 +26,7 @@
         "phpdocumentor/guides-cli": "^1.5.0",
         "phpstan/phpstan": "^2.0.2",
         "phpstan/phpstan-deprecation-rules": "^2.0.0",
-        "phpunit/phpunit": "^11.5.45"
+        "phpunit/phpunit": "^12.5.0"
     },
     "autoload": {
         "psr-4": {

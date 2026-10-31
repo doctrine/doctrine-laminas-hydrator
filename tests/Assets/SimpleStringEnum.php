@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DoctrineTest\Laminas\Hydrator\Assets;
 
-enum SimpleEnumPhp81: int
+enum SimpleStringEnum: string
 {
-    case One = 1;
-    case Two = 2;
+    case Hearts = 'H';
+    case Spades = 'S';
 }

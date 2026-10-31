@@ -1,4 +1,4 @@
-name: "Continuous Integration"
+name: "Continuous Integration (hydrator v5)"
 
 on:
   pull_request:
@@ -23,8 +23,19 @@ on:
 jobs:
   phpunit:
     name: "PHPUnit"
-    uses: "doctrine/.github/.github/workflows/continuous-integration.yml@13.1.0"
+    uses: "doctrine/.github/.github/workflows/continuous-integration.yml@15.1.0"
     with:
-      php-versions: '["8.2", "8.3", "8.4", "8.5"]'
+      php-versions: '["8.3", "8.4", "8.5"]'
+      composer-options: "--prefer-dist --with laminas/laminas-hydrator:^5.0.0"
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  # Not all dependencies declare compatibility with PHP 8.6 yet
+  phpunit-php86:
+    name: "PHPUnit"
+    uses: "doctrine/.github/.github/workflows/continuous-integration.yml@15.1.0"
+    with:
+      php-versions: '["8.6"]'
+      composer-options: "--prefer-dist --ignore-platform-req=php+ --with laminas/laminas-hydrator:^5.0.0"
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
